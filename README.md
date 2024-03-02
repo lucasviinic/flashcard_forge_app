@@ -1,16 +1,19 @@
-# flashcard_forge_app
+# Flashcard Forge - Mobile App
 
-A new Flutter project.
+Mobile application for creating and generating flashcards through AI, enabling the extraction of text data from large sources such as PDFs or direct text input.
 
-## Getting Started
+## Screenshots
 
-This project is a starting point for a Flutter application.
+Some screenshots will be placed here
 
-A few resources to get you started if this is your first Flutter project:
+## How to Clone and Run the App
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+This project is built with Flutter, so before getting started, make sure you have Flutter installed and set up on your system. For more information, please refer to https://docs.flutter.dev/get-started/install. 
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Once that's done, let's get started!
+
+1. Clone the repository with `git clone https://github.com/lucasviinic/flashcard_forge_app.git`
+2. Navigate to the cloned directory with `cd flashcard_forge_app`
+3. Install the dependencies, `flutter pub get`
+4. Make sure the environment variables are properly filled in
+5. And finally, run the application with the command `flutter run`.
