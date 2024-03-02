@@ -1,3 +1,4 @@
+import 'package:flashcard_forge_app/widgets/SubjectContainer.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,7 +15,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return;
   }
 
-  final List<String> topics = ['Topic 1', 'Topic 2', 'Topic 3'];
+  final List<String> subjects = ['Biologia', 'História', 'Filosofia'];
+  bool showDropdown = false;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       drawer: const Drawer(
-        backgroundColor: Color.fromRGBO(57, 167, 255, 1),
+        backgroundColor: Color.fromRGBO(135, 196, 255, 1),
       ),
       body: Container(
         color: const Color.fromRGBO(224, 244, 255, 1),
@@ -54,43 +56,14 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.only(bottom: 10),
-                child: Divider(color: Colors.black),
+              const Divider(color: Colors.black),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: subjects.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return SubjectContainer(title: subjects[index]);
+                },
               ),
-              Container(
-                height: 70,
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 180, 217, 255),
-                  borderRadius: BorderRadius.circular(10)
-                ),
-                child: Row(
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        showMenu(
-                          context: context,
-                          position: const RelativeRect.fromLTRB(0, 70, 0, 0),
-                          items: topics.map((String topic) {
-                            return PopupMenuItem<String>(
-                              value: topic,
-                              child: Text(topic),
-                            );
-                          }).toList(),
-                          elevation: 8.0,
-                        );
-                      },
-                      child: const Icon(Icons.arrow_right_rounded, size: 50),
-                    ),
-                    const Text("Biologia", style: TextStyle(fontSize: 20)),
-                    const Spacer(),
-                    const Padding(
-                      padding: EdgeInsets.all(15),
-                      child: Icon(Icons.menu),
-                    )
-                  ],
-                ),
-              )
             ],
           ),
         ),
