@@ -16,7 +16,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   final List<String> subjects = ['Biologia', 'História', 'Filosofia'];
-  bool showDropdown = false;
 
   @override
   Widget build(BuildContext context) {
