@@ -71,7 +71,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
           visible: showDropdown,
           child: AnimatedContainer(
             width: MediaQuery.of(context).size.width,
-            duration: const Duration(seconds: 3),
+            duration: const Duration(seconds: 5),
             curve: Curves.fastOutSlowIn,
             decoration: const BoxDecoration(
               color: Color.fromARGB(255, 180, 217, 255),
