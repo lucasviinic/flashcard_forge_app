@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flashcard_forge_app/widgets/SubjectContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -105,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
         ),
-        title: Image.asset('assets/images/logo-v1.png', height: 45, width: 45),
+        title: SvgPicture.asset('assets/images/logo-v1.svg', height: 45, width: 45),
         centerTitle: true,
         actions: const [
           Padding(
