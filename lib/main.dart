@@ -1,3 +1,4 @@
+import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
 import 'package:flashcard_forge_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,11 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(224, 244, 255, 1)),
         useMaterial3: true
       ),
-      home: const HomeScreen(title: "Flashcard Forge"),
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const HomeScreen(title: "Flashcard Forge"),
+        '/flashcards': (context) => const FlashcardScreen(),
+      },
     );
   }
 }

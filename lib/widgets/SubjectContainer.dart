@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -112,20 +113,18 @@ class _SubjectContainerState extends State<SubjectContainer> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  ...topics.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final topic = entry.value;
-                    final isLast = index == topics.length - 1;
-
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: isLast ? 0 : 15, left: 20, right: 20),
-                      child: GestureDetector(
-                          onTap: () {},
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width,
-                            child: Text(topic,
-                            style: const TextStyle(fontSize: 16)))),
-                      );
+                  ...topics.map((topic) {
+                    return TextButton(
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const FlashcardScreen(),
+                        ),
+                      ),
+                      child: Row(children: [
+                        const SizedBox(width: 8),
+                        Text(topic, style: const TextStyle(fontSize: 16))
+                      ]),
+                    );
                   }),
                   Visibility(
                     visible: !creatingTopic,
@@ -139,7 +138,8 @@ class _SubjectContainerState extends State<SubjectContainer> {
                         child: Column(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
                               child: TextField(
                                 autofocus: creatingTopic,
                                 maxLength: 15,
@@ -158,15 +158,20 @@ class _SubjectContainerState extends State<SubjectContainer> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 TextButton(
-                                  child: const Text('Save', style: TextStyle(fontSize: 16, color: Colors.green)),
-                                  onPressed: () => createTopic(_controller.text),
+                                  child: const Text('Save',
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.green)),
+                                  onPressed: () =>
+                                      createTopic(_controller.text),
                                 ),
                                 const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 5),
                                   child: VerticalDivider(),
                                 ),
                                 TextButton(
-                                  child: const Text('Cencel', style: TextStyle(fontSize: 16, color: Colors.red)),
+                                  child: const Text('Cencel',
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.red)),
                                   onPressed: () {
                                     setState(() {
                                       _controller.text = "";
