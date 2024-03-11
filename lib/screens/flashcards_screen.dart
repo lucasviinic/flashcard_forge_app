@@ -1,8 +1,11 @@
+import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class FlashcardScreen extends StatefulWidget {
-  const FlashcardScreen({super.key});
+  const FlashcardScreen({super.key, this.flashcards});
+
+  final List<FlashcardModel>? flashcards;
 
   @override
   State<FlashcardScreen> createState() => _FlashcardScreenState();
@@ -29,7 +32,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
             );
           },
         ),
-        title: SvgPicture.asset('assets/images/logo-v1.svg', height: 45, width: 45),
+        title: SvgPicture.asset('assets/images/logo-v1.svg',
+            height: 45, width: 45),
         centerTitle: true,
         actions: const [
           Padding(
