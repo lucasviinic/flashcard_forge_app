@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flashcard_forge_app/models/SubjectModel.dart';
+import 'package:flashcard_forge_app/services/mocks.dart';
 import 'package:flashcard_forge_app/widgets/SubjectContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -21,6 +23,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   List<String> subjects = ['Biologia', 'História', 'Filosofia'];
   bool creatingSubject = false;
+
+  List<SubjectResponseModel> subjects2 = subjectsListMock;
 
   void createSubject(String value) {
     subjects.add(value);
@@ -106,7 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
         ),
-        title: SvgPicture.asset('assets/images/logo-v1.svg', height: 45, width: 45),
+        title: SvgPicture.asset('assets/images/logo-v1.svg',
+            height: 45, width: 45),
         centerTitle: true,
         actions: const [
           Padding(
@@ -126,8 +131,11 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               const Divider(color: Colors.black),
               Column(
-                children: subjects.map((subject) {
-                  return SubjectContainer(title: subject);
+                children: subjects2.map((subject) {
+                  return SubjectContainer(
+                    title: subject.subject.subjectName,
+                    topics: subject.topics,
+                  );
                 }).toList(),
               ),
               Visibility(
@@ -157,9 +165,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-                  )
-                ),
-                const SizedBox(height: 25)
+                  )),
+              const SizedBox(height: 25)
             ],
           ),
         ),

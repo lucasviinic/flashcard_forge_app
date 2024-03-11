@@ -1,13 +1,15 @@
 import 'dart:async';
 
+import 'package:flashcard_forge_app/models/TopicModel.dart';
 import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class SubjectContainer extends StatefulWidget {
-  const SubjectContainer({super.key, required this.title});
+  const SubjectContainer({super.key, required this.title, required this.topics});
 
   final String title;
+  final List<TopicResponseModel> topics;
 
   @override
   State<SubjectContainer> createState() => _SubjectContainerState();
@@ -15,14 +17,17 @@ class SubjectContainer extends StatefulWidget {
 
 class _SubjectContainerState extends State<SubjectContainer> {
   bool showDropdown = false;
-  List<String> topics = ["Mitosis", "Meiosis", "Botany"];
   bool creatingTopic = false;
   late TextEditingController _controller;
   final FocusNode _focusNode = FocusNode();
   late StreamSubscription<bool> keyboardSubscription;
 
   void createTopic(String value) {
-    topics.add(value);
+    widget.topics.add(TopicResponseModel(topic: TopicModel(
+      id: 10000,
+      subjectId: 1223243,
+      topicName: value
+    )));
     setState(() {
       _controller.text = "";
       creatingTopic = false;
@@ -112,16 +117,16 @@ class _SubjectContainerState extends State<SubjectContainer> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  ...topics.map((topic) {
+                  ...widget.topics.map((topic) {
                     return TextButton(
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const FlashcardScreen(),
+                          builder: (context) => FlashcardScreen(flashcards: topic.flashcards),
                         ),
                       ),
                       child: Row(children: [
                         const SizedBox(width: 8),
-                        Text(topic, style: const TextStyle(fontSize: 16))
+                        Text(topic.topic.topicName, style: const TextStyle(fontSize: 16))
                       ]),
                     );
                   }),
