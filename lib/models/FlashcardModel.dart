@@ -33,13 +33,13 @@ class FlashcardModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'user_id': userId,
-        'subject_id': subjectId,
-        'topic_id': topicId,
-        'question': question,
-        'answer': answer,
-        'last_response': lastResponse,
-        'image_url': imageUrl
-      };
+    'id': id,
+    'user_id': userId,
+    'subject_id': subjectId,
+    'topic_id': topicId,
+    'question': question,
+    'answer': answer,
+    'last_response': lastResponse,
+    'image_url': imageUrl
+  };
 }

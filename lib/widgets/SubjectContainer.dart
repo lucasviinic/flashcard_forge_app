@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class SubjectContainer extends StatefulWidget {
