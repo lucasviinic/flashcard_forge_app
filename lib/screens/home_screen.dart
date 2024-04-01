@@ -6,6 +6,7 @@ import 'package:flashcard_forge_app/widgets/SubjectContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flashcard_forge_app/utils/constants.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -39,8 +40,9 @@ class _HomeScreenState extends State<HomeScreen> {
     showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
-        return SizedBox(
-          height: 100,
+        return Container(
+          height: 90,
+          color: AppColors.secondaryColor,
           child: Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -52,7 +54,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 5),
-                  child: VerticalDivider(),
+                  child: VerticalDivider(width: 10),
                 ),
                 TextButton(
                   child: const Text('Cencel',
@@ -94,14 +96,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(224, 244, 255, 1),
+        backgroundColor: AppColors.primaryColor,
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
               icon: const Icon(
                 Icons.menu_rounded,
-                color: Colors.black,
-                size: 40,
+                color: AppColors.whiteColor,
+                size: 30,
               ),
               onPressed: () {
                 Scaffold.of(context).openDrawer();
@@ -111,20 +113,20 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         title: SvgPicture.asset('assets/images/logo-v1.svg',
-            height: 45, width: 45),
+            height: 35, width: 35),
         centerTitle: true,
         actions: const [
           Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Icon(Icons.search, size: 35),
+            padding: EdgeInsets.all(10),
+            child: Icon(Icons.search, size: 30, color: AppColors.whiteColor),
           ),
         ],
       ),
       drawer: const Drawer(
-        backgroundColor: Color.fromRGBO(135, 196, 255, 1),
+        backgroundColor: AppColors.primaryColor,
       ),
       body: Container(
-        color: const Color.fromRGBO(224, 244, 255, 1),
+        color: AppColors.primaryColor,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: ListView(
@@ -144,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 65,
                     margin: const EdgeInsets.only(top: 10),
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 180, 217, 255),
+                      color: AppColors.secondaryColor,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Center(
@@ -154,10 +156,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           autofocus: creatingSubject,
                           maxLength: 15,
                           controller: _controller,
-                          style: const TextStyle(fontSize: 20),
+                          style: const TextStyle(fontSize: 20, color: AppColors.whiteColor),
                           decoration: const InputDecoration(
                               hintText: "Add a subject",
-                              hintStyle: TextStyle(fontSize: 20),
+                              hintStyle: TextStyle(fontSize: 20, color: AppColors.whiteColor),
                               counterText: "",
                               contentPadding: EdgeInsets.zero,
                               isDense: true),
@@ -174,13 +176,14 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: Visibility(
         visible: !creatingSubject,
         child: FloatingActionButton(
+          backgroundColor: AppColors.secondaryColor,
           onPressed: () {
             setState(() {
               creatingSubject = true;
             });
           },
           tooltip: 'Increment',
-          child: const Icon(Icons.add),
+          child: const Icon(Icons.add, color: AppColors.whiteColor),
         ),
       ),
     );

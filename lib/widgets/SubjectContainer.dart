@@ -4,6 +4,7 @@ import 'package:flashcard_forge_app/models/TopicModel.dart';
 import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:flashcard_forge_app/utils/constants.dart';
 
 class SubjectContainer extends StatefulWidget {
   const SubjectContainer({super.key, required this.title, required this.topics});
@@ -55,7 +56,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
           height: 65,
           margin: const EdgeInsets.only(top: 10),
           decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 180, 217, 255),
+              color: AppColors.secondaryColor,
               borderRadius: showDropdown
                   ? const BorderRadius.only(
                       topLeft: Radius.circular(10),
@@ -71,34 +72,30 @@ class _SubjectContainerState extends State<SubjectContainer> {
                   });
                 },
                 child: Icon(
-                    showDropdown
-                        ? Icons.arrow_drop_down_rounded
-                        : Icons.arrow_right_rounded,
-                    size: 50),
+                  showDropdown
+                      ? Icons.arrow_drop_down_rounded
+                      : Icons.arrow_right_rounded,
+                  size: 50, color: AppColors.whiteColor),
               ),
-              Text(widget.title, style: const TextStyle(fontSize: 20)),
+              Text(widget.title, style: const TextStyle(fontSize: 20, color: AppColors.whiteColor)),
               const Spacer(),
               PopupMenuButton(
-                  color: const Color.fromRGBO(135, 196, 255, 1),
-                  itemBuilder: (context) {
-                    return [
-                      const PopupMenuItem<int>(
-                        value: 0,
-                        child: Text("Rename"),
-                      ),
-                      const PopupMenuItem<int>(
-                        value: 1,
-                        child: Text("Delete"),
-                      ),
-                    ];
-                  },
-                  onSelected: (value) {
-                    if (value == 0) {
-                      print("Rename menu is selected.");
-                    } else if (value == 1) {
-                      print("Delete menu is selected.");
-                    }
-                  })
+                color: AppColors.secondaryColor,
+                iconColor: AppColors.whiteColor,
+                itemBuilder: (context) {
+                  return [
+                    const PopupMenuItem<int>(
+                      value: 0,
+                      child: Text("Rename", style: TextStyle(color: AppColors.whiteColor)),
+                    ),
+                    const PopupMenuItem<int>(
+                      value: 1,
+                      child: Text("Delete", style: TextStyle(color: AppColors.whiteColor)),
+                    ),
+                  ];
+                },
+                onSelected: (value) {}
+              )
             ],
           ),
         ),
@@ -109,11 +106,12 @@ class _SubjectContainerState extends State<SubjectContainer> {
               duration: const Duration(seconds: 5),
               curve: Curves.fastOutSlowIn,
               decoration: const BoxDecoration(
-                  color: Color.fromARGB(255, 180, 217, 255),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
-                  )),
+                color: AppColors.secondaryColor,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                )
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -126,7 +124,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                       ),
                       child: Row(children: [
                         const SizedBox(width: 8),
-                        Text(topic.topic.topicName, style: const TextStyle(fontSize: 16))
+                        Text(topic.topic.topicName, style: const TextStyle(fontSize: 16, color: AppColors.accentColor))
                       ]),
                     );
                   }),
@@ -134,7 +132,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                     visible: !creatingTopic,
                     replacement: Container(
                       decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 180, 217, 255),
+                        color: AppColors.secondaryColor,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Padding(
@@ -148,10 +146,10 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                 autofocus: creatingTopic,
                                 maxLength: 15,
                                 controller: _controller,
-                                style: const TextStyle(fontSize: 16),
+                                style: const TextStyle(fontSize: 16, color: AppColors.whiteColor),
                                 decoration: const InputDecoration(
                                     hintText: "Add a topic",
-                                    hintStyle: TextStyle(fontSize: 16),
+                                    hintStyle: TextStyle(fontSize: 16, color: AppColors.whiteColor),
                                     counterText: "",
                                     contentPadding: EdgeInsets.zero,
                                     isDense: true),
@@ -196,7 +194,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                       child: const Row(children: [
                         Icon(Icons.add),
                         SizedBox(width: 8),
-                        Text("Create new topic", style: TextStyle(fontSize: 16))
+                        Text("Create new topic", style: TextStyle(fontSize: 16, color: AppColors.accentColor))
                       ]),
                     ),
                   )
