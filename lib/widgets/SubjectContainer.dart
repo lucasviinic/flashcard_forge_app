@@ -119,7 +119,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                     return TextButton(
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => FlashcardScreen(flashcards: topic.flashcards),
+                          builder: (context) => FlashcardScreen(flashcards: topic.flashcards, title: topic.topic.topicName),
                         ),
                       ),
                       child: Row(children: [
@@ -140,8 +140,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                         child: Column(
                           children: [
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
                               child: TextField(
                                 autofocus: creatingTopic,
                                 maxLength: 15,

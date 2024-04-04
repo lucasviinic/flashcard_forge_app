@@ -125,52 +125,49 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: const Drawer(
         backgroundColor: AppColors.primaryColor,
       ),
-      body: Container(
-        color: AppColors.primaryColor,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: ListView(
-            children: [
-              const Divider(color: Colors.black),
-              Column(
-                children: subjects2.map((subject) {
-                  return SubjectContainer(
-                    title: subject.subject.subjectName,
-                    topics: subject.topics,
-                  );
-                }).toList(),
-              ),
-              Visibility(
-                  visible: creatingSubject,
-                  child: Container(
-                    height: 65,
-                    margin: const EdgeInsets.only(top: 10),
-                    decoration: BoxDecoration(
-                      color: AppColors.secondaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: TextField(
-                          autofocus: creatingSubject,
-                          maxLength: 15,
-                          controller: _controller,
-                          style: const TextStyle(fontSize: 20, color: AppColors.whiteColor),
-                          decoration: const InputDecoration(
-                              hintText: "Add a subject",
-                              hintStyle: TextStyle(fontSize: 20, color: AppColors.whiteColor),
-                              counterText: "",
-                              contentPadding: EdgeInsets.zero,
-                              isDense: true),
-                          focusNode: _focusNode,
-                        ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: ListView(
+          children: [
+            const Divider(color: Colors.black),
+            Column(
+              children: subjects2.map((subject) {
+                return SubjectContainer(
+                  title: subject.subject.subjectName,
+                  topics: subject.topics,
+                );
+              }).toList(),
+            ),
+            Visibility(
+                visible: creatingSubject,
+                child: Container(
+                  height: 65,
+                  margin: const EdgeInsets.only(top: 10),
+                  decoration: BoxDecoration(
+                    color: AppColors.secondaryColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: TextField(
+                        autofocus: creatingSubject,
+                        maxLength: 15,
+                        controller: _controller,
+                        style: const TextStyle(fontSize: 20, color: AppColors.whiteColor),
+                        decoration: const InputDecoration(
+                            hintText: "Add a subject",
+                            hintStyle: TextStyle(fontSize: 20, color: AppColors.whiteColor),
+                            counterText: "",
+                            contentPadding: EdgeInsets.zero,
+                            isDense: true),
+                        focusNode: _focusNode,
                       ),
                     ),
-                  )),
-              const SizedBox(height: 25)
-            ],
-          ),
+                  ),
+                )),
+            const SizedBox(height: 25)
+          ],
         ),
       ),
       floatingActionButton: Visibility(

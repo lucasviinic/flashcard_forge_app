@@ -1,5 +1,6 @@
 import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
 import 'package:flashcard_forge_app/screens/home_screen.dart';
+import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,7 +18,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: "Comfortaa",
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(224, 244, 255, 1)),
-        useMaterial3: true
+        useMaterial3: true,
+        scaffoldBackgroundColor: AppColors.primaryColor
       ),
       initialRoute: '/',
       routes: {
