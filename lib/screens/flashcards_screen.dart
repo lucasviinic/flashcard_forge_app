@@ -80,47 +80,50 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
       drawer: const Drawer(
         backgroundColor: AppColors.primaryColor,
       ),
-      body: Column(
-        children: [
-          const SizedBox(
-            height: 30,
-            child: Row(
-              children: [
-                SizedBox(width: 10),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5),
-                  child: Text("10", style: TextStyle(fontSize: 16, color: AppColors.blueNeutral)),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5),
-                  child: Text("4", style: TextStyle(fontSize: 16, color: AppColors.greenEasy)),
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 5),
-                  child: Text("6", style: TextStyle(fontSize: 16, color: AppColors.redHard)),
-                ),
-                Spacer(),
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
-                  child: Text("Last: 24%", style: TextStyle(fontSize: 16, color: AppColors.redHard)),
-                ),
-              ],
-            ),
-          ),
-          Flexible(
-            child: GridView.builder(
-              itemCount: flashcards.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 30,
+              child: Row(
+                children: [
+                  SizedBox(width: 10),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Text("10", style: TextStyle(fontSize: 16, color: AppColors.blueNeutral)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Text("4", style: TextStyle(fontSize: 16, color: AppColors.greenEasy)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Text("6", style: TextStyle(fontSize: 16, color: AppColors.redHard)),
+                  ),
+                  Spacer(),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text("Last: 24%", style: TextStyle(fontSize: 16, color: AppColors.redHard)),
+                  ),
+                ],
               ),
-              itemBuilder: (BuildContext context, int index) {
-                return FlashcardPreview(flashcards[index]);
-              },
             ),
-          )
-        ],
+            Flexible(
+              child: GridView.builder(
+                itemCount: flashcards.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                ),
+                itemBuilder: (BuildContext context, int index) {
+                  return FlashcardPreview(flashcards[index]);
+                },
+              ),
+            )
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.secondaryColor,

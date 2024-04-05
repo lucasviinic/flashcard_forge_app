@@ -19,7 +19,10 @@ class MyApp extends StatelessWidget {
         fontFamily: "Comfortaa",
         colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(224, 244, 255, 1)),
         useMaterial3: true,
-        scaffoldBackgroundColor: AppColors.primaryColor
+        scaffoldBackgroundColor: AppColors.primaryColor,
+        textTheme: const TextTheme(
+          bodyMedium: TextStyle(color: AppColors.whiteColor),
+        )
       ),
       initialRoute: '/',
       routes: {

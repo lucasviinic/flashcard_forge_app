@@ -16,6 +16,60 @@ class FlashcardPreview extends StatelessWidget {
     }
   }
 
+  Future<void> _dialogBuilder(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: AppColors.secondaryColor,
+          title: const Text('Edit flashcard', style: TextStyle(color: AppColors.whiteColor)),
+          content: const SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("Question:"),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Enter flashcard question'),
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 3,
+                  style: TextStyle(color: AppColors.whiteColor),
+                ),
+                SizedBox(height: 10),
+                Text("Answer:"),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Enter flashcard answer'),
+                  keyboardType: TextInputType.multiline,
+                  maxLines: 3,
+                  style: TextStyle(color: AppColors.whiteColor),
+                )
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Save'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String displayText = _getDisplayText(text);
@@ -26,13 +80,13 @@ class FlashcardPreview extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Icon(Icons.edit, color: Colors.blue),
-                ),
+                IconButton(
+                    onPressed: () => _dialogBuilder(context),
+                    icon: const Icon(Icons.edit, color: Colors.blue)
+                  ),
               ],
             ),
             Padding(
