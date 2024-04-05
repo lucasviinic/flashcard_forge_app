@@ -1,16 +1,20 @@
+import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class FlashcardPreview extends StatefulWidget {
-  final String text;
+  final FlashcardModel flashcard;
 
-  const FlashcardPreview(this.text, {super.key});
+  const FlashcardPreview(this.flashcard, {super.key});
 
   @override
   State<FlashcardPreview> createState() => _FlashcardPreviewState();
 }
 
 class _FlashcardPreviewState extends State<FlashcardPreview> {
+  final TextEditingController questionController = TextEditingController();
+  final TextEditingController answerController = TextEditingController();
+
   List<bool> isSelected = [false, false, false];
   
   String _getDisplayText(String text) {
@@ -36,19 +40,21 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text("Question:"),
-                  const TextField(
-                    decoration: InputDecoration(labelText: 'Enter flashcard question'),
+                  TextField(
+                    controller: questionController,
+                    decoration: const InputDecoration(labelText: 'Enter flashcard question'),
                     keyboardType: TextInputType.multiline,
                     maxLines: 3,
-                    style: TextStyle(color: AppColors.whiteColor),
+                    style: const TextStyle(color: AppColors.whiteColor),
                   ),
                   const SizedBox(height: 10),
                   const Text("Answer:"),
-                  const TextField(
-                    decoration: InputDecoration(labelText: 'Enter flashcard answer'),
+                  TextField(
+                    controller: answerController,
+                    decoration: const InputDecoration(labelText: 'Enter flashcard answer'),
                     keyboardType: TextInputType.multiline,
                     maxLines: 3,
-                    style: TextStyle(color: AppColors.whiteColor),
+                    style: const TextStyle(color: AppColors.whiteColor),
                   ),
                   const SizedBox(height: 20),
                   Row(
@@ -150,8 +156,22 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    questionController.text = widget.flashcard.question;
+    answerController.text = widget.flashcard.answer;
+  }
+
+  @override
+  void dispose() {
+    questionController.dispose();
+    answerController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String displayText = _getDisplayText(widget.text);
+    String displayText = _getDisplayText(widget.flashcard.question);
 
     return Card(
       elevation: 4.0,
