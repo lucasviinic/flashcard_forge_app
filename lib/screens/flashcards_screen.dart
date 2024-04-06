@@ -207,9 +207,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
           ),
         ],
       ),
-      drawer: const Drawer(
-        backgroundColor: AppColors.primaryColor,
-      ),
+      drawer: const Drawer(backgroundColor: AppColors.primaryColor),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
@@ -218,23 +216,26 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
               height: 30,
               child: Row(
                 children: [
-                  SizedBox(width: 10),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: Text("10", style: TextStyle(fontSize: 16, color: AppColors.blueNeutral)),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text("Score: 7/20", style: TextStyle(fontSize: 14, color: AppColors.redHard)),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: Text("4", style: TextStyle(fontSize: 16, color: AppColors.greenEasy)),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: Text("6", style: TextStyle(fontSize: 16, color: AppColors.redHard)),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
+                    child: Text("Time: 00:15:20", style: TextStyle(fontSize: 14, color: AppColors.blueNeutral)),
                   ),
                   Spacer(),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text("Last: 24%", style: TextStyle(fontSize: 16, color: AppColors.redHard)),
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Text("4", style: TextStyle(fontSize: 14, color: AppColors.greenEasy)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Text("10", style: TextStyle(fontSize: 14, color: AppColors.blueNeutral)),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    child: Text("6", style: TextStyle(fontSize: 14, color: AppColors.redHard)),
                   ),
                 ],
               ),
