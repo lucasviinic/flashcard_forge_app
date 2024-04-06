@@ -232,24 +232,18 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
           backgroundColor: AppColors.secondaryColor,
           title: Icon(Icons.warning_amber_rounded, color: Colors.red[600], size: 50),
           content: const Text(
-            "Deseja mesmo excluir este flashcard?", textAlign: TextAlign.center,
+            "Do you really want to delete this flashcard?", textAlign: TextAlign.center,
             style: TextStyle(fontSize: 20),
           ),
           actions: <Widget>[
             TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
-              child: const Text('Yes'),
+              child: const Text('Yes', style: TextStyle(fontSize: 16)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.labelLarge,
-              ),
-              child: const Text('No'),
+              child: const Text('No', style: TextStyle(fontSize: 16)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
