@@ -2,6 +2,7 @@ import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class FlashcardPreview extends StatefulWidget {
   final FlashcardModel flashcard;
@@ -17,7 +18,7 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
   final TextEditingController answerController = TextEditingController();
 
   List<bool> isSelected = [false, false, false];
-  
+
   String _getDisplayText(String text) {
     if (text.length > 30 && text.length < 40) {
       return "${text.substring(0, 27)}...";
@@ -183,14 +184,13 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
                     ),
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 18),
-                        child: Text(
-                          widget.flashcard.question,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: widget.flashcard.question.length >= 50 ? 17 : 20),
-                        ),
-                      )
-                    ),
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      child: Text(
+                        widget.flashcard.question,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: widget.flashcard.question.length >= 50 ? 17 : 20),
+                      ),
+                    )),
                   ],
                 ),
               ),
@@ -208,14 +208,13 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
                     ),
                     Center(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 18),
-                        child: Text(
-                          widget.flashcard.answer,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: widget.flashcard.answer.length >= 50 ? 17 : 20),
-                        ),
-                      )
-                    ),
+                      padding: const EdgeInsets.symmetric(horizontal: 18),
+                      child: Text(
+                        widget.flashcard.answer,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: widget.flashcard.answer.length >= 50 ? 17 : 20),
+                      ),
+                    )),
                   ],
                 ),
               ),
@@ -226,6 +225,40 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
     );
   }
 
+  Future<void> showDeleteFlashcardDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: AppColors.secondaryColor,
+          title: Icon(Icons.warning_amber_rounded, color: Colors.red[600], size: 50),
+          content: const Text(
+            "Deseja mesmo excluir este flashcard?", textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 20),
+          ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+        ]
+      );
+    });
+  }
 
   @override
   void initState() {
@@ -254,14 +287,24 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                IconButton(
-                  onPressed: () => _dialogBuilder(context),
-                  icon: const Icon(Icons.edit, color: Colors.blue)
+                GestureDetector(
+                  onTap: () => _dialogBuilder(context),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+                    child: Icon(Icons.edit, color: Colors.blue),
+                  )
                 ),
+                GestureDetector(
+                  onTap: () => showDeleteFlashcardDialog(context),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
+                    child: Icon(Icons.delete, color: Colors.red[700]),
+                  )
+                )
               ],
             ),
             GestureDetector(
-              onTap:() => showFlashcardDialog(context),
+              onTap: () => showFlashcardDialog(context),
               child: Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 12, right: 12),
