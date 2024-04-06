@@ -174,14 +174,50 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
                   color: AppColors.secondaryColor,
                   borderRadius: BorderRadius.circular(30),
                 ),
-                child: Center(child: Text(widget.flashcard.question, textAlign: TextAlign.center,)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 30),
+                      child: Text("Question:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    ),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        child: Text(
+                          widget.flashcard.question,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: widget.flashcard.question.length >= 50 ? 17 : 20),
+                        ),
+                      )
+                    ),
+                  ],
+                ),
               ),
               back: Container(
                 decoration: BoxDecoration(
                   color: AppColors.secondaryColor,
                   borderRadius: BorderRadius.circular(30),
                 ),
-                child: Center(child: Text(widget.flashcard.answer, textAlign: TextAlign.center)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 30),
+                      child: Text("Answer:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    ),
+                    Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 18),
+                        child: Text(
+                          widget.flashcard.answer,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: widget.flashcard.answer.length >= 50 ? 17 : 20),
+                        ),
+                      )
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
