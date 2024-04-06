@@ -1,5 +1,6 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
+import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 
 class FlashcardPreview extends StatefulWidget {
@@ -155,6 +156,41 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
     });
   }
 
+  Future<void> showFlashcardDialog(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.5,
+            width: MediaQuery.of(context).size.width * 0.8,
+            child: FlipCard(
+              fill: Fill.fillBack,
+              direction: FlipDirection.HORIZONTAL,
+              side: CardSide.FRONT,
+              front: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.secondaryColor,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Center(child: Text(widget.flashcard.question, textAlign: TextAlign.center,)),
+              ),
+              back: Container(
+                decoration: BoxDecoration(
+                  color: AppColors.secondaryColor,
+                  borderRadius: BorderRadius.circular(30),
+                ),
+                child: Center(child: Text(widget.flashcard.answer, textAlign: TextAlign.center)),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -183,22 +219,27 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                    onPressed: () => _dialogBuilder(context),
-                    icon: const Icon(Icons.edit, color: Colors.blue)
-                  ),
+                  onPressed: () => _dialogBuilder(context),
+                  icon: const Icon(Icons.edit, color: Colors.blue)
+                ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 12, right: 12),
-              child: Text(
-                displayText,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: displayText.length >= 40 ? 15 : 20,
-                  color: AppColors.whiteColor,
+            GestureDetector(
+              onTap:() => showFlashcardDialog(context),
+              child: Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 12, right: 12),
+                  child: Text(
+                    displayText,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: displayText.length >= 40 ? 15 : 20,
+                      color: AppColors.whiteColor,
+                    ),
+                    maxLines: displayText.length >= 40 ? 4 : 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-                maxLines: displayText.length >= 40 ? 4 : 3,
-                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
