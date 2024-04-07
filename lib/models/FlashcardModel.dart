@@ -1,23 +1,23 @@
 class FlashcardModel {
-  final int id;
-  final int userId;
-  final int subjectId;
-  final int topicId;
-  final String question;
-  final String answer;
-  final int difficulty; //0: easy, 1: medium, 2: hard
-  final bool lastResponse;
-  final String? imageUrl;
+  int? id;
+  int? userId;
+  int? subjectId;
+  int? topicId;
+  String? question;
+  String? answer;
+  int? difficulty; //0: easy, 1: medium, 2: hard
+  bool? lastResponse;
+  String? imageUrl;
 
   FlashcardModel({
-    required this.id,
-    required this.userId,
-    required this.subjectId,
-    required this.topicId,
-    required this.question,
-    required this.answer,
-    required this.difficulty,
-    required this.lastResponse,
+    this.id,
+    this.userId,
+    this.subjectId,
+    this.topicId,
+    this.question,
+    this.answer,
+    this.difficulty,
+    this.lastResponse,
     this.imageUrl
   });
 

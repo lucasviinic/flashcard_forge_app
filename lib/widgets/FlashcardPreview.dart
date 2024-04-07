@@ -55,9 +55,9 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
                       child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 18),
                       child: Text(
-                        widget.flashcard.question,
+                        flashcard!.question!,
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: widget.flashcard.question.length >= 50 ? 17 : 20),
+                        style: TextStyle(fontSize: flashcard!.question!.length >= 50 ? 17 : 20),
                       ),
                     )),
                   ],
@@ -79,9 +79,9 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
                       child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 18),
                       child: Text(
-                        widget.flashcard.answer,
+                        flashcard!.answer!,
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: widget.flashcard.answer.length >= 50 ? 17 : 20),
+                        style: TextStyle(fontSize: flashcard!.answer!.length >= 50 ? 17 : 20),
                       ),
                     )),
                   ],
@@ -131,7 +131,7 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
 
   @override
   Widget build(BuildContext context) {
-    String displayText = _getDisplayText(widget.flashcard.question);
+    String displayText = _getDisplayText(flashcard!.question!);
 
     return Card(
       elevation: 4.0,
@@ -147,7 +147,7 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
                     final flashcardObject = await showDialog<FlashcardModel>(
                       context: context,
                       builder: (BuildContext context) {
-                        return FlashcardForm(flashcard: widget.flashcard);
+                        return FlashcardForm(flashcard: flashcard);
                       },
                     );
 

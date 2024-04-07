@@ -14,13 +14,16 @@ class FlashcardForm extends StatefulWidget {
 class _FlashcardFormState extends State<FlashcardForm> {
   final TextEditingController questionController = TextEditingController();
   final TextEditingController answerController = TextEditingController();
-  List<bool> isSelected = [false, false, false];
 
-    @override
+  List<bool> isSelected = [false, false, false];
+  FlashcardModel? flashcard;
+
+  @override
   void initState() {
     super.initState();
-    questionController.text = widget.flashcard?.question ?? '';
-    answerController.text = widget.flashcard?.answer ?? '';
+    flashcard = widget.flashcard ?? FlashcardModel();
+    questionController.text = flashcard?.question ?? '';
+    answerController.text = flashcard?.answer ?? '';
   }
 
   @override
@@ -139,7 +142,12 @@ class _FlashcardFormState extends State<FlashcardForm> {
           ),
           child: const Text('Save'),
           onPressed: () {
-            Navigator.of(context).pop(widget.flashcard);
+            setState(() {
+              flashcard!.question = questionController.text;
+              flashcard!.answer = answerController.text;
+              flashcard!.difficulty = isSelected.indexOf(true);
+            });
+            Navigator.of(context).pop(flashcard);
           },
         ),
         TextButton(

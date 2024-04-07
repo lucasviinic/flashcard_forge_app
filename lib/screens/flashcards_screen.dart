@@ -1,6 +1,7 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/services/mocks.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
+import 'package:flashcard_forge_app/widgets/FlashcardForm.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardPreview.dart';
 import 'package:flutter/material.dart';
 
@@ -106,7 +107,21 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.secondaryColor,
-        onPressed: () {},
+        onPressed: () async {
+          final flashcardObject = await showDialog<FlashcardModel>(
+            context: context, 
+            builder: (BuildContext context) {
+              return const FlashcardForm();
+            },
+          );
+
+          if (flashcardObject != null) {
+            /* 
+              1. Request to create flashcard
+              2. Update list with return
+            */
+          }
+        },
         tooltip: 'Increment',
         child: const Icon(Icons.add, color: AppColors.whiteColor),
       ),
