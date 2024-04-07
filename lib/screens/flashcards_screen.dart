@@ -1,4 +1,5 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
+import 'package:flashcard_forge_app/services/mocks.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardPreview.dart';
 import 'package:flutter/material.dart';
@@ -14,159 +15,6 @@ class FlashcardScreen extends StatefulWidget {
 }
 
 class _FlashcardScreenState extends State<FlashcardScreen> {
-  List<FlashcardModel> flashcardsMock = [
-    FlashcardModel(
-      id: 1,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Qual peça de Shakespeare apresenta o famoso monólogo 'Ser ou não ser'?",
-      answer: "Hamlet",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-    FlashcardModel(
-      id: 2,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Qual é o nome da filha de Shakespeare?",
-      answer: "Susanna",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-    FlashcardModel(
-      id: 3,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Qual é a comédia de Shakespeare que envolve uma disputa amorosa?",
-      answer: "Sonho de uma Noite de Verão",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-    FlashcardModel(
-      id: 4,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Qual é o nome do rei em 'Hamlet'?",
-      answer: "Claudius",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-    FlashcardModel(
-      id: 5,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Quem mata Romeu em 'Romeu e Julieta'?",
-      answer: "Paris",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-    FlashcardModel(
-      id: 6,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Como morre Julieta?",
-      answer: "Ela se mata com uma adaga",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-    FlashcardModel(
-      id: 7,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Quem é o mentor e guia espiritual de Hamlet?",
-      answer: "O fantasma de seu pai",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-    FlashcardModel(
-      id: 8,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Qual é o nome do irmão de Otelo que o trai?",
-      answer: "Iago",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-    FlashcardModel(
-      id: 9,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Qual é a tragédia de Shakespeare ambientada em Veneza?",
-      answer: "Otelo",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-    FlashcardModel(
-      id: 10,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Como termina 'A Tempestade'?",
-      answer: "Com o perdão do protagonista Prospero",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-    FlashcardModel(
-      id: 11,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Qual é o nome do antagonista em 'Rei Lear'?",
-      answer: "Edmund",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-    FlashcardModel(
-      id: 12,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Qual peça de Shakespeare é frequentemente considerada uma das suas mais sombrias?",
-      answer: "Macbeth",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-    FlashcardModel(
-      id: 13,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Qual é o nome do duque em 'Muito Barulho por Nada'?",
-      answer: "Pedro",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-    FlashcardModel(
-      id: 14,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Qual é o nome do príncipe em 'Henrique V'?",
-      answer: "Henrique",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-    FlashcardModel(
-      id: 15,
-      userId: 1,
-      subjectId: 1,
-      topicId: 1,
-      question: "Quem é conhecido por dizer 'Tudo o que reluz não é ouro'?",
-      answer: "Falstaff",
-      lastResponse: false,
-      imageUrl: null,
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -242,14 +90,14 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
             ),
             Flexible(
               child: GridView.builder(
-                itemCount: flashcardsMock.length,
+                itemCount: flashcardListMock.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   crossAxisSpacing: 8,
                   mainAxisSpacing: 8,
                 ),
                 itemBuilder: (BuildContext context, int index) {
-                  return FlashcardPreview(flashcardsMock[index]);
+                  return FlashcardPreview(flashcardListMock[index]);
                 },
               ),
             )

@@ -5,6 +5,7 @@ class FlashcardModel {
   final int topicId;
   final String question;
   final String answer;
+  final int difficulty; //0: easy, 1: medium, 2: hard
   final bool lastResponse;
   final String? imageUrl;
 
@@ -15,6 +16,7 @@ class FlashcardModel {
     required this.topicId,
     required this.question,
     required this.answer,
+    required this.difficulty,
     required this.lastResponse,
     this.imageUrl
   });
@@ -27,6 +29,7 @@ class FlashcardModel {
       topicId: json['topic_id'],
       question: json['question'],
       answer: json['answer'],
+      difficulty: json['difficulty'],
       lastResponse: json['last_response'],
       imageUrl: json['image_url']
     );
@@ -39,6 +42,7 @@ class FlashcardModel {
     'topic_id': topicId,
     'question': question,
     'answer': answer,
+    'difficulty': answer,
     'last_response': lastResponse,
     'image_url': imageUrl
   };
