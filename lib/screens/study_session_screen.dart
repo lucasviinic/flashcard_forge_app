@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/services/mocks.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
-import 'package:flashcard_forge_app/widgets/Flashcard.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
@@ -18,11 +17,18 @@ class StudySession extends StatefulWidget {
 }
 
 class _StudySessionState extends State<StudySession> {
+  GlobalKey<FlipCardState> flipCardKey = GlobalKey<FlipCardState>();
+
   List<FlashcardModel> flashcardList = flashcardListMock;
   int currentIndex = 0;
   double progress = 0.0;
 
-  GlobalKey<FlipCardState> flipCardKey = GlobalKey<FlipCardState>();
+  void updateProgress() {
+    double percent = 1/flashcardList.length;
+    if (progress + percent < 1) {
+      progress += percent;
+    }
+  }
 
   late Timer _timer;
   int _secondsElapsed = 0;
@@ -41,7 +47,6 @@ class _StudySessionState extends State<StudySession> {
 
   void _stopTimer() {
     _timer.cancel();
-    // Aqui você pode realizar qualquer ação necessária após parar o timer
   }
 
   @override
@@ -141,6 +146,7 @@ class _StudySessionState extends State<StudySession> {
                                 } else {
                                   _stopTimer();
                                 }
+                                updateProgress();
                               });
                             },
                             child: Container(
@@ -165,6 +171,7 @@ class _StudySessionState extends State<StudySession> {
                                 } else {
                                   _stopTimer();
                                 }
+                                updateProgress();
                               });
                             },
                             child: Container(
@@ -194,7 +201,7 @@ class _StudySessionState extends State<StudySession> {
             barRadius: const Radius.circular(50),
             width: MediaQuery.of(context).size.width * .8,
             lineHeight: 20,
-            percent: (currentIndex+1) / flashcardList.length,
+            percent: progress,
             backgroundColor: Colors.white,
             animateFromLastPercent: true,
             animation: true,
