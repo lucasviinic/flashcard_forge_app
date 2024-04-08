@@ -4,9 +4,7 @@ import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/services/mocks.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flip_card/flip_card.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class StudySession extends StatefulWidget {
@@ -82,12 +80,13 @@ class _StudySessionState extends State<StudySession> {
             ),
             SizedBox(height: 20),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Score: 7/20", style: TextStyle(fontSize: 20)),
-                Text("Time: 00:09:34", style: TextStyle(fontSize: 20)),
-                Text("Easy: 4/4", style: TextStyle(fontSize: 20, color: AppColors.greenEasy)),
-                Text("Medium: 3/10", style: TextStyle(fontSize: 20, color: AppColors.blueNeutral)),
-                Text("Hard: 0/6", style: TextStyle(fontSize: 20, color: AppColors.redHard)),
+                Text("🎯 Score: 7/20", style: TextStyle(fontSize: 20)),
+                Text("⌛ Time: 00:09:34", style: TextStyle(fontSize: 20)),
+                Text("🥱 Easy: 4/4", style: TextStyle(fontSize: 20, color: AppColors.greenEasy)),
+                Text("😐 Medium: 3/10", style: TextStyle(fontSize: 20, color: AppColors.blueNeutral)),
+                Text("😡 Hard: 0/6", style: TextStyle(fontSize: 20, color: AppColors.redHard)),
               ],
             )
           ],
