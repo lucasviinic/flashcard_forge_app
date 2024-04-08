@@ -1,7 +1,7 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
+import 'package:flashcard_forge_app/widgets/Flashcard.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardForm.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 
 class FlashcardPreview extends StatefulWidget {
@@ -24,74 +24,6 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
     } else {
       return text;
     }
-  }
-
-  Future<void> showFlashcardDialog(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.5,
-            width: MediaQuery.of(context).size.width * 0.8,
-            child: FlipCard(
-              fill: Fill.fillBack,
-              direction: FlipDirection.HORIZONTAL,
-              side: CardSide.FRONT,
-              front: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.secondaryColor,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 30),
-                      child: Text("Question:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    ),
-                    Center(
-                      child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: Text(
-                        flashcard!.question!,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: flashcard!.question!.length >= 50 ? 17 : 20),
-                      ),
-                    )),
-                  ],
-                ),
-              ),
-              back: Container(
-                decoration: BoxDecoration(
-                  color: AppColors.secondaryColor,
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 30),
-                      child: Text("Answer:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                    ),
-                    Center(
-                      child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 18),
-                      child: Text(
-                        flashcard!.answer!,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: flashcard!.answer!.length >= 50 ? 17 : 20),
-                      ),
-                    )),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
   }
 
   Future<void> showDeleteFlashcardDialog(BuildContext context) {
@@ -172,7 +104,14 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
               ],
             ),
             GestureDetector(
-              onTap: () => showFlashcardDialog(context),
+              onTap: () {
+                showDialog<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Flashcard(flashcard: flashcard);
+                  }
+                );
+              },
               child: Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 12, right: 12),

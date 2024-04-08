@@ -1,4 +1,5 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
+import 'package:flashcard_forge_app/screens/study_session_screen.dart';
 import 'package:flashcard_forge_app/services/mocks.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardForm.dart';
@@ -45,12 +46,19 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
           ],
         ),
         centerTitle: true,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-            child: Icon(Icons.play_arrow_rounded, size: 40, color: AppColors.whiteColor),
+        actions: [
+          IconButton(
+            onPressed: () {
+              showDialog(
+                context: context, 
+                builder: (BuildContext context) {
+                  return const StudySession();
+                }
+              );
+            },
+            icon: const Icon(Icons.play_arrow_rounded, size: 40, color: AppColors.whiteColor)
           ),
-          Padding(
+          const Padding(
             padding: EdgeInsets.all(10),
             child: Icon(Icons.upload_file_rounded, size: 30, color: AppColors.whiteColor),
           ),
@@ -117,8 +125,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
 
           if (flashcardObject != null) {
             /* 
-              1. Request to create flashcard
-              2. Update list with return
+              1. TODO: Request to create flashcard
+              2. TODO: Update list with return
             */
           }
         },
