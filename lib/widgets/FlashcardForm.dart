@@ -140,7 +140,7 @@ class _FlashcardFormState extends State<FlashcardForm> {
           style: TextButton.styleFrom(
             textStyle: Theme.of(context).textTheme.labelLarge,
           ),
-          child: const Text('Save'),
+          child: Text(widget.flashcard != null ? 'Save' : 'Create'),
           onPressed: () {
             setState(() {
               flashcard!.question = questionController.text;
