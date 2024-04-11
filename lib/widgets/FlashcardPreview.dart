@@ -112,19 +112,17 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
                   }
                 );
               },
-              child: Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 12, right: 12),
-                  child: Text(
-                    displayText,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: displayText.length >= 40 ? 15 : 20,
-                      color: AppColors.whiteColor,
-                    ),
-                    maxLines: displayText.length >= 40 ? 4 : 3,
-                    overflow: TextOverflow.ellipsis,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 12, right: 12),
+                child: Text(
+                  displayText,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: displayText.length >= 40 ? 15 : 20,
+                    color: AppColors.whiteColor,
                   ),
+                  maxLines: displayText.length >= 40 ? 4 : 3,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ),

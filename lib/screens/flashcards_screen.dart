@@ -4,7 +4,9 @@ import 'package:flashcard_forge_app/services/mocks.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardForm.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardPreview.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class FlashcardScreen extends StatefulWidget {
   const FlashcardScreen({super.key, this.flashcards, this.title});
@@ -97,18 +99,17 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                 ],
               ),
             ),
-            Flexible(
-              child: GridView.builder(
-                itemCount: flashcardListMock.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8,
-                  mainAxisSpacing: 8,
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  return FlashcardPreview(flashcardListMock[index]);
-                },
+            GridView.builder(
+              shrinkWrap: true,
+              itemCount: flashcardListMock.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
               ),
+              itemBuilder: (BuildContext context, int index) {
+                return FlashcardPreview(flashcardListMock[index]);
+              },
             )
           ],
         ),
