@@ -1,4 +1,4 @@
-package com.example.flashcard_forge_app
+package com.flashcard.forge.app
 
 import io.flutter.embedding.android.FlutterActivity
 

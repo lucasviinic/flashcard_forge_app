@@ -1,0 +1,38 @@
+{
+  "project_info": {
+    "project_number": "729125344537",
+    "project_id": "flashcardforge",
+    "storage_bucket": "flashcardforge.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729125344537:android:ea1cd65ebd229a5b942188",
+        "android_client_info": {
+          "package_name": "com.flashcard.forge.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "729125344537-ad9v832idk98ilqm8ihtfk3p1h4qrbc7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.flashcard.forge.app",
+            "certificate_hash": "e35034d7ec9c77578a8dfccf245e27506c35a31c"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDohn0PPoYCM5iDdnO2lMpS3LD96FY2YIg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
