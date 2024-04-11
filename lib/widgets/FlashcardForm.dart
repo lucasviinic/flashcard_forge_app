@@ -39,7 +39,7 @@ class _FlashcardFormState extends State<FlashcardForm> {
       backgroundColor: AppColors.secondaryColor,
       title: Text(
         widget.flashcard != null ? "Edit flashcard" : "Create flashcard",
-        style: const TextStyle(color: AppColors.whiteColor)
+        style: const TextStyle(color: Colors.white)
       ),
       content: SingleChildScrollView(
         child: Column(
@@ -51,7 +51,7 @@ class _FlashcardFormState extends State<FlashcardForm> {
               decoration: const InputDecoration(labelText: 'Enter flashcard question'),
               keyboardType: TextInputType.multiline,
               maxLines: 3,
-              style: const TextStyle(color: AppColors.whiteColor),
+              style: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 10),
             const Text("Answer:"),
@@ -60,7 +60,7 @@ class _FlashcardFormState extends State<FlashcardForm> {
               decoration: const InputDecoration(labelText: 'Enter flashcard answer'),
               keyboardType: TextInputType.multiline,
               maxLines: 3,
-              style: const TextStyle(color: AppColors.whiteColor),
+              style: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 20),
             Row(
@@ -81,7 +81,7 @@ class _FlashcardFormState extends State<FlashcardForm> {
                       child: Text(
                         "Easy", 
                         style: TextStyle(
-                          color: isSelected[0] ? AppColors.whiteColor : AppColors.greenEasy)
+                          color: isSelected[0] ? Colors.white : AppColors.greenEasy)
                         ),
                     ),
                   )
@@ -103,7 +103,7 @@ class _FlashcardFormState extends State<FlashcardForm> {
                       child: Text(
                         "Medium", 
                         style: TextStyle(
-                          color: isSelected[1] ? AppColors.whiteColor : AppColors.blueNeutral)
+                          color: isSelected[1] ? Colors.white : AppColors.blueNeutral)
                         ),
                     ),
                   )
@@ -125,7 +125,7 @@ class _FlashcardFormState extends State<FlashcardForm> {
                       child: Text(
                         "Hard", 
                         style: TextStyle(
-                          color: isSelected[2] ? AppColors.whiteColor : AppColors.redHard)
+                          color: isSelected[2] ? Colors.white : AppColors.redHard)
                         ),
                     ),
                   )

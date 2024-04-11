@@ -119,7 +119,7 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: displayText.length >= 40 ? 15 : 20,
-                    color: AppColors.whiteColor,
+                    color: Colors.white,
                   ),
                   maxLines: displayText.length >= 40 ? 4 : 3,
                   overflow: TextOverflow.ellipsis,

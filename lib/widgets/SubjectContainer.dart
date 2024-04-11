@@ -75,22 +75,22 @@ class _SubjectContainerState extends State<SubjectContainer> {
                   showDropdown
                       ? Icons.arrow_drop_down_rounded
                       : Icons.arrow_right_rounded,
-                  size: 50, color: AppColors.whiteColor),
+                  size: 50, color: Colors.white),
               ),
-              Text(widget.title, style: const TextStyle(fontSize: 20, color: AppColors.whiteColor)),
+              Text(widget.title, style: const TextStyle(fontSize: 20, color: Colors.white)),
               const Spacer(),
               PopupMenuButton(
                 color: AppColors.secondaryColor,
-                iconColor: AppColors.whiteColor,
+                iconColor: Colors.white,
                 itemBuilder: (context) {
                   return [
                     const PopupMenuItem<int>(
                       value: 0,
-                      child: Text("Rename", style: TextStyle(color: AppColors.whiteColor)),
+                      child: Text("Rename", style: TextStyle(color: Colors.white)),
                     ),
                     const PopupMenuItem<int>(
                       value: 1,
-                      child: Text("Delete", style: TextStyle(color: AppColors.whiteColor)),
+                      child: Text("Delete", style: TextStyle(color: Colors.white)),
                     ),
                   ];
                 },
@@ -145,10 +145,10 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                 autofocus: creatingTopic,
                                 maxLength: 15,
                                 controller: _controller,
-                                style: const TextStyle(fontSize: 16, color: AppColors.whiteColor),
+                                style: const TextStyle(fontSize: 16, color: Colors.white),
                                 decoration: const InputDecoration(
                                     hintText: "Add a topic",
-                                    hintStyle: TextStyle(fontSize: 16, color: AppColors.whiteColor),
+                                    hintStyle: TextStyle(fontSize: 16, color: Colors.white),
                                     counterText: "",
                                     contentPadding: EdgeInsets.zero,
                                     isDense: true),

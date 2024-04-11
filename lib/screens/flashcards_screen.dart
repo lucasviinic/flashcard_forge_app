@@ -2,6 +2,7 @@ import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/screens/study_session_screen.dart';
 import 'package:flashcard_forge_app/services/mocks.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
+import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardForm.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardPreview.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,7 +30,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
             return IconButton(
               icon: const Icon(
                 Icons.menu_rounded,
-                color: AppColors.whiteColor,
+                color: Colors.white,
                 size: 30,
               ),
               onPressed: () {
@@ -43,7 +44,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
           children: [
             Text(
               widget.title!.length > 13 ? "${widget.title!.substring(0, 12)}..." : widget.title!,
-              style: const TextStyle(color: AppColors.whiteColor),
+              style: const TextStyle(color: Colors.white),
             ),
           ],
         ),
@@ -58,15 +59,15 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                 }
               );
             },
-            icon: const Icon(Icons.play_arrow_rounded, size: 40, color: AppColors.whiteColor)
+            icon: const Icon(Icons.play_arrow_rounded, size: 40, color: Colors.white)
           ),
           const Padding(
             padding: EdgeInsets.all(10),
-            child: Icon(Icons.upload_file_rounded, size: 30, color: AppColors.whiteColor),
+            child: Icon(Icons.upload_file_rounded, size: 30, color: Colors.white),
           ),
         ],
       ),
-      drawer: const Drawer(backgroundColor: AppColors.primaryColor),
+      drawer: const DrawerMenu(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
         child: Column(
@@ -132,7 +133,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
           }
         },
         tooltip: 'Increment',
-        child: const Icon(Icons.add, color: AppColors.whiteColor),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

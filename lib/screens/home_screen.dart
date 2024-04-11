@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
 import 'package:flashcard_forge_app/services/mocks.dart';
+import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
 import 'package:flashcard_forge_app/widgets/SubjectContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -102,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return IconButton(
               icon: const Icon(
                 Icons.menu_rounded,
-                color: AppColors.whiteColor,
+                color: Colors.white,
                 size: 30,
               ),
               onPressed: () {
@@ -118,13 +119,11 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: const [
           Padding(
             padding: EdgeInsets.all(10),
-            child: Icon(Icons.search, size: 30, color: AppColors.whiteColor),
+            child: Icon(Icons.search, size: 30, color: Colors.white),
           ),
         ],
       ),
-      drawer: const Drawer(
-        backgroundColor: AppColors.primaryColor,
-      ),
+      drawer: const DrawerMenu(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: ListView(
@@ -154,10 +153,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         autofocus: creatingSubject,
                         maxLength: 15,
                         controller: _controller,
-                        style: const TextStyle(fontSize: 20, color: AppColors.whiteColor),
+                        style: const TextStyle(fontSize: 20, color: Colors.white),
                         decoration: const InputDecoration(
                             hintText: "Add a subject",
-                            hintStyle: TextStyle(fontSize: 20, color: AppColors.whiteColor),
+                            hintStyle: TextStyle(fontSize: 20, color: Colors.white),
                             counterText: "",
                             contentPadding: EdgeInsets.zero,
                             isDense: true),
@@ -180,7 +179,7 @@ class _HomeScreenState extends State<HomeScreen> {
             });
           },
           tooltip: 'Increment',
-          child: const Icon(Icons.add, color: AppColors.whiteColor),
+          child: const Icon(Icons.add, color: Colors.white),
         ),
       ),
     );
