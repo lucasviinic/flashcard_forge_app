@@ -43,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (BuildContext context) {
         return Container(
           height: 90,
-          color: AppColors.secondaryColor,
+          color: Styles.secondaryColor,
           child: Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -97,7 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.primaryColor,
+        backgroundColor: Styles.primaryColor,
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -143,23 +143,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   height: 65,
                   margin: const EdgeInsets.only(top: 10),
                   decoration: BoxDecoration(
-                    color: AppColors.secondaryColor,
                     borderRadius: BorderRadius.circular(10),
+                    gradient: Styles.linearGradient
                   ),
                   child: Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: TextField(
                         autofocus: creatingSubject,
-                        maxLength: 15,
+                        maxLength: 50,
                         controller: _controller,
                         style: const TextStyle(fontSize: 20, color: Colors.white),
                         decoration: const InputDecoration(
-                            hintText: "Add a subject",
-                            hintStyle: TextStyle(fontSize: 20, color: Colors.white),
-                            counterText: "",
-                            contentPadding: EdgeInsets.zero,
-                            isDense: true),
+                          hintText: "Add a subject",
+                          hintStyle: TextStyle(fontSize: 20, color: Colors.white),
+                          counterText: "",
+                          contentPadding: EdgeInsets.zero,
+                          isDense: true
+                        ),
                         focusNode: _focusNode,
                       ),
                     ),
@@ -171,15 +172,21 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: Visibility(
         visible: !creatingSubject,
-        child: FloatingActionButton(
-          backgroundColor: AppColors.secondaryColor,
-          onPressed: () {
-            setState(() {
-              creatingSubject = true;
-            });
-          },
-          tooltip: 'Increment',
-          child: const Icon(Icons.add, color: Colors.white),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(15),
+            gradient: Styles.linearGradient
+          ),
+          child: FloatingActionButton(
+            backgroundColor: Colors.transparent,
+            onPressed: () {
+              setState(() {
+                creatingSubject = true;
+              });
+            },
+            tooltip: 'Create new subject',
+            child: const Icon(Icons.add, color: Colors.white),
+          ),
         ),
       ),
     );

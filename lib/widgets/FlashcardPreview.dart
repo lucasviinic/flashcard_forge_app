@@ -31,7 +31,7 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: AppColors.secondaryColor,
+          backgroundColor: Styles.secondaryColor,
           title: Icon(Icons.warning_amber_rounded, color: Colors.red[600], size: 50),
           content: const Text(
             "Do you really want to delete this flashcard?", textAlign: TextAlign.center,
@@ -65,9 +65,11 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
   Widget build(BuildContext context) {
     String displayText = _getDisplayText(flashcard!.question!);
 
-    return Card(
-      elevation: 4.0,
-      color: AppColors.secondaryColor,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        gradient: Styles.linearGradient
+      ),
       child: Center(
         child: Column(
           children: [

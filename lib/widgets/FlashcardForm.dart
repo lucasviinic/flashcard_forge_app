@@ -36,7 +36,7 @@ class _FlashcardFormState extends State<FlashcardForm> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: AppColors.secondaryColor,
+      backgroundColor: Styles.secondaryColor,
       title: Text(
         widget.flashcard != null ? "Edit flashcard" : "Create flashcard",
         style: const TextStyle(color: Colors.white)
@@ -72,8 +72,8 @@ class _FlashcardFormState extends State<FlashcardForm> {
                   }),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: isSelected[0] ? AppColors.greenEasy : null,
-                      border: Border.all(width: 1, color: AppColors.greenEasy),
+                      color: isSelected[0] ? Styles.greenEasy : null,
+                      border: Border.all(width: 1, color: Styles.greenEasy),
                       borderRadius: BorderRadius.circular(50)
                     ),
                     child: Padding(
@@ -81,7 +81,7 @@ class _FlashcardFormState extends State<FlashcardForm> {
                       child: Text(
                         "Easy", 
                         style: TextStyle(
-                          color: isSelected[0] ? Colors.white : AppColors.greenEasy)
+                          color: isSelected[0] ? Colors.white : Styles.greenEasy)
                         ),
                     ),
                   )
@@ -94,8 +94,8 @@ class _FlashcardFormState extends State<FlashcardForm> {
                   }),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: isSelected[1] ? AppColors.blueNeutral : null,
-                      border: Border.all(width: 1, color: AppColors.blueNeutral),
+                      color: isSelected[1] ? Styles.blueNeutral : null,
+                      border: Border.all(width: 1, color: Styles.blueNeutral),
                       borderRadius: BorderRadius.circular(50)
                     ),
                     child: Padding(
@@ -103,7 +103,7 @@ class _FlashcardFormState extends State<FlashcardForm> {
                       child: Text(
                         "Medium", 
                         style: TextStyle(
-                          color: isSelected[1] ? Colors.white : AppColors.blueNeutral)
+                          color: isSelected[1] ? Colors.white : Styles.blueNeutral)
                         ),
                     ),
                   )
@@ -116,8 +116,8 @@ class _FlashcardFormState extends State<FlashcardForm> {
                   }),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: isSelected[2] ? AppColors.redHard : null,
-                      border: Border.all(width: 1, color: AppColors.redHard),
+                      color: isSelected[2] ? Styles.redHard : null,
+                      border: Border.all(width: 1, color: Styles.redHard),
                       borderRadius: BorderRadius.circular(50)
                     ),
                     child: Padding(
@@ -125,7 +125,7 @@ class _FlashcardFormState extends State<FlashcardForm> {
                       child: Text(
                         "Hard", 
                         style: TextStyle(
-                          color: isSelected[2] ? Colors.white : AppColors.redHard)
+                          color: isSelected[2] ? Colors.white : Styles.redHard)
                         ),
                     ),
                   )

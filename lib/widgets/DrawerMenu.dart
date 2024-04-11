@@ -15,7 +15,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: AppColors.primaryColor,
+      backgroundColor: Styles.primaryColor,
       child: Column(
         children: [
           ShaderMask(

@@ -50,157 +50,169 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          height: 65,
-          margin: const EdgeInsets.only(top: 10),
-          decoration: BoxDecoration(
-              color: AppColors.secondaryColor,
-              borderRadius: showDropdown
-                  ? const BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10),
-                    )
-                  : BorderRadius.circular(10)),
-          child: Row(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    showDropdown = !showDropdown;
-                  });
-                },
-                child: Icon(
-                  showDropdown
-                      ? Icons.arrow_drop_down_rounded
-                      : Icons.arrow_right_rounded,
-                  size: 50, color: Colors.white),
-              ),
-              Text(widget.title, style: const TextStyle(fontSize: 20, color: Colors.white)),
-              const Spacer(),
-              PopupMenuButton(
-                color: AppColors.secondaryColor,
-                iconColor: Colors.white,
-                itemBuilder: (context) {
-                  return [
-                    const PopupMenuItem<int>(
-                      value: 0,
-                      child: Text("Rename", style: TextStyle(color: Colors.white)),
-                    ),
-                    const PopupMenuItem<int>(
-                      value: 1,
-                      child: Text("Delete", style: TextStyle(color: Colors.white)),
-                    ),
-                  ];
-                },
-                onSelected: (value) {}
-              )
-            ],
-          ),
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          showDropdown = !showDropdown;
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.only(top: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          gradient: Styles.linearGradient
         ),
-        Visibility(
-            visible: showDropdown,
-            child: AnimatedContainer(
-              width: MediaQuery.of(context).size.width,
-              duration: const Duration(seconds: 5),
-              curve: Curves.fastOutSlowIn,
-              decoration: const BoxDecoration(
-                color: AppColors.secondaryColor,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
-                )
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  ...widget.topics.map((topic) {
-                    return TextButton(
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => FlashcardScreen(flashcards: topic.flashcards, title: topic.topic.topicName),
-                        ),
-                      ),
-                      child: Row(children: [
-                        const SizedBox(width: 8),
-                        Text(topic.topic.topicName, style: const TextStyle(fontSize: 16, color: AppColors.accentColor))
-                      ]),
-                    );
-                  }),
-                  Visibility(
-                    visible: !creatingTopic,
-                    replacement: Container(
-                      decoration: BoxDecoration(
-                        color: AppColors.secondaryColor,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 15),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 20),
-                              child: TextField(
-                                autofocus: creatingTopic,
-                                maxLength: 15,
-                                controller: _controller,
-                                style: const TextStyle(fontSize: 16, color: Colors.white),
-                                decoration: const InputDecoration(
-                                    hintText: "Add a topic",
-                                    hintStyle: TextStyle(fontSize: 16, color: Colors.white),
-                                    counterText: "",
-                                    contentPadding: EdgeInsets.zero,
-                                    isDense: true),
-                                focusNode: _focusNode,
-                              ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                TextButton(
-                                  child: const Text('Save',
-                                      style: TextStyle(
-                                          fontSize: 16, color: Colors.green)),
-                                  onPressed: () =>
-                                      createTopic(_controller.text),
-                                ),
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 5),
-                                  child: VerticalDivider(),
-                                ),
-                                TextButton(
-                                  child: const Text('Cencel',
-                                      style: TextStyle(
-                                          fontSize: 16, color: Colors.red)),
-                                  onPressed: () {
-                                    setState(() {
-                                      _controller.text = "";
-                                      creatingTopic = false;
-                                    });
-                                  },
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                      ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 5),
+              child: Row(
+                children: [
+                  Icon(showDropdown ? Icons.arrow_drop_down_rounded : Icons.arrow_right_rounded,
+                    size: 50, color: Colors.white
+                  ),
+                  Expanded(
+                    child: Text(
+                      widget.title,
+                      style: const TextStyle(fontSize: 20, color: Colors.white),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
-                    child: TextButton(
-                      onPressed: () => setState(() {
-                        creatingTopic = true;
-                      }),
-                      child: const Row(children: [
-                        Icon(Icons.add),
-                        SizedBox(width: 8),
-                        Text("Create new topic", style: TextStyle(fontSize: 16, color: AppColors.accentColor))
-                      ]),
-                    ),
+                  ),
+                  PopupMenuButton(
+                    color: Styles.secondaryColor,
+                    iconColor: Colors.white,
+                    itemBuilder: (context) {
+                      return [
+                        const PopupMenuItem<int>(
+                          value: 0,
+                          child: Text("Rename", style: TextStyle(color: Colors.white)),
+                        ),
+                        const PopupMenuItem<int>(
+                          value: 1,
+                          child: Text("Delete", style: TextStyle(color: Colors.white)),
+                        ),
+                      ];
+                    },
+                    onSelected: (value) {}
                   )
                 ],
               ),
-            )),
-      ],
+            ),
+            Visibility(
+                visible: showDropdown,
+                child: AnimatedContainer(
+                  width: MediaQuery.of(context).size.width,
+                  duration: const Duration(seconds: 5),
+                  curve: Curves.fastOutSlowIn,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      ...widget.topics.map((topic) {
+                        return TextButton(
+                          onPressed: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => FlashcardScreen(flashcards: topic.flashcards, title: topic.topic.topicName),
+                            ),
+                          ),
+                          child: Row(children: [
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                topic.topic.topicName,
+                                style: const TextStyle(fontSize: 16, color: Styles.accentColor),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                              ),
+                            ),
+                          ]),
+                        );
+                      }),
+                      Visibility(
+                        visible: !creatingTopic,
+                        replacement: Container(
+                          decoration: const BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                              bottomLeft: Radius.circular(10),
+                              bottomRight: Radius.circular(10)
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 15),
+                            child: Column(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  child: TextField(
+                                    autofocus: creatingTopic,
+                                    maxLength: 50,
+                                    controller: _controller,
+                                    style: const TextStyle(fontSize: 16, color: Colors.white),
+                                    decoration: const InputDecoration(
+                                      hintText: "Add a topic",
+                                      hintStyle: TextStyle(fontSize: 16, color: Colors.white),
+                                      counterText: "",
+                                      contentPadding: EdgeInsets.zero,
+                                      isDense: true
+                                    ),
+                                    focusNode: _focusNode,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      TextButton(
+                                        child: const Text('Save', style: TextStyle(fontSize: 16, color: Colors.green)),
+                                        onPressed: () => createTopic(_controller.text),
+                                      ),
+                                      const Padding(
+                                        padding: EdgeInsets.symmetric(vertical: 5),
+                                        child: VerticalDivider(),
+                                      ),
+                                      TextButton(
+                                        child: const Text('Cencel', style: TextStyle(fontSize: 16, color: Colors.red)),
+                                        onPressed: () {
+                                          setState(() {
+                                            _controller.text = "";
+                                            creatingTopic = false;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                        child: TextButton(
+                          onPressed: () => setState(() {
+                            creatingTopic = true;
+                          }),
+                          child: const Padding(
+                            padding: EdgeInsets.only(bottom: 5),
+                            child: Row(children: [
+                              Icon(Icons.add),
+                              SizedBox(width: 8),
+                              Text("Create new topic", style: TextStyle(fontSize: 16, color: Styles.accentColor))
+                            ]),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )),
+          ],
+        ),
+      ),
     );
   }
 }

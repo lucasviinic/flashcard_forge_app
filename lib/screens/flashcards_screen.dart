@@ -24,7 +24,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.primaryColor,
+        backgroundColor: Styles.primaryColor,
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
@@ -78,63 +78,72 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                 children: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text("Score: 7/20", style: TextStyle(fontSize: 14, color: AppColors.redHard)),
+                    child: Text("Score: 7/20", style: TextStyle(fontSize: 14, color: Styles.redHard)),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text("Time: 00:15:20", style: TextStyle(fontSize: 14, color: AppColors.blueNeutral)),
+                    child: Text("Time: 00:15:20", style: TextStyle(fontSize: 14, color: Styles.blueNeutral)),
                   ),
                   Spacer(),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: Text("4", style: TextStyle(fontSize: 14, color: AppColors.greenEasy)),
+                    child: Text("4", style: TextStyle(fontSize: 14, color: Styles.greenEasy)),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: Text("10", style: TextStyle(fontSize: 14, color: AppColors.blueNeutral)),
+                    child: Text("10", style: TextStyle(fontSize: 14, color: Styles.blueNeutral)),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: Text("6", style: TextStyle(fontSize: 14, color: AppColors.redHard)),
+                    child: Text("6", style: TextStyle(fontSize: 14, color: Styles.redHard)),
                   ),
                 ],
               ),
             ),
-            GridView.builder(
-              shrinkWrap: true,
-              itemCount: flashcardListMock.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
+            Padding(
+              padding: const EdgeInsets.only(top: 10),
+              child: GridView.builder(
+                shrinkWrap: true,
+                itemCount: flashcardListMock.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 8,
+                  mainAxisSpacing: 8,
+                ),
+                itemBuilder: (BuildContext context, int index) {
+                  return FlashcardPreview(flashcardListMock[index]);
+                },
               ),
-              itemBuilder: (BuildContext context, int index) {
-                return FlashcardPreview(flashcardListMock[index]);
-              },
             )
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: AppColors.secondaryColor,
-        onPressed: () async {
-          final flashcardObject = await showDialog<FlashcardModel>(
-            context: context, 
-            builder: (BuildContext context) {
-              return const FlashcardForm();
-            },
-          );
+      floatingActionButton: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
+          gradient: Styles.linearGradient
+        ),
+        child: FloatingActionButton(
+          backgroundColor: Colors.transparent,
+          onPressed: () async {
+            final flashcardObject = await showDialog<FlashcardModel>(
+              context: context, 
+              builder: (BuildContext context) {
+                return const FlashcardForm();
+              },
+            );
 
-          if (flashcardObject != null) {
-            /* 
-              1. TODO: Request to create flashcard
-              2. TODO: Update list with return
-            */
-          }
-        },
-        tooltip: 'Increment',
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+            if (flashcardObject != null) {
+              /* 
+                1. TODO: Request to create flashcard
+                2. TODO: Update list with return
+              */
+            }
+          },
+          tooltip: 'Create new subject',
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
+      )
     );
   }
 }

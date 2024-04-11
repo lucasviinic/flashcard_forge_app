@@ -28,7 +28,7 @@ class _FlashcardState extends State<Flashcard> {
       insetPadding: const EdgeInsets.all(0),
       backgroundColor: Colors.transparent,
       child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.5,
+        height: MediaQuery.of(context).size.height * 0.45,
         width: MediaQuery.of(context).size.width * 0.8,
         child: FlipCard(
           fill: Fill.fillBack,
@@ -36,15 +36,15 @@ class _FlashcardState extends State<Flashcard> {
           side: CardSide.FRONT,
           front: Container(
             decoration: BoxDecoration(
-              color: AppColors.secondaryColor,
               borderRadius: BorderRadius.circular(30),
+              gradient: Styles.linearGradient
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Padding(
                   padding: EdgeInsets.only(bottom: 30),
-                  child: Text("Question:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  child: Text("Question:", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900)),
                 ),
                 Center(
                   child: Padding(
@@ -60,15 +60,15 @@ class _FlashcardState extends State<Flashcard> {
           ),
           back: Container(
             decoration: BoxDecoration(
-              color: AppColors.secondaryColor,
               borderRadius: BorderRadius.circular(30),
+              gradient: Styles.linearGradient
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Padding(
                   padding: EdgeInsets.only(bottom: 30),
-                  child: Text("Answer:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  child: Text("Answer:", style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900)),
                 ),
                 Center(
                   child: Padding(
@@ -92,8 +92,8 @@ class _FlashcardState extends State<Flashcard> {
                             GestureDetector(
                               onTap: () {},
                               child: Container(
-                                height: 50,
-                                width: 50,
+                                height: 55,
+                                width: 55,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(50),
                                   border: Border.all(
@@ -107,8 +107,8 @@ class _FlashcardState extends State<Flashcard> {
                             GestureDetector(
                               onTap: () {},
                               child: Container(
-                                height: 50,
-                                width: 50,
+                                height: 55,
+                                width: 55,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(50),
                                   border: Border.all(

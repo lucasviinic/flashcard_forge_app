@@ -87,9 +87,9 @@ class _StudySessionState extends State<StudySession> {
                       children: [
                         Text("🎯 Score: 7/20", style: TextStyle(fontSize: 20)),
                         Text("⌛ Time: $timerText", style: TextStyle(fontSize: 20)),
-                        Text("🥱 Easy: 4/4", style: TextStyle(fontSize: 20, color: AppColors.greenEasy)),
-                        Text("😐 Medium: 3/10", style: TextStyle(fontSize: 20, color: AppColors.blueNeutral)),
-                        Text("😡 Hard: 0/6", style: TextStyle(fontSize: 20, color: AppColors.redHard)),
+                        Text("🥱 Easy: 4/4", style: TextStyle(fontSize: 20, color: Styles.greenEasy)),
+                        Text("😐 Medium: 3/10", style: TextStyle(fontSize: 20, color: Styles.blueNeutral)),
+                        Text("😡 Hard: 0/6", style: TextStyle(fontSize: 20, color: Styles.redHard)),
                       ],
                     )
                   ],
@@ -113,7 +113,7 @@ class _StudySessionState extends State<StudySession> {
                 ),
                 const SizedBox(height: 20),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.5,
+                  height: MediaQuery.of(context).size.height * 0.45,
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: FlipCard(
                     key: flipCardKey,
@@ -122,8 +122,8 @@ class _StudySessionState extends State<StudySession> {
                     side: CardSide.FRONT,
                     front: Container(
                       decoration: BoxDecoration(
-                        color: AppColors.secondaryColor,
                         borderRadius: BorderRadius.circular(30),
+                        gradient: Styles.linearGradient
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -147,8 +147,8 @@ class _StudySessionState extends State<StudySession> {
                     ),
                     back: Container(
                       decoration: BoxDecoration(
-                        color: AppColors.secondaryColor,
                         borderRadius: BorderRadius.circular(30),
+                        gradient: Styles.linearGradient
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
