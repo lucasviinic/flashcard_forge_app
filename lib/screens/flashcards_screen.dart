@@ -42,10 +42,14 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
         ),
         title: Row(
           children: [
-            Text(
-              widget.title!.length > 13 ? "${widget.title!.substring(0, 12)}..." : widget.title!,
-              style: const TextStyle(color: Colors.white),
-            ),
+            Expanded(
+              child: Text(
+                widget.title!,
+                style: const TextStyle(fontSize: 20, color: Colors.white),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+              ),
+            )
           ],
         ),
         centerTitle: true,
