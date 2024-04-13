@@ -10,7 +10,7 @@ class SubjectContainer extends StatefulWidget {
   const SubjectContainer({super.key, required this.title, required this.topics});
 
   final String title;
-  final List<TopicResponseModel> topics;
+  final List<TopicModel> topics;
 
   @override
   State<SubjectContainer> createState() => _SubjectContainerState();
@@ -24,11 +24,12 @@ class _SubjectContainerState extends State<SubjectContainer> {
   late StreamSubscription<bool> keyboardSubscription;
 
   void createTopic(String value) {
-    widget.topics.add(TopicResponseModel(topic: TopicModel(
+    widget.topics.add(TopicModel(
       id: 10000,
       subjectId: 1223243,
-      topicName: value
-    )));
+      topicName: value,
+      flashcards: []
+    ));
     setState(() {
       _controller.text = "";
       creatingTopic = false;
@@ -118,14 +119,14 @@ class _SubjectContainerState extends State<SubjectContainer> {
                         return TextButton(
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => FlashcardScreen(flashcards: topic.flashcards, title: topic.topic.topicName),
+                              builder: (context) => FlashcardScreen(flashcards: topic.flashcards, title: topic.topicName),
                             ),
                           ),
                           child: Row(children: [
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                topic.topic.topicName,
+                                topic.topicName,
                                 style: const TextStyle(fontSize: 16, color: Styles.accentColor),
                                 overflow: TextOverflow.ellipsis,
                                 maxLines: 1,

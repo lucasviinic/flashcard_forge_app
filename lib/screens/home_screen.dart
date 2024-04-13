@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
-import 'package:flashcard_forge_app/services/mocks.dart';
+import 'package:flashcard_forge_app/services/repositories/local_storage_repo.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
 import 'package:flashcard_forge_app/widgets/SubjectContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -21,20 +22,33 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late TextEditingController _controller;
   late StreamSubscription<bool> keyboardSubscription;
+
   final FocusNode _focusNode = FocusNode();
 
-  List<String> subjects = ['Biologia', 'História', 'Filosofia'];
+  bool loading = false;
   bool creatingSubject = false;
+  List<SubjectModel> subjects = [];
 
-  List<SubjectResponseModel> subjects2 = subjectsListMock;
-
-  void createSubject(String value) {
-    subjects.add(value);
+  void setLoading(bool value) {
     setState(() {
-      _controller.text = "";
-      creatingSubject = false;
+      loading = value;
     });
-    Navigator.of(context).pop();
+  }
+
+  Future<void> getSubjects() async {
+    setLoading(true);
+    List<SubjectModel> subjectsList = await SharedPreferencesStorage().getSubjects();
+    setState(() => subjects = subjectsList);
+    setLoading(false);
+  }
+
+  Future<void> createSubject(SubjectModel subject) async {
+    setLoading(true);
+    await SharedPreferencesStorage().createSubject(subject).then((_) async {
+      List<SubjectModel> subjectsList = await SharedPreferencesStorage().getSubjects();
+      setState(() => subjects = subjectsList);
+    });
+    setLoading(false);
   }
 
   void showOptionModal() {
@@ -49,17 +63,21 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 TextButton(
-                  child: const Text('Save',
-                      style: TextStyle(fontSize: 16, color: Colors.green)),
-                  onPressed: () => createSubject(_controller.text),
+                  child: const Text('Save', style: TextStyle(fontSize: 16, color: Colors.green)),
+                  onPressed: () async {
+                    createSubject(SubjectModel(subjectName: _controller.text)).then((_) {
+                      setState(() {
+                        _controller.text = "";
+                        creatingSubject = false;
+                      });
+                      Navigator.of(context).pop();
+                    });
+                  } ,
                 ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 5),
-                  child: VerticalDivider(width: 10),
+                const Padding(padding: EdgeInsets.symmetric(vertical: 5), child: VerticalDivider(width: 10),
                 ),
                 TextButton(
-                  child: const Text('Cencel',
-                      style: TextStyle(fontSize: 16, color: Colors.red)),
+                  child: const Text('Cencel', style: TextStyle(fontSize: 16, color: Colors.red)),
                   onPressed: () {
                     setState(() {
                       _controller.text = "";
@@ -85,6 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
         showOptionModal();
       }
     });
+    getSubjects();
   }
 
   @override
@@ -113,8 +132,7 @@ class _HomeScreenState extends State<HomeScreen> {
             );
           },
         ),
-        title: SvgPicture.asset('assets/images/logo-v1.svg',
-            height: 35, width: 35),
+        title: SvgPicture.asset('assets/images/logo-v1.svg', height: 35, width: 35),
         centerTitle: true,
         actions: const [
           Padding(
@@ -126,18 +144,45 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: const DrawerMenu(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: ListView(
-          children: [
-            const Divider(color: Colors.black),
-            Column(
-              children: subjects2.map((subject) {
-                return SubjectContainer(
-                  title: subject.subject.subjectName,
-                  topics: subject.topics,
-                );
-              }).toList(),
+        child: Visibility(
+          visible: !loading ,
+          replacement: SizedBox(
+            width: MediaQuery.of(context).size.width * .85,
+            child: const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: CircularProgressIndicator(color: Colors.white, ),
+                )
+                // Center(
+                //   child: SvgPicture.asset(
+                //     "assets/images/no-content.svg", 
+                //     width: MediaQuery.of(context).size.width * .4
+                //   ),
+                // ),
+                // const Padding(
+                //   padding: EdgeInsets.only(top: 10),
+                //   child: Text(
+                //     "No subjects yet",
+                //     textAlign: TextAlign.center,
+                //     style: TextStyle(fontSize: 22, color: Styles.backgroundText),
+                //   ),
+                // )
+              ],
             ),
-            Visibility(
+          ),
+          child: ListView(
+            children: [
+              const Divider(color: Colors.black),
+              Column(
+                children: subjects.map((subject) {
+                  return SubjectContainer(
+                    title: subject.subjectName!,
+                    topics: subject.topics!,
+                  );
+                }).toList(),
+              ),
+              Visibility(
                 visible: creatingSubject,
                 child: Container(
                   height: 65,
@@ -165,9 +210,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                )),
-            const SizedBox(height: 25)
-          ],
+                )
+              ),
+              const SizedBox(height: 25)
+            ],
+          ),
         ),
       ),
       floatingActionButton: Visibility(

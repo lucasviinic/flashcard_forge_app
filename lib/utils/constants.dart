@@ -7,6 +7,7 @@ class Styles {
   static const Color greenEasy = Colors.green;
   static const Color redHard = Colors.red;
   static const Color blueNeutral = Colors.blue;
+  static const Color backgroundText = Color.fromARGB(255, 54, 54, 54);
 
   static const LinearGradient linearGradient = LinearGradient(
     begin: Alignment.topRight,

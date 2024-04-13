@@ -1,15 +1,18 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 
 class TopicModel {
-  final int id;
-  final int subjectId;
-  final String? imageUrl;
-  final String topicName;
+  int? id;
+  int subjectId;
+  String? imageUrl;
+  String topicName;
+  List<FlashcardModel> flashcards = [];
 
-  TopicModel({required this.id,
+  TopicModel({
+    this.id,
     required this.subjectId,
     required this.topicName,
-    this.imageUrl
+    this.imageUrl,
+    required this.flashcards
   });
 
   factory TopicModel.fromJson(Map<String, dynamic> json) {
@@ -18,6 +21,7 @@ class TopicModel {
       subjectId: json['subject_id'],
       imageUrl: json['image_url'],
       topicName: json['topic_name'],
+      flashcards: json['flashcards']
     );
   }
 
@@ -25,31 +29,7 @@ class TopicModel {
         'id': id,
         'subject_id': subjectId,
         'image_url': imageUrl,
-        'topic_name': topicName
+        'topic_name': topicName,
+        'flashcards': flashcards
       };
 }
-
-class TopicResponseModel {
-  final TopicModel topic;
-  final List<FlashcardModel>? flashcards;
-
-  TopicResponseModel({
-    required this.topic,
-    this.flashcards,
-  });
-
-  factory TopicResponseModel.fromJson(Map<String, dynamic> json) {
-    return TopicResponseModel(
-      topic: TopicModel.fromJson(json['topic']),
-      flashcards: (json['flashcards'] as List<dynamic>)
-          .map((flashcardJson) => FlashcardModel.fromJson(flashcardJson))
-          .toList(),
-    );
-  }
-
-  Map<String, dynamic> toJson() => {
-    'topic': topic.toJson(),
-    'flashcards': flashcards?.map((flashcard) => flashcard.toJson()).toList(),
-  };
-}
-
