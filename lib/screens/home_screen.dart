@@ -145,75 +145,76 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Visibility(
-          visible: !loading ,
-          replacement: SizedBox(
-            width: MediaQuery.of(context).size.width * .85,
-            child: const Column(
+          visible: subjects.isNotEmpty || creatingSubject,
+          replacement: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Center(
+                child: SvgPicture.asset(
+                  "assets/images/no-content.svg", 
+                  width: MediaQuery.of(context).size.width * .4
+                ),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: Text(
+                  "No subjects yet",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 22, color: Styles.backgroundText),
+                ),
+              )
+            ],
+          ),
+          child: Visibility(
+            visible: !loading,
+            replacement: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Center(
-                  child: CircularProgressIndicator(color: Colors.white, ),
-                )
-                // Center(
-                //   child: SvgPicture.asset(
-                //     "assets/images/no-content.svg", 
-                //     width: MediaQuery.of(context).size.width * .4
-                //   ),
-                // ),
-                // const Padding(
-                //   padding: EdgeInsets.only(top: 10),
-                //   child: Text(
-                //     "No subjects yet",
-                //     textAlign: TextAlign.center,
-                //     style: TextStyle(fontSize: 22, color: Styles.backgroundText),
-                //   ),
-                // )
+                  child: CircularProgressIndicator(color: Colors.white),
+                ),
               ],
             ),
-          ),
-          child: ListView(
-            children: [
-              const Divider(color: Colors.black),
-              Column(
-                children: subjects.map((subject) {
+            child: Column(
+              children: [
+                ...subjects.map((subject) {
                   return SubjectContainer(
                     title: subject.subjectName!,
                     topics: subject.topics!,
                   );
-                }).toList(),
-              ),
-              Visibility(
-                visible: creatingSubject,
-                child: Container(
-                  height: 65,
-                  margin: const EdgeInsets.only(top: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    gradient: Styles.linearGradient
-                  ),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: TextField(
-                        autofocus: creatingSubject,
-                        maxLength: 50,
-                        controller: _controller,
-                        style: const TextStyle(fontSize: 20, color: Colors.white),
-                        decoration: const InputDecoration(
-                          hintText: "Add a subject",
-                          hintStyle: TextStyle(fontSize: 20, color: Colors.white),
-                          counterText: "",
-                          contentPadding: EdgeInsets.zero,
-                          isDense: true
+                }),
+                Visibility(
+                  visible: creatingSubject,
+                  child: Container(
+                    height: 65,
+                    margin: const EdgeInsets.only(top: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      gradient: Styles.linearGradient
+                    ),
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: TextField(
+                          autofocus: creatingSubject,
+                          maxLength: 50,
+                          controller: _controller,
+                          style: const TextStyle(fontSize: 20, color: Colors.white),
+                          decoration: const InputDecoration(
+                            hintText: "Add a subject",
+                            hintStyle: TextStyle(fontSize: 20, color: Colors.white),
+                            counterText: "",
+                            contentPadding: EdgeInsets.zero,
+                            isDense: true
+                          ),
+                          focusNode: _focusNode,
                         ),
-                        focusNode: _focusNode,
                       ),
                     ),
-                  ),
-                )
-              ),
-              const SizedBox(height: 25)
-            ],
+                  )
+                ),
+              ],
+            ),
           ),
         ),
       ),
