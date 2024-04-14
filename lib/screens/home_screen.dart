@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
+import 'package:flashcard_forge_app/providers/subject_provider.dart';
 import 'package:flashcard_forge_app/services/repositories/local_storage_repo.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
 import 'package:flashcard_forge_app/widgets/SubjectContainer.dart';
@@ -8,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -35,20 +36,17 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  Future<void> getSubjects() async {
-    setLoading(true);
-    List<SubjectModel> subjectsList = await SharedPreferencesStorage().getSubjects();
-    setState(() => subjects = subjectsList);
-    setLoading(false);
-  }
-
   Future<void> createSubject(SubjectModel subject) async {
     setLoading(true);
-    await SharedPreferencesStorage().createSubject(subject).then((_) async {
-      List<SubjectModel> subjectsList = await SharedPreferencesStorage().getSubjects();
+    await context.read<SubjectProvider>().createSubject(subject).then((_) async {
+      List<SubjectModel> subjectsList = await LocalStorage().getSubjects();
       setState(() => subjects = subjectsList);
     });
     setLoading(false);
+  }
+
+  Future<void> getSubjects() async {
+    context.read<SubjectProvider>().getSubjects();
   }
 
   void showOptionModal() {
@@ -114,6 +112,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final subjects = context.watch<SubjectProvider>().subjects;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Styles.primaryColor,
@@ -178,10 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               children: [
                 ...subjects.map((subject) {
-                  return SubjectContainer(
-                    title: subject.subjectName!,
-                    topics: subject.topics!,
-                  );
+                  return SubjectContainer(subject: subject);
                 }),
                 Visibility(
                   visible: creatingSubject,
