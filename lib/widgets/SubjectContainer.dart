@@ -24,11 +24,13 @@ class _SubjectContainerState extends State<SubjectContainer> {
   bool creatingTopic = false;
   bool editing = false;
   
-  late TextEditingController _controller;
+  final TextEditingController _topicController = TextEditingController();
+  final TextEditingController _subjectController = TextEditingController();
+
   final FocusNode _focusNode = FocusNode();
   late StreamSubscription<bool> keyboardSubscription;
 
-    void showOptionModal() {
+  void showOptionModal() {
     showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext context) {
@@ -42,9 +44,9 @@ class _SubjectContainerState extends State<SubjectContainer> {
                 TextButton(
                   child: const Text('Save', style: TextStyle(fontSize: 16, color: Colors.green)),
                   onPressed: () async {
-                    context.read<SubjectProvider>().updateSubject(widget.subject.id!, _controller.text).then((value) {
+                    updateSubject(widget.subject.id!, _subjectController.text).then((value) {
                       setState(() {
-                        _controller.text = widget.subject.subjectName!;
+                        _subjectController.text = widget.subject.subjectName!;
                         editing = false;
                       });
                       Navigator.of(context).pop();
@@ -57,7 +59,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                   child: const Text('Cencel', style: TextStyle(fontSize: 16, color: Colors.red)),
                   onPressed: () {
                     setState(() {
-                      _controller.text = widget.subject.subjectName!;
+                      _subjectController.text = widget.subject.subjectName!;
                       editing = false;
                     });
                     Navigator.of(context).pop();
@@ -79,22 +81,26 @@ class _SubjectContainerState extends State<SubjectContainer> {
       flashcards: []
     ));
     setState(() {
-      _controller.text = "";
+      _topicController.text = "";
       creatingTopic = false;
     });
   }
 
   Future<void> removeSubject(int id) async {
-    await LocalStorage().removeSubject(id).then((value) {
+    await LocalStorage().removeSubject(id).then((_) {
       Provider.of<SubjectProvider>(context, listen: false).removeSubject(id);
     });
+  }
+
+  Future<void> updateSubject(int id, String name) async {
+    await context.read<SubjectProvider>().updateSubject(widget.subject.id!, _subjectController.text);
   }
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
-    _controller.text = widget.subject.subjectName!;
+    _topicController.text = "";
+    _subjectController.text = widget.subject.subjectName!;
     KeyboardVisibilityController().onChange.listen((bool visible) {
       if (!visible && editing) {
         showOptionModal();
@@ -105,7 +111,8 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _subjectController.dispose();
+    _topicController.dispose();
     super.dispose();
   }
 
@@ -133,11 +140,36 @@ class _SubjectContainerState extends State<SubjectContainer> {
                     size: 50, color: Colors.white
                   ),
                   Expanded(
-                    child: Text(
-                      widget.subject.subjectName!,
-                      style: const TextStyle(fontSize: 20, color: Colors.white),
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 1,
+                    child: Visibility(
+                      visible: !editing,
+                      replacement: TextField(
+                        onSubmitted: (value) {
+                          updateSubject(widget.subject.id!, value).then((_) {
+                            setState(() {
+                              _subjectController.text = value;
+                              editing = false;
+                            });
+                            Navigator.of(context).pop();
+                          });
+                        },
+                        autofocus: editing,
+                        maxLength: 50,
+                        controller: _subjectController,
+                        style: const TextStyle(fontSize: 20, color: Colors.white),
+                        decoration: const InputDecoration(
+                          hintStyle: TextStyle(fontSize: 20, color: Colors.white),
+                          counterText: "",
+                          contentPadding: EdgeInsets.zero,
+                          isDense: true
+                        ),
+                        focusNode: _focusNode,
+                      ),
+                      child: Text(
+                        widget.subject.subjectName!,
+                        style: const TextStyle(fontSize: 20, color: Colors.white),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
                     ),
                   ),
                   PopupMenuButton(
@@ -148,9 +180,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                         PopupMenuItem<int>(
                           value: 0,
                           child: TextButton(
-                            onPressed: () async {
-                              setState(() => editing = true);
-                            },
+                            onPressed: () => setState(() => editing = true),
                             child: const Text("Rename", style: TextStyle(color: Colors.white))
                           )
                         ),
@@ -195,30 +225,11 @@ class _SubjectContainerState extends State<SubjectContainer> {
                           ),
                           child: Row(children: [
                             const SizedBox(width: 8),
-                            Expanded(
-                              child: Visibility(
-                                visible: editing,
-                                replacement: TextField(
-                                  autofocus: editing,
-                                  maxLength: 50,
-                                  controller: _controller,
-                                  style: const TextStyle(fontSize: 20, color: Colors.white),
-                                  decoration: const InputDecoration(
-                                    hintText: "Add a subject",
-                                    hintStyle: TextStyle(fontSize: 20, color: Colors.white),
-                                    counterText: "",
-                                    contentPadding: EdgeInsets.zero,
-                                    isDense: true
-                                  ),
-                                  focusNode: _focusNode,
-                                ),
-                                child: Text(
-                                  topic.topicName,
-                                  style: const TextStyle(fontSize: 16, color: Styles.accentColor),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                              ),
+                            Text(
+                              topic.topicName,
+                              style: const TextStyle(fontSize: 16, color: Styles.accentColor),
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
                             ),
                           ]),
                         );
@@ -241,7 +252,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                   child: TextField(
                                     autofocus: creatingTopic,
                                     maxLength: 50,
-                                    controller: _controller,
+                                    controller: _topicController,
                                     style: const TextStyle(fontSize: 16, color: Colors.white),
                                     decoration: const InputDecoration(
                                       hintText: "Add a topic",
@@ -260,7 +271,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                     children: [
                                       TextButton(
                                         child: const Text('Save', style: TextStyle(fontSize: 16, color: Colors.green)),
-                                        onPressed: () => createTopic(_controller.text),
+                                        onPressed: () => createTopic(_topicController.text),
                                       ),
                                       const Padding(
                                         padding: EdgeInsets.symmetric(vertical: 5),
@@ -270,7 +281,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                         child: const Text('Cencel', style: TextStyle(fontSize: 16, color: Colors.red)),
                                         onPressed: () {
                                           setState(() {
-                                            _controller.text = "";
+                                            _topicController.text = "";
                                             creatingTopic = false;
                                           });
                                         },

@@ -165,52 +165,62 @@ class _HomeScreenState extends State<HomeScreen> {
               )
             ],
           ),
-          child: Visibility(
-            visible: !loading,
-            replacement: const Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-                ...subjects.map((subject) {
-                  return SubjectContainer(subject: subject);
-                }),
-                Visibility(
-                  visible: creatingSubject,
-                  child: Container(
-                    height: 65,
-                    margin: const EdgeInsets.only(top: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      gradient: Styles.linearGradient
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: TextField(
-                          autofocus: creatingSubject,
-                          maxLength: 50,
-                          controller: _controller,
-                          style: const TextStyle(fontSize: 20, color: Colors.white),
-                          decoration: const InputDecoration(
-                            hintText: "Add a subject",
-                            hintStyle: TextStyle(fontSize: 20, color: Colors.white),
-                            counterText: "",
-                            contentPadding: EdgeInsets.zero,
-                            isDense: true
+          child: SingleChildScrollView(
+            child: Visibility(
+              visible: !loading,
+              replacement: const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  ...subjects.map((subject) {
+                    return SubjectContainer(subject: subject);
+                  }),
+                  Visibility(
+                    visible: creatingSubject,
+                    child: Container(
+                      height: 65,
+                      margin: const EdgeInsets.only(top: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        gradient: Styles.linearGradient
+                      ),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: TextField(
+                            onSubmitted: (value) {
+                              createSubject(SubjectModel(subjectName: value)).then((_) {
+                                setState(() {
+                                  _controller.text = "";
+                                  creatingSubject = false;
+                                });
+                              });
+                            },
+                            autofocus: creatingSubject,
+                            maxLength: 50,
+                            controller: _controller,
+                            style: const TextStyle(fontSize: 20, color: Colors.white),
+                            decoration: const InputDecoration(
+                              hintText: "Add a subject",
+                              hintStyle: TextStyle(fontSize: 20, color: Colors.white),
+                              counterText: "",
+                              contentPadding: EdgeInsets.zero,
+                              isDense: true
+                            ),
+                            focusNode: _focusNode,
                           ),
-                          focusNode: _focusNode,
                         ),
                       ),
-                    ),
-                  )
-                ),
-              ],
+                    )
+                  ),
+                ],
+              ),
             ),
           ),
         ),
