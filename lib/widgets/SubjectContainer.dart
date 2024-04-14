@@ -149,7 +149,6 @@ class _SubjectContainerState extends State<SubjectContainer> {
                               _subjectController.text = value;
                               editing = false;
                             });
-                            Navigator.of(context).pop();
                           });
                         },
                         autofocus: editing,
@@ -180,7 +179,10 @@ class _SubjectContainerState extends State<SubjectContainer> {
                         PopupMenuItem<int>(
                           value: 0,
                           child: TextButton(
-                            onPressed: () => setState(() => editing = true),
+                            onPressed: () {
+                              setState(() => editing = true);
+                              Navigator.of(context).pop();
+                            },
                             child: const Text("Rename", style: TextStyle(color: Colors.white))
                           )
                         ),
@@ -189,7 +191,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                           child: TextButton(
                             onPressed: () async {
                               await context.read<SubjectProvider>().removeSubject(widget.subject.id!)
-                                .then((value) => Navigator.pop(context));
+                                .then((value) => Navigator.of(context).pop());
                             },
                             child: const Text("Delete", style: TextStyle(color: Colors.white))
                           ),
