@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
+import 'package:flashcard_forge_app/models/TopicModel.dart';
 import 'package:flashcard_forge_app/services/contracts/local_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -71,6 +72,73 @@ class LocalStorage implements LocalStorageContract {
       for (var subjectJson in subjectsList) {
         if (subjectJson['id'] == id) {
           subjectJson['subject_name'] = name;
+          break;
+        }
+      }
+
+      await saveUserData(userData);
+    }
+  }
+
+  @override
+  Future<void> createTopic(int subjectId, TopicModel topic) async {
+    Map<String, dynamic>? userData = await loadUserData();
+
+    if (userData != null) {
+      List<dynamic> subjectsList = userData['subjects'];
+
+      for (var subjectJson in subjectsList) {
+        if (subjectJson['id'] == subjectId) {
+          topic.id = _calculateNextLocalId(subjectJson['topics']);
+          subjectJson['topics'].add(topic.toJson());
+          subjectsList[subjectsList.indexOf(subjectJson)] = subjectJson;
+          break;
+        }
+      }
+
+      await saveUserData(userData);
+    }
+  }
+
+  @override
+  Future<void> removeTopic(int subjectId, int topicId) async {
+    Map<String, dynamic>? userData = await loadUserData();
+
+    if (userData != null) {
+      List<dynamic> subjectsList = userData['subjects'];
+
+      for (var subjectJson in subjectsList) {
+        if (subjectJson['id'] == subjectId) {
+          List<dynamic> topicsList = subjectJson['topics'];
+          topicsList.removeWhere((topicJson) => topicJson['id'] == topicId);
+          subjectJson['topics'] = topicsList;
+          break;
+        }
+      }
+
+      await saveUserData(userData);
+    }
+  }
+
+  @override
+  Future<void> updateTopic(int subjectId, int topicId, String name) async {
+    Map<String, dynamic>? userData = await loadUserData();
+
+    if (userData != null) {
+      List<dynamic> subjectsList = userData['subjects'];
+
+      for (var subjectJson in subjectsList) {
+        if (subjectJson['id'] == subjectId) {
+          List<dynamic> topicsList = subjectJson['topics'];
+
+          for (var topicJson in topicsList) {
+            if (topicJson['id'] == topicId) {
+              topicJson['topic_name'] = name;
+              break;
+            }
+          }
+
+          subjectJson['topics'] = topicsList;
           break;
         }
       }

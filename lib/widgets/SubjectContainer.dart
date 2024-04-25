@@ -23,8 +23,12 @@ class _SubjectContainerState extends State<SubjectContainer> {
   bool showDropdown = false;
   bool creatingTopic = false;
   bool editing = false;
+  bool editingTopic = false;
   
+  int? longPressedTopicIndex;
+
   final TextEditingController _topicController = TextEditingController();
+  final TextEditingController _editTopicController = TextEditingController();
   final TextEditingController _subjectController = TextEditingController();
 
   final FocusNode _focusNode = FocusNode();
@@ -73,17 +77,33 @@ class _SubjectContainerState extends State<SubjectContainer> {
     );
   }
 
-  void createTopic(String value) {
-    widget.subject.topics!.add(TopicModel(
-      id: 10000,
-      subjectId: 1223243,
-      topicName: value,
-      flashcards: []
-    ));
-    setState(() {
-      _topicController.text = "";
-      creatingTopic = false;
-    });
+  Future<void> createTopic(int subjectId, String topicName) async {
+    try {
+      TopicModel topic = TopicModel(subjectId: subjectId, topicName: topicName);
+      await context.read<SubjectProvider>().createTopic(subjectId, topic);
+      setState(() {
+        _topicController.text = "";
+        creatingTopic = false;
+      });
+    } catch (error) {
+      print("Erro ao criar o tópico: $error");
+    }
+  }
+
+  Future<void> removeTopic(int subjectId, int topicId) async {
+    try {
+      await context.read<SubjectProvider>().removeTopic(subjectId, topicId);
+    } catch (error) {
+      print("Erro ao remover o tópico: $error");
+    }
+  }
+
+  Future<void> updateTopic(int subjectId, int topicId, String name) async {
+    try {
+      await context.read<SubjectProvider>().updateTopic(subjectId, topicId, name);
+    } catch (error) {
+      print("Erro ao atualizar o tópico: $error");
+    }
   }
 
   Future<void> removeSubject(int id) async {
@@ -218,24 +238,89 @@ class _SubjectContainerState extends State<SubjectContainer> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      ...widget.subject.topics!.map((topic) {
-                        return TextButton(
+                      for (var i = 0; i < widget.subject.topics!.length; i++)
+                        TextButton(
+                          onLongPress: () => setState(() {
+                            longPressedTopicIndex = longPressedTopicIndex != i ? i : null;
+                          }),
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => FlashcardScreen(flashcards: topic.flashcards, title: topic.topicName),
+                              builder: (context) => FlashcardScreen(
+                                flashcards:  widget.subject.topics![i].flashcards ?? [],
+                                title:  widget.subject.topics![i].topicName
+                              ),
                             ),
                           ),
                           child: Row(children: [
                             const SizedBox(width: 8),
-                            Text(
-                              topic.topicName,
-                              style: const TextStyle(fontSize: 16, color: Styles.accentColor),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
+                            Expanded(
+                              child: Visibility(
+                                visible: !editingTopic,
+                                replacement: TextField(
+                                  onSubmitted: (value) {
+                                    updateTopic(widget.subject.id!, widget.subject.topics![i].id!, value).then((_) {
+                                      setState(() {
+                                        _editTopicController.text = value;
+                                        editingTopic = false;
+                                      });
+                                    });
+                                  },
+                                  autofocus: editingTopic,
+                                  maxLength: 50,
+                                  controller: _editTopicController,
+                                  style: const TextStyle(color: Styles.accentColor),
+                                  decoration: const InputDecoration(
+                                    hintStyle: TextStyle(color: Colors.white),
+                                    counterText: "",
+                                    contentPadding: EdgeInsets.zero,
+                                    isDense: true,
+                                    border: InputBorder.none
+                                  ),
+                                  focusNode: _focusNode,
+                                ),
+                                child: Text(
+                                  widget.subject.topics![i].topicName,
+                                  style: const TextStyle(fontSize: 16, color: Styles.accentColor),
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                ),
+                              ),
                             ),
+                            const Spacer(),
+                            Visibility(
+                              visible: i == longPressedTopicIndex,
+                              child: Visibility(
+                                visible: editingTopic,
+                                replacement: Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () => setState(() => editingTopic = true),
+                                      icon: const Icon(Icons.edit)
+                                    ),
+                                    IconButton(
+                                      onPressed: () async {
+                                        await removeTopic(widget.subject.id!, widget.subject.topics![i].id!);
+                                        longPressedTopicIndex = null;
+                                      },
+                                      icon: Icon(Icons.close_rounded, color: Colors.red[900])
+                                    )
+                                  ],
+                                ),
+                                child: IconButton(
+                                  onPressed: () async {
+                                    updateTopic(widget.subject.id!, widget.subject.topics![i].id!, _editTopicController.text).then((_) {
+                                      setState(() {
+                                        longPressedTopicIndex = null;
+                                        editingTopic = false;
+                                      });
+                                    });
+                                  },
+                                  icon: Icon(Icons.check, color: Colors.green[900])
+                                ),
+                              )
+                            )
                           ]),
-                        );
-                      }),
+                        ),
                       Visibility(
                         visible: !creatingTopic,
                         replacement: Container(
@@ -273,7 +358,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                     children: [
                                       TextButton(
                                         child: const Text('Save', style: TextStyle(fontSize: 16, color: Colors.green)),
-                                        onPressed: () => createTopic(_topicController.text),
+                                        onPressed: () => createTopic(widget.subject.id!, _topicController.text),
                                       ),
                                       const Padding(
                                         padding: EdgeInsets.symmetric(vertical: 5),

@@ -5,14 +5,14 @@ class TopicModel {
   int subjectId;
   String? imageUrl;
   String topicName;
-  List<FlashcardModel> flashcards = [];
+  List<FlashcardModel>? flashcards = [];
 
   TopicModel({
     this.id,
     required this.subjectId,
     required this.topicName,
     this.imageUrl,
-    required this.flashcards
+    this.flashcards
   });
 
   factory TopicModel.fromJson(Map<String, dynamic> json) {
