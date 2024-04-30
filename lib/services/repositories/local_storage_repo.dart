@@ -89,6 +89,7 @@ class LocalStorage implements LocalStorageContract {
 
       for (var subjectJson in subjectsList) {
         if (subjectJson['id'] == subjectId) {
+          subjectJson['topics'] = subjectJson['topics'] ?? [];
           topic.id = _calculateNextLocalId(subjectJson['topics']);
           subjectJson['topics'].add(topic.toJson());
           subjectsList[subjectsList.indexOf(subjectJson)] = subjectJson;
@@ -147,12 +148,12 @@ class LocalStorage implements LocalStorageContract {
     }
   }
 
-  int _calculateNextLocalId(List<dynamic> subjects) {
+  int _calculateNextLocalId(List<dynamic> items) {
     int maxId = 0;
-    for (var subject in subjects) {
-      int subjectId = subject['id'] ?? 0;
-      if (subjectId > maxId) {
-        maxId = subjectId;
+    for (var item in items) {
+      int generatedId = item['id'] ?? 0;
+      if (generatedId > maxId) {
+        maxId = generatedId;
       }
     }
     return maxId + 1;

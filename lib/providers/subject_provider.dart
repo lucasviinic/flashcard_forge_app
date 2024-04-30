@@ -30,10 +30,10 @@ class SubjectProvider with ChangeNotifier {
   }
 
   Future<void> removeTopic(int subjectId, int topicId) async {
-    await LocalStorage().removeTopic(subjectId, topicId).then((value) => getSubjects());;
+    await LocalStorage().removeTopic(subjectId, topicId).then((value) => getSubjects());
   }
 
   Future<void> updateTopic(int subjectId, int topicId, String name) async {
-    await LocalStorage().updateTopic(subjectId, topicId, name).then((value) => getSubjects());;
+    await LocalStorage().updateTopic(subjectId, topicId, name).then((value) => getSubjects());
   }
 }
