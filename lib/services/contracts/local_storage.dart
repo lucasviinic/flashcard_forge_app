@@ -14,5 +14,5 @@ abstract class LocalStorageContract {
   Future<void> updateTopic(int subjectId, int topicId, String name);
   Future<void> createFlashcard(FlashcardModel flashcard);
   Future<void> removeFlashcard(int subjectId, int topicId, int flashcardId);
-  Future<void> updateFlashcard(int subjectId, int topicId, int flashcardId, FlashcardModel flashcard);
+  Future<void> updateFlashcard(FlashcardModel flashcard);
 }

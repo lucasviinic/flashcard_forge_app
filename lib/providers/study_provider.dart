@@ -45,7 +45,7 @@ class StudyProvider with ChangeNotifier {
     await LocalStorage().removeFlashcard(subjectId, topicId, flashcardId).then((value) => getSubjects());
   }
 
-  Future<void> updateFlashcard(int subjectId, int topicId, int flashcardId, FlashcardModel flashcard) async {
-    await LocalStorage().updateFlashcard(subjectId, topicId, flashcardId, flashcard).then((value) => getSubjects());
+  Future<void> updateFlashcard(FlashcardModel flashcard) async {
+    await LocalStorage().updateFlashcard(flashcard).then((value) => getSubjects());
   }
 }

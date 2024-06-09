@@ -209,28 +209,27 @@ class LocalStorage implements LocalStorageContract {
   }
 
   @override
-  Future<void> updateFlashcard(int subjectId, int topicId, int flashcardId, FlashcardModel flashcard) async {
+  Future<void> updateFlashcard(FlashcardModel flashcard) async {
     Map<String, dynamic>? userData = await loadUserData();
 
     if (userData != null) {
       List<dynamic> subjectsList = userData['subjects'];
 
       for (var subjectJson in subjectsList) {
-        if (subjectJson['id'] == subjectId) {
+        if (subjectJson['id'] == flashcard.subjectId) {
           List<dynamic> topicsList = subjectJson['topics'];
 
           for (var topicJson in topicsList) {
-            if (topicJson['id'] == topicId) {
+            if (topicJson['id'] == flashcard.topicId) {
               List<dynamic> flashcardsList = topicJson['flashcards'] ?? [];
-
               for (var flashcardJson in flashcardsList) {
-                if (flashcardJson['id'] == flashcardId) {
+                if (flashcardJson['id'] == flashcard.id) {
                   flashcardJson['question'] = flashcard.question;
                   flashcardJson['answer'] = flashcard.answer;
+                  flashcardJson['difficulty'] = flashcard.difficulty;
                   break;
                 }
               }
-
               topicJson['flashcards'] = flashcardsList;
               break;
             }
