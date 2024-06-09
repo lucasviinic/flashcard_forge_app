@@ -15,6 +15,7 @@ class FlashcardPreview extends StatefulWidget {
 
 class _FlashcardPreviewState extends State<FlashcardPreview> {
   FlashcardModel? flashcard;
+  bool showEditOptions = false;
 
   String _getDisplayText(String text) {
     if (text.length > 30 && text.length < 40) {
@@ -50,9 +51,10 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
                 Navigator.of(context).pop();
               },
             ),
-        ]
-      );
-    });
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -66,55 +68,30 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
     String displayText = _getDisplayText(flashcard!.question!);
 
     return GestureDetector(
-      onTap: () {
-        showDialog<void>(
-          context: context,
-          builder: (BuildContext context) {
-            return Flashcard(flashcard: flashcard);
-          }
-        );
+      onLongPress: () {
+        setState(() {
+          showEditOptions = !showEditOptions;
+        });
       },
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
-          gradient: Styles.linearGradient
-        ),
-        child: Center(
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  GestureDetector(
-                    onTap: () async {
-                      final flashcardObject = await showDialog<FlashcardModel>(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return FlashcardForm(flashcard: flashcard);
-                        },
-                      );
-      
-                      if (flashcardObject != null) {
-                        setState(() {
-                          flashcard = flashcardObject;
-                        });
-                      }
-                    },
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 6, vertical: 10),
-                      child: Icon(Icons.edit, color: Colors.blue),
-                    )
-                  ),
-                  GestureDetector(
-                    onTap: () => showDeleteFlashcardDialog(context),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
-                      child: Icon(Icons.delete, color: Colors.red[700]),
-                    )
-                  )
-                ],
-              ),
-              Padding(
+      onTap: () {
+        if (!showEditOptions) {
+          showDialog<void>(
+            context: context,
+            builder: (BuildContext context) {
+              return Flashcard(flashcard: flashcard);
+            },
+          );
+        }
+      },
+      child: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              gradient: Styles.linearGradient,
+            ),
+            child: Center(
+              child: Padding(
                 padding: const EdgeInsets.only(left: 12, right: 12),
                 child: Text(
                   displayText,
@@ -127,9 +104,50 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-            ],
+            ),
           ),
-        ),
+          if (showEditOptions)
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.5),
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        onPressed: () async {
+                          final flashcardObject = await showDialog<FlashcardModel>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return FlashcardForm(flashcard: flashcard);
+                            },
+                          );
+
+                          if (flashcardObject != null) {
+                            setState(() {
+                              flashcard = flashcardObject;
+                              showEditOptions = false; // Hide options after editing
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.edit, color: Colors.blue, size: 40),
+                      ),
+                      const SizedBox(width: 10),
+                      IconButton(
+                        onPressed: () async {
+                          await showDeleteFlashcardDialog(context);
+                          setState(() {
+                            showEditOptions = false; // Hide options after deletion
+                          });
+                        },
+                        icon: const Icon(Icons.delete, color: Colors.red, size: 40),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
