@@ -227,8 +227,6 @@ class LocalStorage implements LocalStorageContract {
                 if (flashcardJson['id'] == flashcardId) {
                   flashcardJson['question'] = flashcard.question;
                   flashcardJson['answer'] = flashcard.answer;
-                  // Adicione outras propriedades que você deseja atualizar aqui...
-
                   break;
                 }
               }

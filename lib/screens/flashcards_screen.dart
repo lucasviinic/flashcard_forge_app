@@ -1,6 +1,5 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
-import 'package:flashcard_forge_app/providers/study_provider.dart';
 import 'package:flashcard_forge_app/screens/study_session_screen.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
@@ -8,7 +7,6 @@ import 'package:flashcard_forge_app/widgets/FlashcardForm.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardPreview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:provider/provider.dart';
 
 class FlashcardScreen extends StatefulWidget {
   const FlashcardScreen({super.key, this.topic});
@@ -76,7 +74,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
       drawer: const DrawerMenu(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
+        child: ListView(
           children: [
             const SizedBox(
               height: 30,
@@ -136,6 +134,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                 padding: const EdgeInsets.only(top: 10),
                 child: GridView.builder(
                   shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: widget.topic!.flashcards!.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
