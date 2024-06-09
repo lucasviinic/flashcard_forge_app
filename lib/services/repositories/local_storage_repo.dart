@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
 import 'package:flashcard_forge_app/services/contracts/local_storage.dart';
@@ -134,6 +135,105 @@ class LocalStorage implements LocalStorageContract {
           for (var topicJson in topicsList) {
             if (topicJson['id'] == topicId) {
               topicJson['topic_name'] = name;
+              break;
+            }
+          }
+
+          subjectJson['topics'] = topicsList;
+          break;
+        }
+      }
+
+      await saveUserData(userData);
+    }
+  }
+
+  @override
+  Future<void> createFlashcard(FlashcardModel flashcard) async {
+    Map<String, dynamic>? userData = await loadUserData();
+
+    if (userData != null) {
+      List<dynamic> subjectsList = userData['subjects'];
+
+      for (var subjectJson in subjectsList) {
+        if (subjectJson['id'] == flashcard.subjectId) {
+          List<dynamic> topicsList = subjectJson['topics'];
+
+          for (var topicJson in topicsList) {
+            if (topicJson['id'] == flashcard.topicId) {
+              List<dynamic> flashcardsList = topicJson['flashcards'] ?? [];
+              int nextLocalId = _calculateNextLocalId(flashcardsList);
+              flashcard.id = nextLocalId;
+              flashcardsList.add(flashcard.toJson());
+              topicJson['flashcards'] = flashcardsList;
+              break;
+            }
+          }
+
+          subjectJson['topics'] = topicsList;
+          break;
+        }
+      }
+
+      await saveUserData(userData);
+    }
+  }
+
+  @override
+  Future<void> removeFlashcard(int subjectId, int topicId, int flashcardId) async {
+    Map<String, dynamic>? userData = await loadUserData();
+
+    if (userData != null) {
+      List<dynamic> subjectsList = userData['subjects'];
+
+      for (var subjectJson in subjectsList) {
+        if (subjectJson['id'] == subjectId) {
+          List<dynamic> topicsList = subjectJson['topics'];
+
+          for (var topicJson in topicsList) {
+            if (topicJson['id'] == topicId) {
+              List<dynamic> flashcardsList = topicJson['flashcards'] ?? [];
+              flashcardsList.removeWhere((flashcard) => flashcard['id'] == flashcardId);
+              topicJson['flashcards'] = flashcardsList;
+              break;
+            }
+          }
+
+          subjectJson['topics'] = topicsList;
+          break;
+        }
+      }
+
+      await saveUserData(userData);
+    }
+  }
+
+  @override
+  Future<void> updateFlashcard(int subjectId, int topicId, int flashcardId, FlashcardModel flashcard) async {
+    Map<String, dynamic>? userData = await loadUserData();
+
+    if (userData != null) {
+      List<dynamic> subjectsList = userData['subjects'];
+
+      for (var subjectJson in subjectsList) {
+        if (subjectJson['id'] == subjectId) {
+          List<dynamic> topicsList = subjectJson['topics'];
+
+          for (var topicJson in topicsList) {
+            if (topicJson['id'] == topicId) {
+              List<dynamic> flashcardsList = topicJson['flashcards'] ?? [];
+
+              for (var flashcardJson in flashcardsList) {
+                if (flashcardJson['id'] == flashcardId) {
+                  flashcardJson['question'] = flashcard.question;
+                  flashcardJson['answer'] = flashcard.answer;
+                  // Adicione outras propriedades que você deseja atualizar aqui...
+
+                  break;
+                }
+              }
+
+              topicJson['flashcards'] = flashcardsList;
               break;
             }
           }

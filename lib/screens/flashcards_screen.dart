@@ -1,5 +1,6 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
+import 'package:flashcard_forge_app/providers/study_provider.dart';
 import 'package:flashcard_forge_app/screens/study_session_screen.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
@@ -7,6 +8,7 @@ import 'package:flashcard_forge_app/widgets/FlashcardForm.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardPreview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class FlashcardScreen extends StatefulWidget {
   const FlashcardScreen({super.key, this.topic});
@@ -18,6 +20,8 @@ class FlashcardScreen extends StatefulWidget {
 }
 
 class _FlashcardScreenState extends State<FlashcardScreen> {
+  List<FlashcardModel> flashcards = [];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,7 +143,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                     mainAxisSpacing: 8,
                   ),
                   itemBuilder: (BuildContext context, int index) {
-                    return FlashcardPreview(widget.topic!.flashcards![index]);
+                    return FlashcardPreview(widget.topic!.flashcards[index]);
                   },
                 ),
               ),
@@ -158,15 +162,17 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
             final flashcardObject = await showDialog<FlashcardModel>(
               context: context, 
               builder: (BuildContext context) {
-                return const FlashcardForm();
+                return FlashcardForm(
+                  subjectId: widget.topic!.subjectId, 
+                  topicId: widget.topic!.id,
+                );
               },
             );
 
             if (flashcardObject != null) {
-              /* 
-                1. TODO: Request to create flashcard
-                2. TODO: Update list with return
-              */
+              setState(() {
+                widget.topic!.flashcards.add(flashcardObject);
+              });
             }
           },
           tooltip: 'Create new subject',

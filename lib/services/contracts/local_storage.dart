@@ -1,3 +1,4 @@
+import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
 
@@ -11,4 +12,7 @@ abstract class LocalStorageContract {
   Future<void> createTopic(int subjectId, TopicModel topic);
   Future<void> removeTopic(int subjectId, int topicId);
   Future<void> updateTopic(int subjectId, int topicId, String name);
+  Future<void> createFlashcard(FlashcardModel flashcard);
+  Future<void> removeFlashcard(int subjectId, int topicId, int flashcardId);
+  Future<void> updateFlashcard(int subjectId, int topicId, int flashcardId, FlashcardModel flashcard);
 }
