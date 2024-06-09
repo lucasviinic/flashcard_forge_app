@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
-import 'package:flashcard_forge_app/providers/subject_provider.dart';
+import 'package:flashcard_forge_app/providers/study_provider.dart';
 import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
 import 'package:flashcard_forge_app/services/repositories/local_storage_repo.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +80,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
   Future<void> createTopic(int subjectId, String topicName) async {
     try {
       TopicModel topic = TopicModel(subjectId: subjectId, topicName: topicName);
-      await context.read<SubjectProvider>().createTopic(subjectId, topic);
+      await context.read<StudyProvider>().createTopic(subjectId, topic);
       setState(() {
         _topicController.text = "";
         creatingTopic = false;
@@ -93,7 +93,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
   Future<void> removeTopic(int subjectId, int topicId) async {
     try {
-      await context.read<SubjectProvider>().removeTopic(subjectId, topicId);
+      await context.read<StudyProvider>().removeTopic(subjectId, topicId);
     } catch (error) {
       print("Erro ao remover o tópico: $error");
     }
@@ -101,7 +101,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
   Future<void> updateTopic(int subjectId, int topicId, String name) async {
     try {
-      await context.read<SubjectProvider>().updateTopic(subjectId, topicId, name);
+      await context.read<StudyProvider>().updateTopic(subjectId, topicId, name);
     } catch (error) {
       print("Erro ao atualizar o tópico: $error");
     }
@@ -109,12 +109,12 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
   Future<void> removeSubject(int id) async {
     await LocalStorage().removeSubject(id).then((_) {
-      Provider.of<SubjectProvider>(context, listen: false).removeSubject(id);
+      Provider.of<StudyProvider>(context, listen: false).removeSubject(id);
     });
   }
 
   Future<void> updateSubject(int id, String name) async {
-    await context.read<SubjectProvider>().updateSubject(widget.subject.id!, _subjectController.text);
+    await context.read<StudyProvider>().updateSubject(widget.subject.id!, _subjectController.text);
   }
 
   @override
@@ -211,7 +211,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                           value: 1,
                           child: TextButton(
                             onPressed: () async {
-                              await context.read<SubjectProvider>().removeSubject(widget.subject.id!)
+                              await context.read<StudyProvider>().removeSubject(widget.subject.id!)
                                 .then((value) => Navigator.of(context).pop());
                             },
                             child: const Text("Delete", style: TextStyle(color: Colors.white))

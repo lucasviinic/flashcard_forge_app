@@ -3,9 +3,8 @@ import 'package:flashcard_forge_app/models/TopicModel.dart';
 import 'package:flashcard_forge_app/services/repositories/local_storage_repo.dart';
 import 'package:flutter/foundation.dart';
 
-class SubjectProvider with ChangeNotifier {
+class StudyProvider with ChangeNotifier {
   List<SubjectModel> _subjects = [];
-
   List<SubjectModel> get subjects => _subjects;
 
   Future<void> getSubjects() async {

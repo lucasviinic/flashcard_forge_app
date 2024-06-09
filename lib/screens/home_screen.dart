@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
-import 'package:flashcard_forge_app/providers/subject_provider.dart';
+import 'package:flashcard_forge_app/providers/study_provider.dart';
 import 'package:flashcard_forge_app/services/repositories/local_storage_repo.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
 import 'package:flashcard_forge_app/widgets/SubjectContainer.dart';
@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> createSubject(SubjectModel subject) async {
     setLoading(true);
-    await context.read<SubjectProvider>().createSubject(subject).then((_) async {
+    await context.read<StudyProvider>().createSubject(subject).then((_) async {
       List<SubjectModel> subjectsList = await LocalStorage().getSubjects();
       setState(() => subjects = subjectsList);
     });
@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getSubjects() async {
-    context.read<SubjectProvider>().getSubjects();
+    context.read<StudyProvider>().getSubjects();
   }
 
   void showOptionModal() {
@@ -112,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final subjects = context.watch<SubjectProvider>().subjects;
+    final subjects = context.watch<StudyProvider>().subjects;
 
     return Scaffold(
       appBar: AppBar(
