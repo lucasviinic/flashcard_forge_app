@@ -3,9 +3,10 @@ import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class FlashcardForm extends StatefulWidget {
-  final FlashcardModel? flashcard;
+  const FlashcardForm({super.key, this.topicId, this.flashcard});
 
-  const FlashcardForm({super.key, this.flashcard});
+  final int? topicId;
+  final FlashcardModel? flashcard;
 
   @override
   State<FlashcardForm> createState() => _FlashcardFormState();

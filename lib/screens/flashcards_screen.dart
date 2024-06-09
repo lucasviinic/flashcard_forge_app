@@ -1,4 +1,5 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
+import 'package:flashcard_forge_app/models/TopicModel.dart';
 import 'package:flashcard_forge_app/screens/study_session_screen.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
@@ -8,10 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class FlashcardScreen extends StatefulWidget {
-  const FlashcardScreen({super.key, this.flashcards, this.title});
+  const FlashcardScreen({super.key, this.topic});
 
-  final String? title;
-  final List<FlashcardModel>? flashcards;
+  final TopicModel? topic;
 
   @override
   State<FlashcardScreen> createState() => _FlashcardScreenState();
@@ -42,7 +42,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
           children: [
             Expanded(
               child: Text(
-                widget.title!,
+                widget.topic!.topicName,
                 style: const TextStyle(fontSize: 20, color: Colors.white),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -103,7 +103,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
               ),
             ),
             Visibility(
-              visible: widget.flashcards!.isNotEmpty,
+              visible: widget.topic!.flashcards!.isNotEmpty,
               replacement: Expanded(
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * .85,
@@ -132,14 +132,14 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                 padding: const EdgeInsets.only(top: 10),
                 child: GridView.builder(
                   shrinkWrap: true,
-                  itemCount: widget.flashcards!.length,
+                  itemCount: widget.topic!.flashcards!.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 8,
                     mainAxisSpacing: 8,
                   ),
                   itemBuilder: (BuildContext context, int index) {
-                    return FlashcardPreview(widget.flashcards![index]);
+                    return FlashcardPreview(widget.topic!.flashcards![index]);
                   },
                 ),
               ),

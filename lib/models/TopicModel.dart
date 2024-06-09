@@ -26,10 +26,10 @@ class TopicModel {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'subject_id': subjectId,
-        'image_url': imageUrl,
-        'topic_name': topicName,
-        'flashcards': flashcards
-      };
+    'id': id,
+    'subject_id': subjectId,
+    'image_url': imageUrl,
+    'topic_name': topicName,
+    'flashcards': flashcards
+  };
 }

@@ -246,10 +246,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                           }),
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => FlashcardScreen(
-                                flashcards:  widget.subject.topics![i].flashcards ?? [],
-                                title:  widget.subject.topics![i].topicName
-                              ),
+                              builder: (context) => FlashcardScreen(topic: widget.subject.topics![i]),
                             ),
                           ),
                           child: Row(children: [
