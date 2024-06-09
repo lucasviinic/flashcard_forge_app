@@ -84,7 +84,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
       drawer: const DrawerMenu(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: ListView(
+        child: Column(
           children: [
             const SizedBox(
               height: 30,
@@ -129,55 +129,60 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                 ],
               ),
             ),
-            Visibility(
-              visible: widget.topic!.flashcards!.isNotEmpty,
-              replacement: Expanded(
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width * .85,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Center(
-                        child: SvgPicture.asset(
-                          "assets/images/no-content.svg",
-                          width: MediaQuery.of(context).size.width * .4,
-                        ),
-                      ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 10),
-                        child: Text(
-                          "No flashcards yet",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 22,
-                            color: Styles.backgroundText,
+            Expanded(
+              child: ListView(
+                children: [
+                  Visibility(
+                    visible: widget.topic!.flashcards!.isNotEmpty,
+                    replacement: SizedBox(
+                      height: MediaQuery.of(context).size.height * .8,
+                      width: MediaQuery.of(context).size.width * .85,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: SvgPicture.asset(
+                              "assets/images/no-content.svg",
+                              width: MediaQuery.of(context).size.width * .4,
+                            ),
                           ),
+                          const Padding(
+                            padding: EdgeInsets.only(top: 10),
+                            child: Text(
+                              "No flashcards yet",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 22,
+                                color: Styles.backgroundText,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: flashcards.length,
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
                         ),
-                      )
-                    ],
-                  ),
-                ),
+                        itemBuilder: (BuildContext context, int index) {
+                          return FlashcardPreview(
+                            flashcard: widget.topic!.flashcards[index],
+                            onDelete: _removeFlashcard,
+                          );
+                        },
+                      ),
+                    ),
+                  )
+                ],
               ),
-              child: Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: flashcards.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                  ),
-                  itemBuilder: (BuildContext context, int index) {
-                    return FlashcardPreview(
-                      flashcard: widget.topic!.flashcards[index],
-                      onDelete: _removeFlashcard,
-                    );
-                  },
-                ),
-              ),
-            )
+            ),
           ],
         ),
       ),
