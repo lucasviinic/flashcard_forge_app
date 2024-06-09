@@ -5,15 +5,15 @@ class TopicModel {
   int subjectId;
   String? imageUrl;
   String topicName;
-  List<FlashcardModel>? flashcards = [];
+  List<FlashcardModel> flashcards;
 
   TopicModel({
     this.id,
     required this.subjectId,
     required this.topicName,
     this.imageUrl,
-    this.flashcards
-  });
+    List<FlashcardModel>? flashcards,
+  }) : flashcards = flashcards ?? [];
 
   factory TopicModel.fromJson(Map<String, dynamic> json) {
     return TopicModel(
@@ -21,15 +21,17 @@ class TopicModel {
       subjectId: json['subject_id'],
       imageUrl: json['image_url'],
       topicName: json['topic_name'],
-      flashcards: json['flashcards']
+      flashcards: (json['flashcards'] as List<dynamic>?)
+          ?.map((flashcardJson) => FlashcardModel.fromJson(flashcardJson))
+          .toList() ?? [],
     );
   }
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'subject_id': subjectId,
-    'image_url': imageUrl,
-    'topic_name': topicName,
-    'flashcards': flashcards
-  };
+        'id': id,
+        'subject_id': subjectId,
+        'image_url': imageUrl,
+        'topic_name': topicName,
+        'flashcards': flashcards.map((flashcard) => flashcard.toJson()).toList(),
+      };
 }
