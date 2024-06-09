@@ -13,6 +13,6 @@ abstract class LocalStorageContract {
   Future<void> removeTopic(int subjectId, int topicId);
   Future<void> updateTopic(int subjectId, int topicId, String name);
   Future<void> createFlashcard(FlashcardModel flashcard);
-  Future<void> removeFlashcard(int subjectId, int topicId, int flashcardId);
+  Future<void> removeFlashcard(FlashcardModel flashcard);
   Future<void> updateFlashcard(FlashcardModel flashcard);
 }

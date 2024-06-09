@@ -18,10 +18,16 @@ class FlashcardScreen extends StatefulWidget {
 }
 
 class _FlashcardScreenState extends State<FlashcardScreen> {
-  List<FlashcardModel> flashcards = [];
+  void _removeFlashcard(FlashcardModel flashcard) {
+    setState(() {
+      widget.topic!.flashcards.remove(flashcard);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final List<FlashcardModel> flashcards = widget.topic!.flashcards;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Styles.primaryColor,
@@ -57,13 +63,17 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
           IconButton(
             onPressed: () {
               showDialog(
-                context: context, 
+                context: context,
                 builder: (BuildContext context) {
                   return const StudySession();
-                }
+                },
               );
             },
-            icon: const Icon(Icons.play_arrow_rounded, size: 40, color: Colors.white)
+            icon: const Icon(
+              Icons.play_arrow_rounded,
+              size: 40,
+              color: Colors.white,
+            ),
           ),
           const Padding(
             padding: EdgeInsets.all(10),
@@ -82,24 +92,39 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                 children: [
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text("Score: 7/20", style: TextStyle(fontSize: 14, color: Styles.redHard)),
+                    child: Text(
+                      "Score: 7/20",
+                      style: TextStyle(fontSize: 14, color: Styles.redHard),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10),
-                    child: Text("Time: 00:15:20", style: TextStyle(fontSize: 14, color: Styles.blueNeutral)),
+                    child: Text(
+                      "Time: 00:15:20",
+                      style: TextStyle(fontSize: 14, color: Styles.blueNeutral),
+                    ),
                   ),
                   Spacer(),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: Text("4", style: TextStyle(fontSize: 14, color: Styles.greenEasy)),
+                    child: Text(
+                      "4",
+                      style: TextStyle(fontSize: 14, color: Styles.greenEasy),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: Text("10", style: TextStyle(fontSize: 14, color: Styles.blueNeutral)),
+                    child: Text(
+                      "10",
+                      style: TextStyle(fontSize: 14, color: Styles.blueNeutral),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 5),
-                    child: Text("6", style: TextStyle(fontSize: 14, color: Styles.redHard)),
+                    child: Text(
+                      "6",
+                      style: TextStyle(fontSize: 14, color: Styles.redHard),
+                    ),
                   ),
                 ],
               ),
@@ -114,8 +139,8 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                     children: [
                       Center(
                         child: SvgPicture.asset(
-                          "assets/images/no-content.svg", 
-                          width: MediaQuery.of(context).size.width * .4
+                          "assets/images/no-content.svg",
+                          width: MediaQuery.of(context).size.width * .4,
                         ),
                       ),
                       const Padding(
@@ -123,7 +148,10 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                         child: Text(
                           "No flashcards yet",
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 22, color: Styles.backgroundText),
+                          style: TextStyle(
+                            fontSize: 22,
+                            color: Styles.backgroundText,
+                          ),
                         ),
                       )
                     ],
@@ -135,14 +163,17 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                 child: GridView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount: widget.topic!.flashcards!.length,
+                  itemCount: flashcards.length,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 8,
                     mainAxisSpacing: 8,
                   ),
                   itemBuilder: (BuildContext context, int index) {
-                    return FlashcardPreview(widget.topic!.flashcards[index]);
+                    return FlashcardPreview(
+                      flashcard: widget.topic!.flashcards[index],
+                      onDelete: _removeFlashcard,
+                    );
                   },
                 ),
               ),
@@ -153,16 +184,16 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          gradient: Styles.linearGradient
+          gradient: Styles.linearGradient,
         ),
         child: FloatingActionButton(
           backgroundColor: Colors.transparent,
           onPressed: () async {
             final flashcardObject = await showDialog<FlashcardModel>(
-              context: context, 
+              context: context,
               builder: (BuildContext context) {
                 return FlashcardForm(
-                  subjectId: widget.topic!.subjectId, 
+                  subjectId: widget.topic!.subjectId,
                   topicId: widget.topic!.id,
                 );
               },
@@ -177,7 +208,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
           tooltip: 'Create new subject',
           child: const Icon(Icons.add, color: Colors.white),
         ),
-      )
+      ),
     );
   }
 }

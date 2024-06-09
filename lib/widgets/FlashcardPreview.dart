@@ -1,13 +1,20 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
+import 'package:flashcard_forge_app/providers/study_provider.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flashcard_forge_app/widgets/Flashcard.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardForm.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FlashcardPreview extends StatefulWidget {
   final FlashcardModel flashcard;
+  final void Function(FlashcardModel flashcard) onDelete;
 
-  const FlashcardPreview(this.flashcard, {super.key});
+  const FlashcardPreview({
+    required this.flashcard,
+    required this.onDelete,
+    super.key,
+  });
 
   @override
   State<FlashcardPreview> createState() => _FlashcardPreviewState();
@@ -27,6 +34,16 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
     }
   }
 
+  Future<void> deleteFlashcard(FlashcardModel flashcard) async {
+    try {
+      await context.read<StudyProvider>().removeFlashcard(flashcard);
+      widget.onDelete(flashcard);  // Call the callback to update the parent state
+    } catch (error) {
+      print("Erro ao editar flashcard");
+      //Exibir modal
+    }
+  }
+
   Future<void> showDeleteFlashcardDialog(BuildContext context) {
     return showDialog(
       context: context,
@@ -35,13 +52,15 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
           backgroundColor: Styles.secondaryColor,
           title: Icon(Icons.warning_amber_rounded, color: Colors.red[600], size: 50),
           content: const Text(
-            "Do you really want to delete this flashcard?", textAlign: TextAlign.center,
+            "Do you really want to delete this flashcard?",
+            textAlign: TextAlign.center,
             style: TextStyle(fontSize: 20),
           ),
           actions: <Widget>[
             TextButton(
               child: const Text('Yes', style: TextStyle(fontSize: 16)),
-              onPressed: () {
+              onPressed: () async {
+                await deleteFlashcard(flashcard!);
                 Navigator.of(context).pop();
               },
             ),
