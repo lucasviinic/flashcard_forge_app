@@ -23,7 +23,6 @@ class _SubjectContainerState extends State<SubjectContainer> {
   bool showDropdown = false;
   bool creatingTopic = false;
   bool editing = false;
-  bool editingTopic = false;
   
   int? longPressedTopicIndex;
 
@@ -33,6 +32,8 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
   final FocusNode _focusNode = FocusNode();
   late StreamSubscription<bool> keyboardSubscription;
+
+  Map<int, bool> editingTopic = {};
 
   void showOptionModal() {
     showModalBottomSheet<void>(
@@ -60,7 +61,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                 const Padding(padding: EdgeInsets.symmetric(vertical: 5), child: VerticalDivider(width: 10),
                 ),
                 TextButton(
-                  child: const Text('Cencel', style: TextStyle(fontSize: 16, color: Colors.red)),
+                  child: const Text('Cancel', style: TextStyle(fontSize: 16, color: Colors.red)),
                   onPressed: () {
                     setState(() {
                       _subjectController.text = widget.subject.subjectName!;
@@ -253,17 +254,17 @@ class _SubjectContainerState extends State<SubjectContainer> {
                             const SizedBox(width: 8),
                             Expanded(
                               child: Visibility(
-                                visible: !editingTopic,
+                                visible: !(editingTopic[widget.subject.topics![i].id!] ?? false),
                                 replacement: TextField(
                                   onSubmitted: (value) {
                                     updateTopic(widget.subject.id!, widget.subject.topics![i].id!, value).then((_) {
                                       setState(() {
                                         _editTopicController.text = value;
-                                        editingTopic = false;
+                                        editingTopic[widget.subject.topics![i].id!] = false;
                                       });
                                     });
                                   },
-                                  autofocus: editingTopic,
+                                  autofocus: editingTopic[widget.subject.topics![i].id!] ?? false,
                                   maxLength: 50,
                                   controller: _editTopicController,
                                   style: const TextStyle(color: Styles.accentColor),
@@ -288,11 +289,14 @@ class _SubjectContainerState extends State<SubjectContainer> {
                             Visibility(
                               visible: i == longPressedTopicIndex,
                               child: Visibility(
-                                visible: editingTopic,
+                                visible: editingTopic[widget.subject.topics![i].id!] ?? false,
                                 replacement: Row(
                                   children: [
                                     IconButton(
-                                      onPressed: () => setState(() => editingTopic = true),
+                                      onPressed: () => setState(() {
+                                        editingTopic[widget.subject.topics![i].id!] = true;
+                                        _editTopicController.text = widget.subject.topics![i].topicName;
+                                      }),
                                       icon: const Icon(Icons.edit)
                                     ),
                                     IconButton(
@@ -309,7 +313,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                     updateTopic(widget.subject.id!, widget.subject.topics![i].id!, _editTopicController.text).then((_) {
                                       setState(() {
                                         longPressedTopicIndex = null;
-                                        editingTopic = false;
+                                        editingTopic[widget.subject.topics![i].id!] = false;
                                       });
                                     });
                                   },
@@ -363,7 +367,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                         child: VerticalDivider(),
                                       ),
                                       TextButton(
-                                        child: const Text('Cencel', style: TextStyle(fontSize: 16, color: Colors.red)),
+                                        child: const Text('Cancel', style: TextStyle(fontSize: 16, color: Colors.red)),
                                         onPressed: () {
                                           setState(() {
                                             _topicController.text = "";
