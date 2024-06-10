@@ -61,18 +61,20 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return const StudySession();
-                },
-              );
-            },
-            icon: const Icon(
+            onPressed: widget.topic!.flashcards.isNotEmpty
+              ? () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return StudySession(flashcardList: widget.topic!.flashcards);
+                    },
+                  );
+                }
+              : null,
+            icon: Icon(
               Icons.play_arrow_rounded,
               size: 40,
-              color: Colors.white,
+              color: widget.topic!.flashcards.isNotEmpty ? Colors.white : Colors.white.withOpacity(0.5),
             ),
           ),
           const Padding(
