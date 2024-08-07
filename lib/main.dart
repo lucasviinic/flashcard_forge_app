@@ -1,4 +1,4 @@
-import 'package:flashcard_forge_app/providers/subject_provider.dart';
+import 'package:flashcard_forge_app/providers/study_provider.dart';
 import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
 import 'package:flashcard_forge_app/screens/home_screen.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
@@ -9,7 +9,7 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => SubjectProvider()),
+        ChangeNotifierProvider(create: (_) => StudyProvider()),
       ],
       child: const MyApp(),
     ),
