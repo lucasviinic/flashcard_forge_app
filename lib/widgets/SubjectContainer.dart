@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
-import 'package:flashcard_forge_app/providers/subject_provider.dart';
+import 'package:flashcard_forge_app/providers/study_provider.dart';
 import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
 import 'package:flashcard_forge_app/services/repositories/local_storage_repo.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,6 @@ class _SubjectContainerState extends State<SubjectContainer> {
   bool showDropdown = false;
   bool creatingTopic = false;
   bool editing = false;
-  bool editingTopic = false;
   
   int? longPressedTopicIndex;
 
@@ -33,6 +32,8 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
   final FocusNode _focusNode = FocusNode();
   late StreamSubscription<bool> keyboardSubscription;
+
+  Map<int, bool> editingTopic = {};
 
   void showOptionModal() {
     showModalBottomSheet<void>(
@@ -60,7 +61,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                 const Padding(padding: EdgeInsets.symmetric(vertical: 5), child: VerticalDivider(width: 10),
                 ),
                 TextButton(
-                  child: const Text('Cencel', style: TextStyle(fontSize: 16, color: Colors.red)),
+                  child: const Text('Cancel', style: TextStyle(fontSize: 16, color: Colors.red)),
                   onPressed: () {
                     setState(() {
                       _subjectController.text = widget.subject.subjectName!;
@@ -80,7 +81,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
   Future<void> createTopic(int subjectId, String topicName) async {
     try {
       TopicModel topic = TopicModel(subjectId: subjectId, topicName: topicName);
-      await context.read<SubjectProvider>().createTopic(subjectId, topic);
+      await context.read<StudyProvider>().createTopic(subjectId, topic);
       setState(() {
         _topicController.text = "";
         creatingTopic = false;
@@ -93,7 +94,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
   Future<void> removeTopic(int subjectId, int topicId) async {
     try {
-      await context.read<SubjectProvider>().removeTopic(subjectId, topicId);
+      await context.read<StudyProvider>().removeTopic(subjectId, topicId);
     } catch (error) {
       print("Erro ao remover o tópico: $error");
     }
@@ -101,7 +102,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
   Future<void> updateTopic(int subjectId, int topicId, String name) async {
     try {
-      await context.read<SubjectProvider>().updateTopic(subjectId, topicId, name);
+      await context.read<StudyProvider>().updateTopic(subjectId, topicId, name);
     } catch (error) {
       print("Erro ao atualizar o tópico: $error");
     }
@@ -109,12 +110,12 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
   Future<void> removeSubject(int id) async {
     await LocalStorage().removeSubject(id).then((_) {
-      Provider.of<SubjectProvider>(context, listen: false).removeSubject(id);
+      Provider.of<StudyProvider>(context, listen: false).removeSubject(id);
     });
   }
 
   Future<void> updateSubject(int id, String name) async {
-    await context.read<SubjectProvider>().updateSubject(widget.subject.id!, _subjectController.text);
+    await context.read<StudyProvider>().updateSubject(widget.subject.id!, _subjectController.text);
   }
 
   @override
@@ -211,7 +212,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                           value: 1,
                           child: TextButton(
                             onPressed: () async {
-                              await context.read<SubjectProvider>().removeSubject(widget.subject.id!)
+                              await context.read<StudyProvider>().removeSubject(widget.subject.id!)
                                 .then((value) => Navigator.of(context).pop());
                             },
                             child: const Text("Delete", style: TextStyle(color: Colors.white))
@@ -246,27 +247,24 @@ class _SubjectContainerState extends State<SubjectContainer> {
                           }),
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => FlashcardScreen(
-                                flashcards:  widget.subject.topics![i].flashcards ?? [],
-                                title:  widget.subject.topics![i].topicName
-                              ),
+                              builder: (context) => FlashcardScreen(topic: widget.subject.topics![i]),
                             ),
                           ),
                           child: Row(children: [
                             const SizedBox(width: 8),
                             Expanded(
                               child: Visibility(
-                                visible: !editingTopic,
+                                visible: !(editingTopic[widget.subject.topics![i].id!] ?? false),
                                 replacement: TextField(
                                   onSubmitted: (value) {
                                     updateTopic(widget.subject.id!, widget.subject.topics![i].id!, value).then((_) {
                                       setState(() {
                                         _editTopicController.text = value;
-                                        editingTopic = false;
+                                        editingTopic[widget.subject.topics![i].id!] = false;
                                       });
                                     });
                                   },
-                                  autofocus: editingTopic,
+                                  autofocus: editingTopic[widget.subject.topics![i].id!] ?? false,
                                   maxLength: 50,
                                   controller: _editTopicController,
                                   style: const TextStyle(color: Styles.accentColor),
@@ -291,11 +289,14 @@ class _SubjectContainerState extends State<SubjectContainer> {
                             Visibility(
                               visible: i == longPressedTopicIndex,
                               child: Visibility(
-                                visible: editingTopic,
+                                visible: editingTopic[widget.subject.topics![i].id!] ?? false,
                                 replacement: Row(
                                   children: [
                                     IconButton(
-                                      onPressed: () => setState(() => editingTopic = true),
+                                      onPressed: () => setState(() {
+                                        editingTopic[widget.subject.topics![i].id!] = true;
+                                        _editTopicController.text = widget.subject.topics![i].topicName;
+                                      }),
                                       icon: const Icon(Icons.edit)
                                     ),
                                     IconButton(
@@ -312,7 +313,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                     updateTopic(widget.subject.id!, widget.subject.topics![i].id!, _editTopicController.text).then((_) {
                                       setState(() {
                                         longPressedTopicIndex = null;
-                                        editingTopic = false;
+                                        editingTopic[widget.subject.topics![i].id!] = false;
                                       });
                                     });
                                   },
@@ -366,7 +367,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                         child: VerticalDivider(),
                                       ),
                                       TextButton(
-                                        child: const Text('Cencel', style: TextStyle(fontSize: 16, color: Colors.red)),
+                                        child: const Text('Cancel', style: TextStyle(fontSize: 16, color: Colors.red)),
                                         onPressed: () {
                                           setState(() {
                                             _topicController.text = "";

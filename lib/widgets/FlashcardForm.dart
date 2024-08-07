@@ -1,11 +1,15 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
+import 'package:flashcard_forge_app/providers/study_provider.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FlashcardForm extends StatefulWidget {
-  final FlashcardModel? flashcard;
+  const FlashcardForm({super.key, this.subjectId, this.topicId, this.flashcard});
 
-  const FlashcardForm({super.key, this.flashcard});
+  final int? subjectId;
+  final int? topicId;
+  final FlashcardModel? flashcard;
 
   @override
   State<FlashcardForm> createState() => _FlashcardFormState();
@@ -16,14 +20,42 @@ class _FlashcardFormState extends State<FlashcardForm> {
   final TextEditingController answerController = TextEditingController();
 
   List<bool> isSelected = [false, false, false];
-  FlashcardModel? flashcard;
+  FlashcardModel? flashcard = FlashcardModel();
+  bool editing = false;
+
+  Future<void> createFlashcard(FlashcardModel flashcard) async {
+    flashcard.subjectId = widget.subjectId!;
+    flashcard.topicId =  widget.topicId!;
+    try {
+      await context.read<StudyProvider>().createFlashcard(flashcard);
+    } catch (error) {
+      //Exibir modal
+      print("Erro ao criar o flashcard: $error");
+      rethrow;
+    }
+  }
+
+  Future<void> updateFlashcard(FlashcardModel flashcard) async {
+    try {
+      await context.read<StudyProvider>().updateFlashcard(flashcard);
+    } catch (error) {
+      print("Erro ao editar flashcard");
+      //Exibir modal
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    flashcard = widget.flashcard ?? FlashcardModel();
-    questionController.text = flashcard?.question ?? '';
-    answerController.text = flashcard?.answer ?? '';
+    if (widget.flashcard != null) {
+      editing = true;
+      flashcard = widget.flashcard;
+      questionController.text = flashcard?.question ?? '';
+      answerController.text = flashcard?.answer ?? '';
+      if (flashcard!.difficulty != null && flashcard!.difficulty != -1) {
+        isSelected[flashcard!.difficulty!] = true;
+      }
+    }
   }
 
   @override
@@ -140,12 +172,19 @@ class _FlashcardFormState extends State<FlashcardForm> {
           style: TextButton.styleFrom(
             textStyle: Theme.of(context).textTheme.labelLarge,
           ),
-          child: const Text('Save'),
+          child: Text(editing ? "Save" : "Create"),
           onPressed: () {
+            //
             setState(() {
               flashcard!.question = questionController.text;
               flashcard!.answer = answerController.text;
               flashcard!.difficulty = isSelected.indexOf(true);
+              if (editing) {
+                updateFlashcard(flashcard!);
+              }
+              else {
+                createFlashcard(flashcard!);
+              }
             });
             Navigator.of(context).pop(flashcard);
           },

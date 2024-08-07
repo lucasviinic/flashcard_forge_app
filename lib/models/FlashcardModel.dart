@@ -42,7 +42,7 @@ class FlashcardModel {
     'topic_id': topicId,
     'question': question,
     'answer': answer,
-    'difficulty': answer,
+    'difficulty': difficulty,
     'last_response': lastResponse,
     'image_url': imageUrl
   };

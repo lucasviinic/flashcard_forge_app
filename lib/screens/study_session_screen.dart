@@ -1,16 +1,20 @@
 import 'dart:async';
 
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
-import 'package:flashcard_forge_app/services/mocks.dart';
+import 'package:flashcard_forge_app/models/StudySessionModel.dart';
+import 'package:flashcard_forge_app/providers/study_provider.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import 'package:provider/provider.dart';
 
 class StudySession extends StatefulWidget {
+  final int? subjectId;
+  final int? topicId;
   final List<FlashcardModel>? flashcardList;
 
-  const StudySession({super.key, this.flashcardList});
+  const StudySession({super.key, this.flashcardList, this.subjectId, this.topicId});
 
   @override
   State<StudySession> createState() => _StudySessionState();
@@ -19,13 +23,57 @@ class StudySession extends StatefulWidget {
 class _StudySessionState extends State<StudySession> {
   GlobalKey<FlipCardState> flipCardKey = GlobalKey<FlipCardState>();
 
-  List<FlashcardModel> flashcardList = flashcardListMock;
   int currentIndex = 0;
   double progress = 0.0;
   bool sessionCompleted = false;
 
+  int correctAnswerCount = 0;
+  int incorrectAnswerCount = 0;
+
+  void saveStudySession() async {
+    List<FlashcardModel>? easyQuestions = [];
+    List<FlashcardModel>? mediumQuestions = [];
+    List<FlashcardModel>? hardQuestions = [];
+
+    for (var flashcard in widget.flashcardList!) {
+      if (flashcard.lastResponse == true) {
+        switch (flashcard.difficulty) {
+          case 0: // Easy
+            easyQuestions.add(flashcard);
+            break;
+          case 1: // Medium
+            mediumQuestions.add(flashcard);
+            break;
+          case 2: // Hard
+            hardQuestions.add(flashcard);
+            break;
+          default:
+            break;
+        }
+      }
+    }
+
+    StudySessionModel studySession = StudySessionModel(
+      subjectId: widget.subjectId!, 
+      topicId: widget.topicId!, 
+      correctAnswerCount: correctAnswerCount, 
+      incorrectAnswerCount: incorrectAnswerCount, 
+      totalQuestions: widget.flashcardList!.length, 
+      totalTimeSpent: _timer.toString(), 
+      easyQuestionCount: easyQuestions.length, 
+      mediumQuestionCount: mediumQuestions.length, 
+      hardQuestionCount: hardQuestions.length, 
+      easyQuestions: easyQuestions, 
+      mediumQuestions: mediumQuestions, 
+      hardQuestions: hardQuestions, 
+      createdAt: DateTime.now()
+    );
+
+    await context.read<StudyProvider>().saveStudySession(studySession);
+  }
+
   void updateProgress() {
-    double percent = 1 / flashcardList.length;
+    double percent = 1 / widget.flashcardList!.length;
     if (progress + percent < 1) {
       progress += percent;
     }
@@ -136,9 +184,9 @@ class _StudySessionState extends State<StudySession> {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 18),
                               child: Text(
-                                flashcardList[currentIndex].question!,
+                                widget.flashcardList![currentIndex].question!,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: flashcardList[currentIndex].question!.length >= 50 ? 17 : 20),
+                                style: TextStyle(fontSize: widget.flashcardList![currentIndex].question!.length >= 50 ? 17 : 20),
                               ),
                             ),
                           ),
@@ -161,9 +209,9 @@ class _StudySessionState extends State<StudySession> {
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 18),
                               child: Text(
-                                flashcardList[currentIndex].answer!,
+                                widget.flashcardList![currentIndex].answer!,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: flashcardList[currentIndex].answer!.length >= 50 ? 17 : 20),
+                                style: TextStyle(fontSize: widget.flashcardList![currentIndex].answer!.length >= 50 ? 17 : 20),
                               ),
                             ),
                           ),
@@ -176,12 +224,14 @@ class _StudySessionState extends State<StudySession> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      if (currentIndex < flashcardList.length - 1) {
+                                      correctAnswerCount += 1;
+                                      if (currentIndex < widget.flashcardList!.length - 1) {
                                         flipCardKey.currentState?.toggleCardWithoutAnimation();
                                         currentIndex++;
                                       } else {
                                         _stopTimer();
                                         sessionCompleted = true;
+                                        saveStudySession();
                                       }
                                       updateProgress();
                                     });
@@ -202,12 +252,14 @@ class _StudySessionState extends State<StudySession> {
                                 GestureDetector(
                                   onTap: () {
                                     setState(() {
-                                      if (currentIndex < flashcardList.length - 1) {
+                                      incorrectAnswerCount += 1;
+                                      if (currentIndex < widget.flashcardList!.length - 1) {
                                         flipCardKey.currentState?.toggleCardWithoutAnimation();
                                         currentIndex++;
                                       } else {
                                         _stopTimer();
                                         sessionCompleted = true;
+                                        saveStudySession();
                                       }
                                       updateProgress();
                                     });
