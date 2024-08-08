@@ -1,15 +1,13 @@
 import 'dart:async';
 
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
-import 'package:flashcard_forge_app/providers/study_provider.dart';
-import 'package:flashcard_forge_app/services/repositories/local_storage_repo.dart';
+import 'package:flashcard_forge_app/services/service.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
 import 'package:flashcard_forge_app/widgets/SubjectContainer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
-import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -38,15 +36,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> createSubject(SubjectModel subject) async {
     setLoading(true);
-    await context.read<StudyProvider>().createSubject(subject).then((_) async {
-      List<SubjectModel> subjectsList = await LocalStorage().getSubjects();
-      setState(() => subjects = subjectsList);
-    });
+    // await context.read<StudyProvider>().createSubject(subject).then((_) async {
+    //   List<SubjectModel> subjectsList = await LocalStorage().getSubjects();
+    //   setState(() => subjects = subjectsList);
+    // });
     setLoading(false);
-  }
-
-  Future<void> getSubjects() async {
-    context.read<StudyProvider>().getSubjects();
   }
 
   void showOptionModal() {
@@ -92,6 +86,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void getSubjects() async {
+    List<SubjectModel> result = await FlashcardServiceImpl().getSubjects();
+    setState(() => subjects = result);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -112,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final subjects = context.watch<StudyProvider>().subjects;
+    final List<SubjectModel> subjectList = subjects;
 
     return Scaffold(
       appBar: AppBar(
@@ -145,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Visibility(
-          visible: subjects.isNotEmpty || creatingSubject,
+          visible: subjectList.isNotEmpty || creatingSubject,
           replacement: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -178,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Column(
                 children: [
-                  ...subjects.map((subject) {
+                  ...subjectList.map((subject) {
                     return SubjectContainer(subject: subject);
                   }),
                   Visibility(
