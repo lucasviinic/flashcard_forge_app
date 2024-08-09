@@ -1,5 +1,4 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
-import 'package:flashcard_forge_app/providers/study_provider.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flashcard_forge_app/widgets/Flashcard.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardForm.dart';
@@ -36,7 +35,7 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
 
   Future<void> deleteFlashcard(FlashcardModel flashcard) async {
     try {
-      await context.read<StudyProvider>().removeFlashcard(flashcard);
+      //await context.read<StudyProvider>().removeFlashcard(flashcard);
       widget.onDelete(flashcard);  // Call the callback to update the parent state
     } catch (error) {
       print("Erro ao editar flashcard");

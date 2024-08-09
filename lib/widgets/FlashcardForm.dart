@@ -1,5 +1,4 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
-import 'package:flashcard_forge_app/providers/study_provider.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,7 +26,7 @@ class _FlashcardFormState extends State<FlashcardForm> {
     flashcard.subjectId = widget.subjectId!;
     flashcard.topicId =  widget.topicId!;
     try {
-      await context.read<StudyProvider>().createFlashcard(flashcard);
+      //await context.read<StudyProvider>().createFlashcard(flashcard);
     } catch (error) {
       //Exibir modal
       print("Erro ao criar o flashcard: $error");
@@ -37,7 +36,7 @@ class _FlashcardFormState extends State<FlashcardForm> {
 
   Future<void> updateFlashcard(FlashcardModel flashcard) async {
     try {
-      await context.read<StudyProvider>().updateFlashcard(flashcard);
+     //await context.read<StudyProvider>().updateFlashcard(flashcard);
     } catch (error) {
       print("Erro ao editar flashcard");
       //Exibir modal

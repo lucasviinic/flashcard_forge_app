@@ -2,12 +2,10 @@ import 'dart:async';
 
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/models/StudySessionModel.dart';
-import 'package:flashcard_forge_app/providers/study_provider.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
-import 'package:provider/provider.dart';
 
 class StudySession extends StatefulWidget {
   final int? subjectId;
@@ -68,8 +66,6 @@ class _StudySessionState extends State<StudySession> {
       hardQuestions: hardQuestions, 
       createdAt: DateTime.now()
     );
-
-    await context.read<StudyProvider>().saveStudySession(studySession);
   }
 
   void updateProgress() {
