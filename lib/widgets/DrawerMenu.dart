@@ -1,4 +1,5 @@
 import 'package:flashcard_forge_app/utils/constants.dart';
+import 'package:flashcard_forge_app/widgets/FeedbackModal.dart';
 import 'package:flashcard_forge_app/widgets/ThemeSwitch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -67,7 +68,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 20),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamedAndRemoveUntil(context, '/', (Route<dynamic> route) => false);
+                      },
                       child: Row(
                         children: [
                           SvgPicture.asset("assets/images/subjects-icon.svg", width: 35, height: 35),
@@ -80,7 +83,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 15),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.popAndPushNamed(context, '/history');
+                      },
                       child: const Row(
                         children: [
                           Icon(Icons.history, color: Colors.white, size: 30),
@@ -95,7 +100,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 20),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.popAndPushNamed(context, '/about');
+                      },
                       child: Row(
                         children: [
                           SvgPicture.asset("assets/images/about.svg", width: 25, height: 25),
@@ -108,7 +115,14 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 20),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return const FeedbackModal();
+                          },
+                        );
+                      },
                       child: const Row(
                         children: [
                           Icon(Icons.feedback_outlined, color: Colors.white, size: 25),
