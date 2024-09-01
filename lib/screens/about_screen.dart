@@ -38,7 +38,7 @@ class AboutScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text("About", style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
+                    Text("About", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -47,7 +47,7 @@ class AboutScreen extends StatelessWidget {
                 
                 Row(
                   children: [
-                    Text("Minimalista", style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
+                    Text("Minimalista", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -56,7 +56,7 @@ class AboutScreen extends StatelessWidget {
                 
                 Row(
                   children: [
-                    Text("Organização Personalizada", style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
+                    Text("Organização Personalizada", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -64,7 +64,7 @@ class AboutScreen extends StatelessWidget {
                 SizedBox(height: 20),
                 Row(
                   children: [
-                    Text("Aprendizado Inteligente com IA", style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
+                    Text("Aprendizado com IA", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 SizedBox(height: 20),
@@ -72,7 +72,7 @@ class AboutScreen extends StatelessWidget {
                 SizedBox(height: 20),
                 Row(
                   children: [
-                    Text("Flexibilidade e Conveniência", style: TextStyle(fontSize: 19, fontWeight: FontWeight.bold)),
+                    Text("Flexibilidade e Conveniência", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                   ],
                 ),
                 SizedBox(height: 20),
