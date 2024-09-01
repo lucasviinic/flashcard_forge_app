@@ -26,13 +26,7 @@ class AboutScreen extends StatelessWidget {
           },
         ),
         title: const Text("About", style: TextStyle(color: Colors.white)),
-        centerTitle: true,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(Icons.search, size: 30, color: Colors.white),
-          ),
-        ],
+        centerTitle: true
       ),
       drawer: const DrawerMenu(),
       body: SingleChildScrollView(
