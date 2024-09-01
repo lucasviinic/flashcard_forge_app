@@ -21,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late TextEditingController _controller;
   late StreamSubscription<bool> keyboardSubscription;
+  bool isSearching = false;
 
   final FocusNode _focusNode = FocusNode();
 
@@ -134,13 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         title: SvgPicture.asset('assets/images/logo-v1.svg', height: 35, width: 35),
-        centerTitle: true,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(Icons.search, size: 30, color: Colors.white),
-          ),
-        ],
+        centerTitle: true
       ),
       drawer: const DrawerMenu(),
       body: Padding(
@@ -179,6 +174,28 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: Column(
                 children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: 5),
+                    child: TextField(
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        hintText: "Search term",
+                        hintStyle: TextStyle(color: Color.fromARGB(155, 255, 255, 255)),
+                        prefixIcon: Padding(
+                          padding: EdgeInsets.only(left: 5),
+                          child: Icon(Icons.search, size: 25, color: Color.fromARGB(155, 255, 255, 255)),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                          borderSide: BorderSide(color: Color.fromARGB(155, 255, 255, 255)), // Cor da borda branca
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(50)), // Bordas arredondadas
+                          borderSide: BorderSide(color: Color.fromARGB(155, 255, 255, 255)), // Cor da borda branca quando focado
+                        ),
+                      ),
+                    ),
+                  ),
                   ...subjectList.map((subject) {
                     return SubjectContainer(subject: subject);
                   }),
