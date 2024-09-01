@@ -1,5 +1,7 @@
+import 'package:flashcard_forge_app/screens/about_screen.dart';
 import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
 import 'package:flashcard_forge_app/screens/home_screen.dart';
+import 'package:flashcard_forge_app/screens/study_history_screen.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -28,6 +30,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomeScreen(title: "Flashcard Forge"),
         '/flashcards': (context) => const FlashcardScreen(),
+        '/history': (context) => const StudyHistoryScreen(),
+        '/about': (context) => const AboutScreen()
       },
     );
   }
