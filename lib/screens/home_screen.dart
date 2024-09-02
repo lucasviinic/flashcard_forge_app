@@ -51,44 +51,63 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void showOptionModal() {
-    showModalBottomSheet<void>(
+  Future<void> showConfirmModal() async {
+    return showDialog<void>(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
-        return Container(
-          height: 90,
-          color: Styles.secondaryColor,
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                TextButton(
-                  child: const Text('Save', style: TextStyle(fontSize: 16, color: Colors.green)),
-                  onPressed: () async {
-                    createSubject(SubjectModel(subjectName: _controller.text)).then((_) {
-                      setState(() {
-                        _controller.text = "";
-                        creatingSubject = false;
-                      });
-                      Navigator.of(context).pop();
-                    });
-                  } ,
-                ),
-                const Padding(padding: EdgeInsets.symmetric(vertical: 5), child: VerticalDivider(width: 10),
-                ),
-                TextButton(
-                  child: const Text('Cencel', style: TextStyle(fontSize: 16, color: Colors.red)),
-                  onPressed: () {
-                    setState(() {
-                      _controller.text = "";
-                      creatingSubject = false;
-                    });
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
+        return AlertDialog(
+          backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * .95,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const Icon(Icons.warning_amber_rounded, color: Colors.orangeAccent, size: 100),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text("Do you want to save the action?", 
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium!.color,
+                        fontSize: 20,
+                      )
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
+          actions: <Widget>[
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: Text('Cancel', style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color, fontSize: 16)),
+              onPressed: () {
+                setState(() {
+                  _controller.text = "";
+                  creatingSubject = false;
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                textStyle: Theme.of(context).textTheme.labelLarge,
+              ),
+              child: Text("Save", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color, fontSize: 16)),
+              onPressed: () async {
+                createSubject(SubjectModel(subjectName: _controller.text)).then((_) {
+                  setState(() {
+                    _controller.text = "";
+                    creatingSubject = false;
+                  });
+                  Navigator.of(context).pop();
+                });
+              } ,
+            ),
+          ],
         );
       },
     );
@@ -100,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
     _controller = TextEditingController();
     KeyboardVisibilityController().onChange.listen((bool visible) {
       if (!visible && creatingSubject) {
-        showOptionModal();
+        showConfirmModal();
       }
     });
     getSubjects();
@@ -118,13 +137,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Styles.primaryColor,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.menu_rounded,
-                color: Colors.white,
+                color: Theme.of(context).textTheme.bodyMedium!.color,
                 size: 30,
               ),
               onPressed: () {
@@ -151,12 +170,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   width: MediaQuery.of(context).size.width * .4
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.only(top: 10),
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
                 child: Text(
                   "No subjects yet",
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 22, color: Styles.backgroundText),
+                  style: TextStyle(fontSize: 22, color: Theme.of(context).textTheme.bodyMedium!.color),
                 ),
               )
             ],
@@ -164,34 +183,35 @@ class _HomeScreenState extends State<HomeScreen> {
           child: SingleChildScrollView(
             child: Visibility(
               visible: !loading,
-              replacement: const Column(
+              replacement: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Center(
-                    child: CircularProgressIndicator(color: Colors.white),
+                    child: CircularProgressIndicator(color: Theme.of(context).textTheme.bodyMedium!.color),
                   ),
                 ],
               ),
               child: Column(
                 children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 5),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5),
                     child: TextField(
-                      style: TextStyle(color: Colors.white),
+                      cursorColor: Theme.of(context).hintColor,
+                      style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
                       decoration: InputDecoration(
                         hintText: "Search term",
-                        hintStyle: TextStyle(color: Color.fromARGB(155, 255, 255, 255)),
+                        hintStyle: TextStyle(color: Theme.of(context).hintColor),
                         prefixIcon: Padding(
-                          padding: EdgeInsets.only(left: 5),
-                          child: Icon(Icons.search, size: 25, color: Color.fromARGB(155, 255, 255, 255)),
+                          padding: const EdgeInsets.only(left: 5),
+                          child: Icon(Icons.search, size: 25, color: Theme.of(context).hintColor),
                         ),
                         enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(50)),
-                          borderSide: BorderSide(color: Color.fromARGB(155, 255, 255, 255)), // Cor da borda branca
+                          borderRadius: const BorderRadius.all(Radius.circular(50)),
+                          borderSide: BorderSide(color: Theme.of(context).hintColor), // Cor da borda branca
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(50)), // Bordas arredondadas
-                          borderSide: BorderSide(color: Color.fromARGB(155, 255, 255, 255)), // Cor da borda branca quando focado
+                          borderRadius: const BorderRadius.all(Radius.circular(50)), // Bordas arredondadas
+                          borderSide: BorderSide(color: Theme.of(context).hintColor), // Cor da borda branca quando focado
                         ),
                       ),
                     ),
@@ -205,13 +225,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       height: 65,
                       margin: const EdgeInsets.only(top: 10),
                       decoration: BoxDecoration(
+                        color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
                         borderRadius: BorderRadius.circular(10),
-                        gradient: Styles.linearGradient
                       ),
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: TextField(
+                            cursorColor: Theme.of(context).hintColor,
                             onSubmitted: (value) {
                               createSubject(SubjectModel(subjectName: value)).then((_) {
                                 setState(() {
@@ -223,13 +244,16 @@ class _HomeScreenState extends State<HomeScreen> {
                             autofocus: creatingSubject,
                             maxLength: 50,
                             controller: _controller,
-                            style: const TextStyle(fontSize: 20, color: Colors.white),
-                            decoration: const InputDecoration(
+                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyMedium!.color),
+                            decoration: InputDecoration(
                               hintText: "Add a subject",
-                              hintStyle: TextStyle(fontSize: 20, color: Colors.white),
+                              hintStyle: TextStyle(color: Theme.of(context).hintColor),
                               counterText: "",
                               contentPadding: EdgeInsets.zero,
-                              isDense: true
+                              isDense: true,
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Theme.of(context).hintColor), // Cor da borda branca quando focado
+                              ),
                             ),
                             focusNode: _focusNode,
                           ),
@@ -247,18 +271,19 @@ class _HomeScreenState extends State<HomeScreen> {
         visible: !creatingSubject,
         child: Container(
           decoration: BoxDecoration(
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(15),
             gradient: Styles.linearGradient
           ),
           child: FloatingActionButton(
-            backgroundColor: Colors.transparent,
+            backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
             onPressed: () {
               setState(() {
                 creatingSubject = true;
               });
             },
             tooltip: 'Create new subject',
-            child: const Icon(Icons.add, color: Colors.white),
+            child: Icon(Icons.add, color: Theme.of(context).textTheme.bodyMedium!.color),
           ),
         ),
       ),

@@ -48,7 +48,7 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Styles.secondaryColor,
+          backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
           title: Icon(Icons.warning_amber_rounded, color: Colors.red[600], size: 50),
           content: const Text(
             "Do you really want to delete this flashcard?",
@@ -105,8 +105,9 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
         children: [
           Container(
             decoration: BoxDecoration(
+              color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
               borderRadius: BorderRadius.circular(10),
-              gradient: Styles.linearGradient,
+              //gradient: Styles.linearGradient,
             ),
             child: Center(
               child: Padding(
@@ -116,7 +117,7 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: displayText.length >= 40 ? 15 : 20,
-                    color: Colors.white,
+                    color: Theme.of(context).textTheme.bodyMedium!.color,
                   ),
                   maxLines: displayText.length >= 40 ? 4 : 3,
                   overflow: TextOverflow.ellipsis,
@@ -127,7 +128,7 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
           if (showEditOptions)
             Positioned.fill(
               child: Container(
-                color: Colors.black.withOpacity(0.5),
+                color: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.5),
                 child: Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

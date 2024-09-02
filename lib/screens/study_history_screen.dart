@@ -130,13 +130,13 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Styles.primaryColor,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.menu_rounded,
-                color: Colors.white,
+                color: Theme.of(context).textTheme.bodyMedium!.color,
                 size: 30,
               ),
               onPressed: () {
@@ -146,15 +146,8 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
             );
           },
         ),
-        //title: SvgPicture.asset('assets/images/logo-v1.svg', height: 35, width: 35),
-        title: const Text("Study History", style: TextStyle(color: Colors.white)),
-        centerTitle: true,
-        actions: const [
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(Icons.search, size: 30, color: Colors.white),
-          ),
-        ],
+        title: Text("Study History", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color)),
+        centerTitle: true
       ),
       drawer: const DrawerMenu(),
       body: ListView.builder(

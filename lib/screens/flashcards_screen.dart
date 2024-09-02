@@ -30,13 +30,13 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Styles.primaryColor,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.menu_rounded,
-                color: Colors.white,
+                color: Theme.of(context).textTheme.bodyMedium!.color,
                 size: 30,
               ),
               onPressed: () {
@@ -51,7 +51,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
             Expanded(
               child: Text(
                 widget.topic!.topicName,
-                style: const TextStyle(fontSize: 20, color: Colors.white),
+                style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyMedium!.color),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
@@ -74,12 +74,12 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
             icon: Icon(
               Icons.play_arrow_rounded,
               size: 40,
-              color: widget.topic!.flashcards.isNotEmpty ? Colors.white : Colors.white.withOpacity(0.5),
+              color: widget.topic!.flashcards.isNotEmpty ? Theme.of(context).textTheme.bodyMedium!.color : Colors.white.withOpacity(0.5),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.all(10),
-            child: Icon(Icons.upload_file_rounded, size: 30, color: Colors.white),
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Icon(Icons.upload_file_rounded, size: 30, color: Theme.of(context).textTheme.bodyMedium!.color),
           ),
         ],
       ),
@@ -148,14 +148,14 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                               width: MediaQuery.of(context).size.width * .4,
                             ),
                           ),
-                          const Padding(
-                            padding: EdgeInsets.only(top: 10),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 10),
                             child: Text(
                               "No flashcards yet",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 22,
-                                color: Styles.backgroundText,
+                                color: Theme.of(context).textTheme.bodyMedium!.color,
                               ),
                             ),
                           )
@@ -191,10 +191,10 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
       floatingActionButton: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          gradient: Styles.linearGradient,
+          //gradient: Styles.linearGradient,
         ),
         child: FloatingActionButton(
-          backgroundColor: Colors.transparent,
+          backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
           onPressed: () async {
             final flashcardObject = await showDialog<FlashcardModel>(
               context: context,
@@ -213,7 +213,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
             }
           },
           tooltip: 'Create new subject',
-          child: const Icon(Icons.add, color: Colors.white),
+          child: Icon(Icons.add, color: Theme.of(context).textTheme.bodyMedium!.color),
         ),
       ),
     );

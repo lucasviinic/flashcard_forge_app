@@ -67,31 +67,41 @@ class _FlashcardFormState extends State<FlashcardForm> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Styles.secondaryColor,
+      backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
       title: Text(
         widget.flashcard != null ? "Edit flashcard" : "Create flashcard",
-        style: const TextStyle(color: Colors.white)
+        style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color)
       ),
       content: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Question:"),
+            Text("Question:", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color)),
             TextField(
               controller: questionController,
-              decoration: const InputDecoration(labelText: 'Enter flashcard question'),
+              cursorColor: Theme.of(context).hintColor,
+              style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
+              decoration: InputDecoration(
+                labelText: 'Enter flashcard question',
+                hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                floatingLabelBehavior: FloatingLabelBehavior.never
+              ),
               keyboardType: TextInputType.multiline,
               maxLines: 3,
-              style: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 10),
-            const Text("Answer:"),
+            Text("Answer:", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color)),
             TextField(
               controller: answerController,
-              decoration: const InputDecoration(labelText: 'Enter flashcard answer'),
+              cursorColor: Theme.of(context).hintColor,
+              style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
+              decoration: InputDecoration(
+                labelText: 'Enter flashcard answer',
+                hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                floatingLabelBehavior: FloatingLabelBehavior.never
+              ),
               keyboardType: TextInputType.multiline,
               maxLines: 3,
-              style: const TextStyle(color: Colors.white),
             ),
             const SizedBox(height: 20),
             Row(
@@ -171,7 +181,16 @@ class _FlashcardFormState extends State<FlashcardForm> {
           style: TextButton.styleFrom(
             textStyle: Theme.of(context).textTheme.labelLarge,
           ),
-          child: Text(editing ? "Save" : "Create"),
+          child: Text('Cancel', style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color)),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        TextButton(
+          style: TextButton.styleFrom(
+            textStyle: Theme.of(context).textTheme.labelLarge,
+          ),
+          child: Text(editing ? "Save" : "Create", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color)),
           onPressed: () {
             //
             setState(() {
@@ -186,15 +205,6 @@ class _FlashcardFormState extends State<FlashcardForm> {
               }
             });
             Navigator.of(context).pop(flashcard);
-          },
-        ),
-        TextButton(
-          style: TextButton.styleFrom(
-            textStyle: Theme.of(context).textTheme.labelLarge,
-          ),
-          child: const Text('Cancel'),
-          onPressed: () {
-            Navigator.of(context).pop();
           },
         ),
       ],

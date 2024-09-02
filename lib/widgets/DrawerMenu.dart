@@ -1,7 +1,5 @@
-import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flashcard_forge_app/widgets/FeedbackModal.dart';
 import 'package:flashcard_forge_app/widgets/ThemeSwitch.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -16,7 +14,8 @@ class _DrawerMenuState extends State<DrawerMenu> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Styles.primaryColor,
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      //backgroundColor: Styles.primaryColor,
       child: Column(
         children: [
           ShaderMask(
@@ -73,9 +72,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                       },
                       child: Row(
                         children: [
-                          SvgPicture.asset("assets/images/subjects-icon.svg", width: 35, height: 35),
+                          SvgPicture.asset("assets/images/subjects-icon.svg", width: 35, height: 35, color: Theme.of(context).textTheme.bodyMedium!.color),
                           const SizedBox(width: 10),
-                          const Text("View subjects", style: TextStyle(color: Colors.white))
+                          Text("View subjects", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color))
                         ],
                       ),
                     ),
@@ -86,17 +85,17 @@ class _DrawerMenuState extends State<DrawerMenu> {
                       onTap: () {
                         Navigator.popAndPushNamed(context, '/history');
                       },
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.history, color: Colors.white, size: 30),
-                          SizedBox(width: 10),
-                          Text("Study sessions history", style: TextStyle(color: Colors.white))
+                          Icon(Icons.history, color: Theme.of(context).textTheme.bodyMedium!.color, size: 30),
+                          const SizedBox(width: 10),
+                          Text("Study sessions history", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color))
                         ],
                       ),
                     ),
                   ),
                   const Padding(padding: EdgeInsets.only(bottom: 10), child: ThemeSwitch()),
-                  const Padding(padding: EdgeInsets.only(bottom: 15), child: Divider(color: Colors.white)),
+                  Padding(padding: const EdgeInsets.only(bottom: 15), child: Divider(color: Theme.of(context).textTheme.bodyMedium!.color)),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 20),
                     child: GestureDetector(
@@ -105,9 +104,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                       },
                       child: Row(
                         children: [
-                          SvgPicture.asset("assets/images/about.svg", width: 25, height: 25),
+                          SvgPicture.asset("assets/images/about.svg", width: 25, height: 25, color: Theme.of(context).textTheme.bodyMedium!.color),
                           const SizedBox(width: 10),
-                          const Text("About", style: TextStyle(color: Colors.white))
+                          Text("About", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color))
                         ],
                       ),
                     ),
@@ -123,11 +122,11 @@ class _DrawerMenuState extends State<DrawerMenu> {
                           },
                         );
                       },
-                      child: const Row(
+                      child: Row(
                         children: [
-                          Icon(Icons.feedback_outlined, color: Colors.white, size: 25),
-                          SizedBox(width: 10),
-                          Text("Feedback", style: TextStyle(color: Colors.white))
+                          Icon(Icons.feedback_outlined, color: Theme.of(context).textTheme.bodyMedium!.color, size: 25),
+                          const SizedBox(width: 10),
+                          Text("Feedback", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color))
                         ],
                       ),
                     ),
@@ -139,7 +138,11 @@ class _DrawerMenuState extends State<DrawerMenu> {
                       onTap: () {},
                       child: Row(
                         children: [
-                          SvgPicture.asset("assets/images/google_icon_dark.svg"),
+                          Visibility(
+                            visible: Theme.of(context).brightness == Brightness.light,
+                            replacement: SvgPicture.asset("assets/images/google_icon_dark.svg"),
+                            child: SvgPicture.asset("assets/images/google_icon_light.svg"),
+                          ),
                           const SizedBox(width: 12),
                           const Text("Sign in with Google", style: TextStyle(fontWeight: FontWeight.w800))
                         ],

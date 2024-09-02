@@ -6,7 +6,7 @@ import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
-import 'package:provider/provider.dart';
+
 
 class SubjectContainer extends StatefulWidget {
   const SubjectContainer({super.key, required this.subject});
@@ -39,7 +39,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
       builder: (BuildContext context) {
         return Container(
           height: 90,
-          color: Styles.secondaryColor,
+          color: Theme.of(context).textTheme.bodyMedium!.color,
           child: Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -148,7 +148,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
         margin: const EdgeInsets.only(top: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          gradient: Styles.linearGradient
+          color: Theme.of(context).floatingActionButtonTheme.backgroundColor
         ),
         child: Column(
           children: [
@@ -157,7 +157,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
               child: Row(
                 children: [
                   Icon(showDropdown ? Icons.arrow_drop_down_rounded : Icons.arrow_right_rounded,
-                    size: 50, color: Colors.white
+                    size: 50, color: Theme.of(context).textTheme.bodyMedium!.color
                   ),
                   Expanded(
                     child: Visibility(
@@ -174,9 +174,9 @@ class _SubjectContainerState extends State<SubjectContainer> {
                         autofocus: editing,
                         maxLength: 50,
                         controller: _subjectController,
-                        style: const TextStyle(fontSize: 20, color: Colors.white),
-                        decoration: const InputDecoration(
-                          hintStyle: TextStyle(fontSize: 20, color: Colors.white),
+                        style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyMedium!.color),
+                        decoration: InputDecoration(
+                          hintStyle: TextStyle(color: Theme.of(context).hintColor),
                           counterText: "",
                           contentPadding: EdgeInsets.zero,
                           isDense: true
@@ -185,15 +185,15 @@ class _SubjectContainerState extends State<SubjectContainer> {
                       ),
                       child: Text(
                         widget.subject.subjectName!,
-                        style: const TextStyle(fontSize: 20, color: Colors.white),
+                        style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyMedium!.color),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                       ),
                     ),
                   ),
                   PopupMenuButton(
-                    color: Styles.secondaryColor,
-                    iconColor: Colors.white,
+                    color: Theme.of(context).popupMenuTheme.color,
+                    iconColor: Theme.of(context).textTheme.bodyMedium!.color,
                     itemBuilder: (context) {
                       return [
                         PopupMenuItem<int>(
@@ -203,7 +203,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                               setState(() => editing = true);
                               Navigator.of(context).pop();
                             },
-                            child: const Text("Rename", style: TextStyle(color: Colors.white))
+                            child: Text("Rename", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color))
                           )
                         ),
                         PopupMenuItem<int>(
@@ -212,7 +212,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                             onPressed: () async {
                               //await context.read<StudyProvider>().removeSubject(widget.subject.id!).then((value) => Navigator.of(context).pop());
                             },
-                            child: const Text("Delete", style: TextStyle(color: Colors.white))
+                            child: Text("Delete", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color))
                           ),
                         ),
                       ];
@@ -264,9 +264,9 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                   autofocus: editingTopic[widget.subject.topics![i].id!] ?? false,
                                   maxLength: 50,
                                   controller: _editTopicController,
-                                  style: const TextStyle(color: Styles.accentColor),
-                                  decoration: const InputDecoration(
-                                    hintStyle: TextStyle(color: Colors.white),
+                                  style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
+                                  decoration: InputDecoration(
+                                    hintStyle: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
                                     counterText: "",
                                     contentPadding: EdgeInsets.zero,
                                     isDense: true,
@@ -276,7 +276,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                 ),
                                 child: Text(
                                   widget.subject.topics![i].topicName,
-                                  style: const TextStyle(fontSize: 16, color: Styles.accentColor),
+                                  style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.bodyMedium!.color),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
                                 ),
@@ -336,16 +336,21 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                 Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 20),
                                   child: TextField(
+                                    cursorColor: Theme.of(context).hintColor,
                                     autofocus: creatingTopic,
                                     maxLength: 50,
                                     controller: _topicController,
-                                    style: const TextStyle(fontSize: 16, color: Colors.white),
-                                    decoration: const InputDecoration(
-                                      hintText: "Add a topic",
-                                      hintStyle: TextStyle(fontSize: 16, color: Colors.white),
-                                      counterText: "",
-                                      contentPadding: EdgeInsets.zero,
-                                      isDense: true
+                                    style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
+                                    decoration: InputDecoration(
+                                        hintText: "Add a topic",
+                                        hintStyle: TextStyle(fontSize: 16, color: Theme.of(context).hintColor),
+                                        counterText: "",
+                                        contentPadding: EdgeInsets.zero,
+                                        isDense: true,
+                                        focusedBorder: UnderlineInputBorder(
+                                          //borderRadius: const BorderRadius.all(Radius.circular(50)), // Bordas arredondadas
+                                          borderSide: BorderSide(color: Theme.of(context).hintColor), // Cor da borda branca quando focado
+                                        ),
                                     ),
                                     focusNode: _focusNode,
                                   ),
@@ -386,7 +391,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                           child: const Padding(
                             padding: EdgeInsets.only(bottom: 5),
                             child: Row(children: [
-                              Icon(Icons.add),
+                              Icon(Icons.add, color: Styles.accentColor),
                               SizedBox(width: 8),
                               Text("Create new topic", style: TextStyle(fontSize: 16, color: Styles.accentColor))
                             ]),

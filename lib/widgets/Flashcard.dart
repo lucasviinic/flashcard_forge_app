@@ -36,8 +36,9 @@ class _FlashcardState extends State<Flashcard> {
           side: CardSide.FRONT,
           front: Container(
             decoration: BoxDecoration(
+              color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
               borderRadius: BorderRadius.circular(30),
-              gradient: Styles.linearGradient
+              //gradient: Styles.linearGradient
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -60,8 +61,9 @@ class _FlashcardState extends State<Flashcard> {
           ),
           back: Container(
             decoration: BoxDecoration(
+              color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
               borderRadius: BorderRadius.circular(30),
-              gradient: Styles.linearGradient
+             //gradient: Styles.linearGradient
             ),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
