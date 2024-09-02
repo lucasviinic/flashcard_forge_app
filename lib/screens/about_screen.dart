@@ -1,4 +1,3 @@
-import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
 import 'package:flutter/material.dart';
 
@@ -9,13 +8,13 @@ class AboutScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Styles.primaryColor,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         leading: Builder(
           builder: (BuildContext context) {
             return IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.menu_rounded,
-                color: Colors.white,
+                color: Theme.of(context).textTheme.bodyMedium!.color,
                 size: 30,
               ),
               onPressed: () {
@@ -25,7 +24,7 @@ class AboutScreen extends StatelessWidget {
             );
           },
         ),
-        title: const Text("About", style: TextStyle(color: Colors.white)),
+        title: Text("About", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color)),
         centerTitle: true
       ),
       drawer: const DrawerMenu(),

@@ -42,7 +42,7 @@ class _FeedbackModalState extends State<FeedbackModal> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: Styles.secondaryColor,
+      backgroundColor: Theme.of(context).dialogTheme.backgroundColor,
       title: isLoading ? null : sent 
       ? Align(
           alignment: Alignment.centerRight,
@@ -53,9 +53,9 @@ class _FeedbackModalState extends State<FeedbackModal> {
             icon: const Icon(Icons.close, color: Colors.red, size: 30),
           ),
         )
-      : const Text(
+      : Text(
           "Feedback",
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
         ),
       content: SizedBox(
         width: MediaQuery.of(context).size.width * .95,
@@ -95,10 +95,18 @@ class _FeedbackModalState extends State<FeedbackModal> {
                   children: [
                     TextField(
                       controller: content,
-                      decoration: const InputDecoration(labelText: 'Leave your feedback here'),
+                      cursorColor: Theme.of(context).hintColor,
+                      decoration: InputDecoration(
+                        labelStyle: TextStyle(color: Theme.of(context).hintColor),
+                        labelText: 'Leave your feedback here',
+                        hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Theme.of(context).hintColor), // Cor da borda branca quando focado
+                        ),
+                      ),
                       keyboardType: TextInputType.multiline,
                       maxLines: 3,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
                     ),
                   ],
                 ),
@@ -109,7 +117,7 @@ class _FeedbackModalState extends State<FeedbackModal> {
           style: TextButton.styleFrom(
             textStyle: Theme.of(context).textTheme.labelLarge,
           ),
-          child: const Text('Cancel'),
+          child: Text('Cancel', style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color, fontSize: 16)),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -118,7 +126,7 @@ class _FeedbackModalState extends State<FeedbackModal> {
           style: TextButton.styleFrom(
             textStyle: Theme.of(context).textTheme.labelLarge,
           ),
-          child: const Text("Send"),
+          child: Text("Send", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color, fontSize: 16)),
           onPressed: () async {
             await sendFeedback(content.text);
             setState(() => sent = true);
