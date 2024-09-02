@@ -18,9 +18,9 @@ class _ThemeSwitchState extends State<ThemeSwitch> {
     final WidgetStateProperty<Icon?> thumbIcon = WidgetStateProperty.resolveWith<Icon?>(
       (Set<WidgetState> states) {
         if (states.contains(WidgetState.selected)) {
-          return Icon(Icons.dark_mode, color: Theme.of(context).colorScheme.primary);
+          return Icon(Icons.light_mode, color: Theme.of(context).colorScheme.primary);
         }
-        return Icon(Icons.light_mode, color: Theme.of(context).colorScheme.secondary);
+        return Icon(Icons.dark_mode, color: Theme.of(context).colorScheme.secondary);
       },
     );
 
