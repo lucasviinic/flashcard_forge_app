@@ -124,16 +124,16 @@ class _StudySessionState extends State<StudySession> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const Text("Feedback", style: TextStyle(fontSize: 35)),
+                    Text("Feedback", style: TextStyle(fontSize: 35, color: Theme.of(context).textTheme.bodyMedium!.color)),
                     const SizedBox(height: 20),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("🎯 Score: 7/20", style: TextStyle(fontSize: 20)),
-                        Text("⌛ Time: $timerText", style: TextStyle(fontSize: 20)),
-                        Text("🥱 Easy: 4/4", style: TextStyle(fontSize: 20, color: Styles.greenEasy)),
-                        Text("😐 Medium: 3/10", style: TextStyle(fontSize: 20, color: Styles.blueNeutral)),
-                        Text("😡 Hard: 0/6", style: TextStyle(fontSize: 20, color: Styles.redHard)),
+                        const Text("🎯 Score: 7/20", style: TextStyle(fontSize: 20, color: Colors.white)),
+                        Text("⌛ Time: $timerText", style: const TextStyle(fontSize: 20, color: Colors.white)),
+                        const Text("🥱 Easy: 4/4", style: TextStyle(fontSize: 20, color: Styles.greenEasy)),
+                        const Text("😐 Medium: 3/10", style: TextStyle(fontSize: 20, color: Styles.blueNeutral)),
+                        const Text("😡 Hard: 0/6", style: TextStyle(fontSize: 20, color: Styles.redHard)),
                       ],
                     )
                   ],
@@ -166,8 +166,9 @@ class _StudySessionState extends State<StudySession> {
                     side: CardSide.FRONT,
                     front: Container(
                       decoration: BoxDecoration(
+                        color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
                         borderRadius: BorderRadius.circular(30),
-                        gradient: Styles.linearGradient
+                        //gradient: Styles.linearGradient
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -191,8 +192,9 @@ class _StudySessionState extends State<StudySession> {
                     ),
                     back: Container(
                       decoration: BoxDecoration(
+                        color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
                         borderRadius: BorderRadius.circular(30),
-                        gradient: Styles.linearGradient
+                        //gradient: Styles.linearGradient
                       ),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
