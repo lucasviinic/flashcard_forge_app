@@ -127,41 +127,44 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
           ),
           if (showEditOptions)
             Positioned.fill(
-              child: Container(
-                color: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.5),
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed: () async {
-                          final flashcardObject = await showDialog<FlashcardModel>(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return FlashcardForm(flashcard: flashcard);
-                            },
-                          );
-
-                          if (flashcardObject != null) {
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10), 
+                child: Container(
+                  color: Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.5),
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        IconButton(
+                          onPressed: () async {
+                            final flashcardObject = await showDialog<FlashcardModel>(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return FlashcardForm(flashcard: flashcard);
+                              },
+                            );
+                
+                            if (flashcardObject != null) {
+                              setState(() {
+                                flashcard = flashcardObject;
+                                showEditOptions = false; // Hide options after editing
+                              });
+                            }
+                          },
+                          icon: const Icon(Icons.edit, color: Colors.blue, size: 40),
+                        ),
+                        const SizedBox(width: 10),
+                        IconButton(
+                          onPressed: () async {
+                            await showDeleteFlashcardDialog(context);
                             setState(() {
-                              flashcard = flashcardObject;
-                              showEditOptions = false; // Hide options after editing
+                              showEditOptions = false; // Hide options after deletion
                             });
-                          }
-                        },
-                        icon: const Icon(Icons.edit, color: Colors.blue, size: 40),
-                      ),
-                      const SizedBox(width: 10),
-                      IconButton(
-                        onPressed: () async {
-                          await showDeleteFlashcardDialog(context);
-                          setState(() {
-                            showEditOptions = false; // Hide options after deletion
-                          });
-                        },
-                        icon: const Icon(Icons.delete, color: Colors.red, size: 40),
-                      ),
-                    ],
+                          },
+                          icon: const Icon(Icons.delete, color: Colors.red, size: 40),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
