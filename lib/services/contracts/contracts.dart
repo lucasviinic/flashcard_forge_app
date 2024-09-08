@@ -1,6 +1,18 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
+import 'package:flashcard_forge_app/models/UserModel.dart';
+
+abstract class AuthRepositoryContract {
+  Future<UserModel?> authenticate(String accessToken);
+  Future<UserModel?> getStoredUser();
+}
+
+abstract class PreferencesRepositoryContract {
+  Future<void> setAppPreferences(String theme, String language);
+  Future<Map<String, String?>> getAppPreferences();
+  Future<void> clearUserPrefs();
+}
 
 abstract class SubjectRepositoryContract {
   Future<List<SubjectModel>> fetchSubjects();

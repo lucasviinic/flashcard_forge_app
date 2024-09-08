@@ -12,16 +12,7 @@
           "package_name": "com.flashcard.forge.app"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "729125344537-ad9v832idk98ilqm8ihtfk3p1h4qrbc7.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.flashcard.forge.app",
-            "certificate_hash": "e35034d7ec9c77578a8dfccf245e27506c35a31c"
-          }
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyDohn0PPoYCM5iDdnO2lMpS3LD96FY2YIg"

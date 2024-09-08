@@ -124,7 +124,7 @@ class _StudySessionState extends State<StudySession> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text("Feedback", style: TextStyle(fontSize: 35, color: Theme.of(context).textTheme.bodyMedium!.color)),
+                    const Text("Feedback", style: TextStyle(fontSize: 35, color: Colors.white)),
                     const SizedBox(height: 20),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,7 +151,7 @@ class _StudySessionState extends State<StudySession> {
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text(timerText, style: const TextStyle(fontSize: 22)),
+                        Text(timerText, style: const TextStyle(fontSize: 22, color: Colors.white)),
                       ]
                   ),
                 ),
