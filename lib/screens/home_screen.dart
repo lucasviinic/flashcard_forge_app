@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
+import 'package:flashcard_forge_app/models/UserModel.dart';
+import 'package:flashcard_forge_app/services/repositories/auth_repo.dart';
+import 'package:flashcard_forge_app/services/repositories/preferences_repo.dart';
 import 'package:flashcard_forge_app/services/repositories/subject_repo.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
 import 'package:flashcard_forge_app/widgets/SubjectContainer.dart';
@@ -8,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -21,6 +25,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late TextEditingController _controller;
   late StreamSubscription<bool> keyboardSubscription;
+  late Future<UserModel?> _userFuture;
   bool isSearching = false;
 
   final FocusNode _focusNode = FocusNode();
@@ -29,18 +34,29 @@ class _HomeScreenState extends State<HomeScreen> {
   bool creatingSubject = false;
   List<SubjectModel> subjects = [];
 
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: <String>[
+      'email'
+    ]
+  );
+
   void setLoading(bool value) {
     setState(() {
       loading = value;
     });
   }
 
+  Future<void> signOutFromGoogle() async {
+    try {
+      _googleSignIn.signOut().then((_) => PreferencesRepository().clearUserPrefs());
+      print('User logged out successfully');
+    } catch (e) {
+      print('Error logging out from Google: $e');
+    }
+  }
+
   Future<void> createSubject(SubjectModel subject) async {
     setLoading(true);
-    // await context.read<StudyProvider>().createSubject(subject).then((_) async {
-    //   List<SubjectModel> subjectsList = await LocalStorage().getSubjects();
-    //   setState(() => subjects = subjectsList);
-    // });
     setLoading(false);
   }
 
@@ -113,9 +129,15 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<UserModel?> _fetchUser() async {
+    final authRepo = AuthRepository();
+    return await authRepo.getStoredUser();
+  }
+
   @override
   void initState() {
     super.initState();
+    _userFuture = _fetchUser();
     _controller = TextEditingController();
     KeyboardVisibilityController().onChange.listen((bool visible) {
       if (!visible && creatingSubject) {
@@ -154,7 +176,76 @@ class _HomeScreenState extends State<HomeScreen> {
           },
         ),
         title: SvgPicture.asset('assets/images/logo-v1.svg', height: 35, width: 35),
-        centerTitle: true
+        centerTitle: true,
+        actions: [
+          FutureBuilder<UserModel?>(
+            future: _userFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                // Exibir um carregamento enquanto os dados estão sendo carregados
+                return Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: CircularProgressIndicator(),
+                );
+              }
+
+              if (snapshot.hasData) {
+                // Dados do usuário encontrados, exibir o avatar
+                return Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: PopupMenuButton<int>(
+                    color: Theme.of(context).popupMenuTheme.color,
+                    icon: CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(
+                        snapshot.data!.picture!,
+                      ),
+                    ),
+                    offset: const Offset(-20, 45),
+                    iconSize: 40,
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem<int>(
+                          value: 0,
+                          child: Row(
+                            children: [
+                              Icon(Icons.account_circle_outlined, color: Theme.of(context).textTheme.bodyMedium!.color),
+                              const SizedBox(width: 8),
+                              Text(
+                                "My account",
+                                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
+                              ),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem<int>(
+                          value: 1,
+                          onTap: () => signOutFromGoogle(),
+                          child: Row(
+                            children: [
+                              Icon(Icons.logout, color: Theme.of(context).textTheme.bodyMedium!.color),
+                              const SizedBox(width: 8),
+                              Text(
+                                "Log out",
+                                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ];
+                    },
+                    onSelected: (value) {
+                      // Aqui você pode lidar com a seleção, se necessário
+                    },
+                  ),
+                );
+              } else {
+                // Nenhum dado do usuário encontrado, não exibir o avatar
+                return SizedBox.shrink(); // Ocultar qualquer widget
+              }
+            },
+          ),
+        ],
       ),
       drawer: const DrawerMenu(),
       body: Padding(

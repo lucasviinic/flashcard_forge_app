@@ -1,7 +1,10 @@
+import 'package:flashcard_forge_app/models/UserModel.dart';
+import 'package:flashcard_forge_app/services/repositories/auth_repo.dart';
 import 'package:flashcard_forge_app/widgets/FeedbackModal.dart';
 import 'package:flashcard_forge_app/widgets/ThemeSwitch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class DrawerMenu extends StatefulWidget {
   const DrawerMenu({super.key});
@@ -11,6 +14,73 @@ class DrawerMenu extends StatefulWidget {
 }
 
 class _DrawerMenuState extends State<DrawerMenu> {
+  GoogleSignInAccount? _currentUser;
+  bool isAuthorized = false;
+
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: <String>[
+      'email',
+      'openid',
+      'profile',
+    ]
+  );
+
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+      if (googleUser == null) {
+        throw 'Login has been cancelled';
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final String? accessToken = googleAuth.accessToken;
+
+      if (accessToken == null) {
+        throw 'Invalid Token (idToken)';
+      }
+      
+      UserModel? response = await AuthRepository().authenticate(accessToken);
+    
+      if (response != null) {
+        print('User authenticated: ${response.name}');
+      } else {
+        throw 'Failed to authenticate.';
+      }
+    } catch (e) {
+      await signOutFromGoogle();
+      print('Error logging in with Google: $e');
+    }
+  }
+
+  Future<void> signOutFromGoogle() async {
+    try {
+      await _googleSignIn.disconnect().then((_) async=> await _googleSignIn.signOut());
+      print('User logged out successfully');
+    } catch (e) {
+      print('Error logging out from Google: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) async {
+      bool isAuthorized = account != null;
+
+      setState(() {
+        _currentUser = account;
+        isAuthorized = isAuthorized;
+      });
+
+      print("_currentUser: $_currentUser");
+      print("isAuthorized: $isAuthorized");
+    });
+
+    _googleSignIn.signInSilently();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -135,7 +205,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 25),
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: _currentUser != null ? signOutFromGoogle : signInWithGoogle,
                       child: Row(
                         children: [
                           Visibility(
@@ -144,11 +214,14 @@ class _DrawerMenuState extends State<DrawerMenu> {
                             child: SvgPicture.asset("assets/images/google_icon_light.svg"),
                           ),
                           const SizedBox(width: 12),
-                          const Text("Sign in with Google", style: TextStyle(fontWeight: FontWeight.w800))
+                          Text(
+                            _currentUser != null ? "Sign out from Google" : "Sign in with Google",
+                            style: const TextStyle(fontWeight: FontWeight.w800),
+                          ),
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
