@@ -1,11 +1,16 @@
+import 'package:flashcard_forge_app/models/AuthTokenModel.dart';
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
 import 'package:flashcard_forge_app/models/UserModel.dart';
 
 abstract class AuthRepositoryContract {
-  Future<UserModel?> authenticate(String accessToken);
+  Future<AuthTokenModel?> authenticate(String accessToken);
   Future<UserModel?> getStoredUser();
+}
+
+abstract class UserRepositoryContract {
+  Future<UserModel?> getUser(String accessToken);
 }
 
 abstract class PreferencesRepositoryContract {

@@ -1,34 +1,35 @@
 import 'dart:async';
 
+import 'package:flashcard_forge_app/models/AuthTokenModel.dart';
 import 'package:flashcard_forge_app/models/UserModel.dart';
 import 'package:flashcard_forge_app/services/contracts/contracts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthRepository implements AuthRepositoryContract {
-  @override
-  Future<UserModel?> authenticate(String accessToken) async {
-    try {
-      await Future.delayed(const Duration(seconds: 3));
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-      final user = UserModel(
-        id: 33223,
-        email: "lucasviniciuss529@gmail.com",
-        googleId: "313256374856968079545347",
-        isActive: true,
-        name: "Lucas Vinícius",
-        picture: "https://lh3.googleusercontent.com/a/ACg8ocIdCdv7VDIv5YEseXtHKe3LMgBwwXHpaV3w5S7F-iYB8sozsWPXOw=s288-c-no"
+class AuthRepository implements AuthRepositoryContract {
+  final String baseURL = 'http://127.0.0.1:8000/auth';
+
+  @override
+  Future<AuthTokenModel?> authenticate(String accessToken) async {
+    try {
+      final response = await http.post(Uri.parse('$baseURL/signin'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'access_token': accessToken,
+        }),
       );
 
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt('id', user.id!);
-      await prefs.setString('email', user.email!);
-      await prefs.setString('googleId', user.googleId!);
-      await prefs.setBool('isActive', user.isActive!);
-      await prefs.setString('name', user.name!);
-      await prefs.setString('picture', user.picture!);
-
-      return user;
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        return AuthTokenModel.fromJson(responseData);
+      } else {
+        print('Erro na autenticação: ${response.statusCode}');
+        return null;
+      }
     } catch (e) {
+      print('Erro na chamada de autenticação: $e');
       return null;
     }
   }

@@ -1,4 +1,4 @@
-import 'package:flashcard_forge_app/models/UserModel.dart';
+import 'package:flashcard_forge_app/models/AuthTokenModel.dart';
 import 'package:flashcard_forge_app/services/repositories/auth_repo.dart';
 import 'package:flashcard_forge_app/widgets/FeedbackModal.dart';
 import 'package:flashcard_forge_app/widgets/ThemeSwitch.dart';
@@ -36,14 +36,18 @@ class _DrawerMenuState extends State<DrawerMenu> {
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final String? accessToken = googleAuth.accessToken;
 
+      await signOutFromGoogle();
+
       if (accessToken == null) {
         throw 'Invalid Token (idToken)';
       }
       
-      UserModel? response = await AuthRepository().authenticate(accessToken);
+      AuthTokenModel? response = await AuthRepository().authenticate(accessToken);
     
       if (response != null) {
-        print('User authenticated: ${response.name}');
+        print("User authenticated:");
+        print('access_token: ${response.accessToken}');
+        print('refresh_token: ${response.refreshToken}');
       } else {
         throw 'Failed to authenticate.';
       }

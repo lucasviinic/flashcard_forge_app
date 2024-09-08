@@ -5,6 +5,7 @@ class UserModel {
   String? name;
   String? picture;
   bool? isActive;
+  String? refreshToken;
   DateTime? createdAt;
   DateTime? updatedAt;
   DateTime? deletedAt;
@@ -16,6 +17,7 @@ class UserModel {
     this.name,
     this.picture,
     this.isActive,
+    this.refreshToken,
     this.createdAt,
     this.updatedAt,
     this.deletedAt,
@@ -29,13 +31,13 @@ class UserModel {
       name: json['name'],
       picture: json['picture'],
       isActive: json['is_active'],
+      refreshToken: json['refresh_token'],
       createdAt: json['created_at'] != null ? DateTime.parse(json['created_at']) : null,
       updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
       deletedAt: json['deleted_at'] != null ? DateTime.parse(json['deleted_at']) : null,
     );
   }
 
-  // Método para converter o UserModel em um JSON
   Map<String, dynamic> toJson() => {
     'id': id,
     'google_id': googleId,
@@ -43,6 +45,7 @@ class UserModel {
     'name': name,
     'picture': picture,
     'is_active': isActive,
+    'refresh_token': refreshToken,
     'created_at': createdAt?.toIso8601String(),
     'updated_at': updatedAt?.toIso8601String(),
     'deleted_at': deletedAt?.toIso8601String(),
