@@ -1,10 +1,12 @@
 import 'package:flashcard_forge_app/models/AuthTokenModel.dart';
+import 'package:flashcard_forge_app/providers.dart';
 import 'package:flashcard_forge_app/services/repositories/auth_repo.dart';
 import 'package:flashcard_forge_app/widgets/FeedbackModal.dart';
 import 'package:flashcard_forge_app/widgets/ThemeSwitch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class DrawerMenu extends StatefulWidget {
   const DrawerMenu({super.key});
@@ -25,9 +27,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
     ]
   );
 
-  Future<void> signInWithGoogle() async {
+  Future<void> signInWithGoogle(AuthProvider authProvider) async {
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      final GoogleSignInAccount? googleUser = await authProvider.signInWithGoogle();
 
       if (googleUser == null) {
         throw 'Login has been cancelled';
@@ -35,8 +37,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final String? accessToken = googleAuth.accessToken;
-
-      await signOutFromGoogle();
 
       if (accessToken == null) {
         throw 'Invalid Token (idToken)';
@@ -52,14 +52,14 @@ class _DrawerMenuState extends State<DrawerMenu> {
         throw 'Failed to authenticate.';
       }
     } catch (e) {
-      await signOutFromGoogle();
+      await authProvider.signOutFromGoogle();
       print('Error logging in with Google: $e');
     }
   }
 
-  Future<void> signOutFromGoogle() async {
+  Future<void> signOutFromGoogle(AuthProvider authProvider) async {
     try {
-      await _googleSignIn.disconnect().then((_) async=> await _googleSignIn.signOut());
+      await authProvider.signOutFromGoogle();
       print('User logged out successfully');
     } catch (e) {
       print('Error logging out from Google: $e');
@@ -87,6 +87,8 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+
     return Drawer(
       backgroundColor: Theme.of(context).colorScheme.primary,
       //backgroundColor: Styles.primaryColor,
@@ -209,7 +211,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 25),
                     child: GestureDetector(
-                      onTap: _currentUser != null ? signOutFromGoogle : signInWithGoogle,
+                      onTap: authProvider.currentUser != null 
+                        ? authProvider.signOutFromGoogle 
+                        : () => signInWithGoogle(authProvider),
                       child: Row(
                         children: [
                           Visibility(

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
 import 'package:flashcard_forge_app/models/UserModel.dart';
+import 'package:flashcard_forge_app/providers.dart';
 import 'package:flashcard_forge_app/services/repositories/auth_repo.dart';
 import 'package:flashcard_forge_app/services/repositories/preferences_repo.dart';
 import 'package:flashcard_forge_app/services/repositories/subject_repo.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -178,28 +180,16 @@ class _HomeScreenState extends State<HomeScreen> {
         title: SvgPicture.asset('assets/images/logo-v1.svg', height: 35, width: 35),
         centerTitle: true,
         actions: [
-          FutureBuilder<UserModel?>(
-            future: _userFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                // Exibir um carregamento enquanto os dados estão sendo carregados
-                return Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: CircularProgressIndicator(),
-                );
-              }
-
-              if (snapshot.hasData) {
-                // Dados do usuário encontrados, exibir o avatar
+          Consumer<AuthProvider>(
+            builder: (context, authProvider, child) {
+              if (authProvider.currentUser != null) {
                 return Padding(
                   padding: const EdgeInsets.only(right: 20),
                   child: PopupMenuButton<int>(
                     color: Theme.of(context).popupMenuTheme.color,
                     icon: CircleAvatar(
                       radius: 20,
-                      backgroundImage: NetworkImage(
-                        snapshot.data!.picture!,
-                      ),
+                      backgroundImage: NetworkImage(authProvider.currentUser!.photoUrl!),
                     ),
                     offset: const Offset(-20, 45),
                     iconSize: 40,
@@ -220,7 +210,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         PopupMenuItem<int>(
                           value: 1,
-                          onTap: () => signOutFromGoogle(),
+                          onTap: () => authProvider.signOutFromGoogle(),
                           child: Row(
                             children: [
                               Icon(Icons.logout, color: Theme.of(context).textTheme.bodyMedium!.color),
@@ -234,14 +224,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ];
                     },
-                    onSelected: (value) {
-                      // Aqui você pode lidar com a seleção, se necessário
-                    },
+                    onSelected: (value) {},
                   ),
                 );
               } else {
-                // Nenhum dado do usuário encontrado, não exibir o avatar
-                return SizedBox.shrink(); // Ocultar qualquer widget
+                return const SizedBox.shrink();
               }
             },
           ),

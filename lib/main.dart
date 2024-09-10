@@ -8,8 +8,11 @@ import 'package:provider/provider.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+      ],
       child: const MyApp(),
     ),
   );
@@ -25,7 +28,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'Flashcard Forge',
           debugShowCheckedModeBanner: false,
-          theme: themeProvider.currentTheme, // Certifique-se de que está usando o tema atual
+          theme: themeProvider.currentTheme,
           initialRoute: '/',
           routes: {
             '/': (context) => const HomeScreen(title: "Flashcard Forge"),

@@ -9,7 +9,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AuthRepository implements AuthRepositoryContract {
-  final String baseURL = 'http://127.0.0.1:8000/auth';
+  final String baseURL = 'https://a7a0-45-179-129-1.ngrok-free.app/auth';
 
   @override
   Future<AuthTokenModel?> authenticate(String accessToken) async {
