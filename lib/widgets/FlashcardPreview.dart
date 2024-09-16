@@ -1,9 +1,7 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
-import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flashcard_forge_app/widgets/Flashcard.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardForm.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class FlashcardPreview extends StatefulWidget {
   final FlashcardModel flashcard;

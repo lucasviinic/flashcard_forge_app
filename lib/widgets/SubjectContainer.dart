@@ -85,7 +85,6 @@ class _SubjectContainerState extends State<SubjectContainer> {
         creatingTopic = false;
       });
     } catch (error) {
-      //TODO: Criar modal de erro
       print("Erro ao criar o tópico: $error");
     }
   }
