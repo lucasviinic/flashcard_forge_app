@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flashcard_forge_app/models/AuthTokenModel.dart';
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
@@ -34,4 +36,5 @@ abstract class TopicRepositoryContract {
 abstract class FlashcardRepositoryContract {
   Future<FlashcardModel> updateFlashcard(FlashcardModel flashcard);
   Future<void> deleteFlashcard(int flashcardId);
+  Future<List<FlashcardModel>> uploadFile(File file);
 }

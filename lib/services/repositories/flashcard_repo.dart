@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'dart:async';
 
@@ -13,5 +15,10 @@ class FlashcardRepository implements FlashcardRepositoryContract {
   @override
   Future<void> deleteFlashcard(int flashcardId) async {
     return Future.value();
+  }
+
+  @override
+  Future<List<FlashcardModel>> uploadFile(File file) async {
+    return [];
   }
 }

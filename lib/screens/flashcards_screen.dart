@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
 import 'package:flashcard_forge_app/screens/study_session_screen.dart';
@@ -79,7 +82,21 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(10),
-            child: Icon(Icons.upload_file_rounded, size: 30, color: Theme.of(context).textTheme.bodyMedium!.color),
+            child: IconButton(
+              icon: Icon(Icons.upload_file_rounded, size: 30, color: Theme.of(context).textTheme.bodyMedium!.color),
+              onPressed: () async {
+                FilePickerResult? result = await FilePicker.platform.pickFiles(
+                  type: FileType.custom,
+                  allowedExtensions: ['pdf']
+                );
+
+                if (result != null) {
+                  File file = File(result.files.single.path!);
+                  print(file);
+                }
+              },
+              highlightColor: Colors.transparent
+            ),
           ),
         ],
       ),
