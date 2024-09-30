@@ -12,7 +12,7 @@ abstract class AuthRepositoryContract {
 }
 
 abstract class UserRepositoryContract {
-  Future<UserModel?> getUser(String accessToken);
+  Future<UserModel?> getUser();
 }
 
 abstract class PreferencesRepositoryContract {

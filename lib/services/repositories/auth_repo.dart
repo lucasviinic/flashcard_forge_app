@@ -3,13 +3,15 @@ import 'dart:async';
 import 'package:flashcard_forge_app/models/AuthTokenModel.dart';
 import 'package:flashcard_forge_app/models/UserModel.dart';
 import 'package:flashcard_forge_app/services/contracts/contracts.dart';
+import 'package:flashcard_forge_app/services/token_manager.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AuthRepository implements AuthRepositoryContract {
-  final String baseURL = 'https://a7a0-45-179-129-1.ngrok-free.app/auth';
+  final baseURL = "${dotenv.env['API_BASE_URL']}/auth";
 
   @override
   Future<AuthTokenModel?> authenticate(String accessToken) async {
@@ -23,7 +25,11 @@ class AuthRepository implements AuthRepositoryContract {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-        return AuthTokenModel.fromJson(responseData);
+        final authToken = AuthTokenModel.fromJson(responseData);
+
+        await TokenManager.saveAccessToken(authToken.accessToken);
+
+        return authToken;
       } else {
         print('Erro na autenticação: ${response.statusCode}');
         return null;
@@ -55,5 +61,10 @@ class AuthRepository implements AuthRepositoryContract {
       );
     }
     return null;
+  }
+
+  Future<String?> getStoredAccessToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('access_token');
   }
 }

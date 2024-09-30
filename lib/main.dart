@@ -4,9 +4,12 @@ import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
 import 'package:flashcard_forge_app/screens/home_screen.dart';
 import 'package:flashcard_forge_app/screens/study_history_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+  await dotenv.load(fileName: ".env");
+
   runApp(
     MultiProvider(
       providers: [
