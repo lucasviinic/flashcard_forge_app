@@ -31,7 +31,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
   final FocusNode _focusNode = FocusNode();
   late StreamSubscription<bool> keyboardSubscription;
 
-  Map<int, bool> editingTopic = {};
+  Map<String, bool> editingTopic = {};
 
   void showOptionModal() {
     showModalBottomSheet<void>(
@@ -76,7 +76,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
     );
   }
 
-  Future<void> createTopic(int subjectId, String topicName) async {
+  Future<void> createTopic(String subjectId, String topicName) async {
     try {
       TopicModel topic = TopicModel(subjectId: subjectId, topicName: topicName);
       //await context.read<StudyProvider>().createTopic(subjectId, topic);
@@ -89,7 +89,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
     }
   }
 
-  Future<void> removeTopic(int subjectId, int topicId) async {
+  Future<void> removeTopic(String subjectId, String topicId) async {
     try {
       //await context.read<StudyProvider>().removeTopic(subjectId, topicId);
     } catch (error) {
@@ -97,7 +97,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
     }
   }
 
-  Future<void> updateTopic(int subjectId, int topicId, String name) async {
+  Future<void> updateTopic(String subjectId, String topicId, String name) async {
     try {
       //await context.read<StudyProvider>().updateTopic(subjectId, topicId, name);
     } catch (error) {
@@ -111,7 +111,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
     // });
   }
 
-  Future<void> updateSubject(int id, String name) async {
+  Future<void> updateSubject(String id, String name) async {
     //await context.read<StudyProvider>().updateSubject(widget.subject.id!, _subjectController.text);
   }
 

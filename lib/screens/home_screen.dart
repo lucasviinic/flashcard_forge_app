@@ -63,9 +63,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getSubjects() async {
-    List<SubjectModel> subjects_ = await SubjectRepository().fetchSubjects();
+    List<SubjectModel>? subjects_ = await SubjectRepository().fetchSubjects();
     setState(() {
-      subjects =  subjects_;
+      subjects =  subjects_!;
     });
   }
 

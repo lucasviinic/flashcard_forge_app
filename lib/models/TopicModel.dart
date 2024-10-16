@@ -1,8 +1,8 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 
 class TopicModel {
-  int? id;
-  int subjectId;
+  String? id;
+  String subjectId;
   String? imageUrl;
   String topicName;
   List<FlashcardModel> flashcards;

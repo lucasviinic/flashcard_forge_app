@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 class FlashcardForm extends StatefulWidget {
   const FlashcardForm({super.key, this.subjectId, this.topicId, this.flashcard});
 
-  final int? subjectId;
-  final int? topicId;
+  final String? subjectId;
+  final String? topicId;
   final FlashcardModel? flashcard;
 
   @override

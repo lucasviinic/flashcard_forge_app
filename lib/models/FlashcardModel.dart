@@ -1,8 +1,8 @@
 class FlashcardModel {
-  int? id;
-  int? userId;
-  int? subjectId;
-  int? topicId;
+  String? id;
+  String? userId;
+  String? subjectId;
+  String? topicId;
   String? question;
   String? answer;
   int? difficulty; //0: easy, 1: medium, 2: hard

@@ -1,9 +1,9 @@
 import 'package:flashcard_forge_app/models/TopicModel.dart';
 
 class SubjectModel {
-  int? id;
+  String? id;
   String? subjectName;
-  int? userId;
+  String? userId;
   String? imageUrl;
   List<TopicModel>? topics = [];
 
