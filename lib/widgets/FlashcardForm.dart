@@ -1,4 +1,5 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
+import 'package:flashcard_forge_app/services/repositories/flashcard_repo.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -21,15 +22,15 @@ class _FlashcardFormState extends State<FlashcardForm> {
   FlashcardModel? flashcard = FlashcardModel();
   bool editing = false;
 
-  Future<void> createFlashcard(FlashcardModel flashcard) async {
+  Future<FlashcardModel?> createFlashcard(FlashcardModel flashcard) async {
     flashcard.subjectId = widget.subjectId!;
     flashcard.topicId =  widget.topicId!;
     try {
-      //await context.read<StudyProvider>().createFlashcard(flashcard);
+      FlashcardModel? flashcard_ = await FlashcardRepository().createFlashcard(flashcard);
+      return flashcard_;
     } catch (error) {
-      //Exibir modal
       print("Erro ao criar o flashcard: $error");
-      rethrow;
+      return null;
     }
   }
 
@@ -190,7 +191,7 @@ class _FlashcardFormState extends State<FlashcardForm> {
             textStyle: Theme.of(context).textTheme.labelLarge,
           ),
           child: Text(editing ? "Save" : "Create", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color)),
-          onPressed: () {
+          onPressed: () async {
             //
             setState(() {
               flashcard!.question = questionController.text;
@@ -200,10 +201,10 @@ class _FlashcardFormState extends State<FlashcardForm> {
                 updateFlashcard(flashcard!);
               }
               else {
-                createFlashcard(flashcard!);
+                createFlashcard(flashcard!).then((flashcard) => Navigator.of(context).pop(flashcard));
               }
             });
-            Navigator.of(context).pop(flashcard);
+            //Navigator.of(context).pop(flashcard);
           },
         ),
       ],

@@ -37,4 +37,5 @@ abstract class FlashcardRepositoryContract {
   Future<FlashcardModel> updateFlashcard(FlashcardModel flashcard);
   Future<void> deleteFlashcard(int flashcardId);
   Future<List<FlashcardModel>> uploadFile(File file);
+  Future<FlashcardModel?> createFlashcard(FlashcardModel flashcard);
 }

@@ -63,10 +63,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getSubjects() async {
-    List<SubjectModel>? subjects_ = await SubjectRepository().fetchSubjects();
-    setState(() {
-      subjects =  subjects_!;
-    });
+    setLoading(true);
+    try {
+      List<SubjectModel>? subjects_ = await SubjectRepository().fetchSubjects();
+      setState(() {
+        subjects =  subjects_!;
+      });
+    } catch (e) {
+      //se acontecer um erro lanço um modal aqui
+    }
+    await Future.delayed(const Duration(seconds: 3));
+    setLoading(false);
   }
 
   Future<void> showConfirmModal() async {
@@ -264,8 +271,8 @@ class _HomeScreenState extends State<HomeScreen> {
               replacement: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Center(
-                    child: CircularProgressIndicator(color: Theme.of(context).textTheme.bodyMedium!.color),
+                  CircularProgressIndicator(
+                    color: Theme.of(context).textTheme.bodyMedium!.color,
                   ),
                 ],
               ),
