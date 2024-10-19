@@ -27,7 +27,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late TextEditingController _controller;
   late StreamSubscription<bool> keyboardSubscription;
-  late Future<UserModel?> _userFuture;
   bool isSearching = false;
 
   final FocusNode _focusNode = FocusNode();
@@ -138,15 +137,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<UserModel?> _fetchUser() async {
-    final authRepo = AuthRepository();
-    return await authRepo.getStoredUser();
-  }
-
   @override
   void initState() {
     super.initState();
-    _userFuture = _fetchUser();
     _controller = TextEditingController();
     KeyboardVisibilityController().onChange.listen((bool visible) {
       if (!visible && creatingSubject) {
