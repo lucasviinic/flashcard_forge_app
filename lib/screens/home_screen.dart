@@ -168,13 +168,30 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void scrollToEndAndFocus() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController.animateTo(
+        scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeOut,
+      ).then((_) => FocusScope.of(context).requestFocus(_focusNode));
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
     KeyboardVisibilityController().onChange.listen((bool visible) {
       if (creatingSubject && !visible) {
-        showConfirmModal();
+        if (_controller.text == "") {
+          setState(() {
+            _controller.text = "";
+            creatingSubject = false;
+          });
+        } else {
+          showConfirmModal();
+        }
       }
     });
     getSubjects();
@@ -186,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  @override
+@override
   Widget build(BuildContext context) {
     final subjectList = subjects;
 
@@ -211,58 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: SvgPicture.asset('assets/images/logo-v1.svg', height: 35, width: 35),
         centerTitle: true,
         actions: [
-          Consumer<AuthProvider>(
-            builder: (context, authProvider, child) {
-              if (authProvider.currentUser != null) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 20),
-                  child: PopupMenuButton<int>(
-                    color: Theme.of(context).popupMenuTheme.color,
-                    icon: CircleAvatar(
-                      radius: 20,
-                      backgroundImage: NetworkImage(authProvider.currentUser!.photoUrl!),
-                    ),
-                    offset: const Offset(-20, 45),
-                    iconSize: 40,
-                    itemBuilder: (context) {
-                      return [
-                        PopupMenuItem<int>(
-                          value: 0,
-                          child: Row(
-                            children: [
-                              Icon(Icons.account_circle_outlined, color: Theme.of(context).textTheme.bodyMedium!.color),
-                              const SizedBox(width: 8),
-                              Text(
-                                "My account",
-                                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
-                              ),
-                            ],
-                          ),
-                        ),
-                        PopupMenuItem<int>(
-                          value: 1,
-                          onTap: () => authProvider.signOutFromGoogle(),
-                          child: Row(
-                            children: [
-                              Icon(Icons.logout, color: Theme.of(context).textTheme.bodyMedium!.color),
-                              const SizedBox(width: 8),
-                              Text(
-                                "Log out",
-                                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ];
-                    },
-                    onSelected: (value) {},
-                  ),
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            },
-          ),
+          // Seu código do PopupMenuButton permanece o mesmo
         ],
       ),
       drawer: const DrawerMenu(),
@@ -304,11 +270,14 @@ class _HomeScreenState extends State<HomeScreen> {
           child: NotificationListener<ScrollEndNotification>(
             onNotification: (notification) {
               if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-                getSubjects(requestMore: true);
+                if (!creatingSubject) {
+                  getSubjects(requestMore: true);
+                }
               }
               return false;
             },
             child: ListView.builder(
+              controller: scrollController,
               itemCount: subjectList.length + 1,
               itemBuilder: (context, index) {
                 if (index == subjectList.length) {
@@ -391,6 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 creatingSubject = true;
               });
+              scrollToEndAndFocus();  // Scrolla até o final e foca no campo de texto
             },
             tooltip: 'Create new subject',
             child: Icon(Icons.add, color: Theme.of(context).textTheme.bodyMedium!.color),

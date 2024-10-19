@@ -139,7 +139,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
     super.initState();
     subject = widget.subject;
     _topicController.text = "";
-    _subjectController.text = widget.subject.subjectName!;
+    _subjectController.text = subject.subjectName!;
     KeyboardVisibilityController().onChange.listen((bool visible) {
       if (!visible && editing) {
         showOptionModal();
