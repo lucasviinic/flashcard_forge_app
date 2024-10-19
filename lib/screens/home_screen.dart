@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
-import 'package:flashcard_forge_app/models/UserModel.dart';
 import 'package:flashcard_forge_app/providers.dart';
-import 'package:flashcard_forge_app/services/repositories/auth_repo.dart';
 import 'package:flashcard_forge_app/services/repositories/preferences_repo.dart';
 import 'package:flashcard_forge_app/services/repositories/subject_repo.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
@@ -80,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       List<SubjectModel>? newSubjects = await SubjectRepository().fetchSubjects(offset, limit);
-      await Future.delayed(const Duration(seconds: 5));
       
       if (newSubjects != null && newSubjects.isNotEmpty) {
         setState(() {

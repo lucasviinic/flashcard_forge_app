@@ -202,8 +202,20 @@ class _SubjectContainerState extends State<SubjectContainer> {
                               setState(() => editing = true);
                               Navigator.of(context).pop();
                             },
-                            child: Text("Rename", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color))
-                          )
+                            style: TextButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.edit, color: Theme.of(context).textTheme.bodyMedium!.color),
+                                const SizedBox(width: 8),
+                                Text(
+                                  "Rename",
+                                  style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                         PopupMenuItem<int>(
                           value: 1,
@@ -211,7 +223,19 @@ class _SubjectContainerState extends State<SubjectContainer> {
                             onPressed: () async {
                               //await context.read<StudyProvider>().removeSubject(widget.subject.id!).then((value) => Navigator.of(context).pop());
                             },
-                            child: Text("Delete", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color))
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.only(left: 0, top: 0, bottom: 0),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.delete, color: Theme.of(context).textTheme.bodyMedium!.color), // Ícone de lixeira
+                                const SizedBox(width: 8), // Espaço entre o ícone e o texto
+                                Text(
+                                  "Delete",
+                                  style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ];
