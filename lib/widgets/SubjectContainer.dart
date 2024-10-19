@@ -19,6 +19,7 @@ class SubjectContainer extends StatefulWidget {
 }
 
 class _SubjectContainerState extends State<SubjectContainer> {
+  late SubjectModel subject;
   bool showDropdown = false;
   bool creatingTopic = false;
   bool editing = false;
@@ -49,9 +50,9 @@ class _SubjectContainerState extends State<SubjectContainer> {
                 TextButton(
                   child: const Text('Save', style: TextStyle(fontSize: 16, color: Colors.green)),
                   onPressed: () async {
-                    updateSubject(widget.subject.id!, _subjectController.text).then((value) {
+                    updateSubject(subject.id!, _subjectController.text).then((value) {
                       setState(() {
-                        _subjectController.text = widget.subject.subjectName!;
+                        _subjectController.text = subject.subjectName!;
                         editing = false;
                       });
                       Navigator.of(context).pop();
@@ -64,7 +65,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                   child: const Text('Cancel', style: TextStyle(fontSize: 16, color: Colors.red)),
                   onPressed: () {
                     setState(() {
-                      _subjectController.text = widget.subject.subjectName!;
+                      _subjectController.text = subject.subjectName!;
                       editing = false;
                     });
                     Navigator.of(context).pop();
@@ -120,12 +121,23 @@ class _SubjectContainerState extends State<SubjectContainer> {
   }
 
   Future<void> updateSubject(String id, String name) async {
-    //await context.read<StudyProvider>().updateSubject(widget.subject.id!, _subjectController.text);
+    try {
+      SubjectModel? subject_ = await SubjectRepository().updateSubject(id, name);
+
+      if (subject_ != null) {
+        setState(() {
+          subject = subject_;
+        });
+      }
+    } catch (e) {
+      // exibe modal de erro
+    }
   }
 
   @override
   void initState() {
     super.initState();
+    subject = widget.subject;
     _topicController.text = "";
     _subjectController.text = widget.subject.subjectName!;
     KeyboardVisibilityController().onChange.listen((bool visible) {
@@ -171,7 +183,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                       visible: !editing,
                       replacement: TextField(
                         onSubmitted: (value) {
-                          updateSubject(widget.subject.id!, value).then((_) {
+                          updateSubject(subject.id!, value).then((_) {
                             setState(() {
                               _subjectController.text = value;
                               editing = false;
@@ -191,7 +203,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                         focusNode: _focusNode,
                       ),
                       child: Text(
-                        widget.subject.subjectName!,
+                        subject.subjectName!,
                         style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyMedium!.color),
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
@@ -229,7 +241,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                           value: 1,
                           child: TextButton(
                             onPressed: () async {
-                              await removeSubject(widget.subject.id!);
+                              await removeSubject(subject.id!);
                               Navigator.pop(context);
                             },
                             style: TextButton.styleFrom(
@@ -269,31 +281,31 @@ class _SubjectContainerState extends State<SubjectContainer> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      for (var i = 0; i < widget.subject.topics!.length; i++)
+                      for (var i = 0; i < subject.topics!.length; i++)
                         TextButton(
                           onLongPress: () => setState(() {
                             longPressedTopicIndex = longPressedTopicIndex != i ? i : null;
                           }),
                           onPressed: () => Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => FlashcardScreen(topic: widget.subject.topics![i]),
+                              builder: (context) => FlashcardScreen(topic: subject.topics![i]),
                             ),
                           ),
                           child: Row(children: [
                             const SizedBox(width: 8),
                             Expanded(
                               child: Visibility(
-                                visible: !(editingTopic[widget.subject.topics![i].id!] ?? false),
+                                visible: !(editingTopic[subject.topics![i].id!] ?? false),
                                 replacement: TextField(
                                   onSubmitted: (value) {
-                                    updateTopic(widget.subject.id!, widget.subject.topics![i].id!, value).then((_) {
+                                    updateTopic(subject.id!, subject.topics![i].id!, value).then((_) {
                                       setState(() {
                                         _editTopicController.text = value;
-                                        editingTopic[widget.subject.topics![i].id!] = false;
+                                        editingTopic[subject.topics![i].id!] = false;
                                       });
                                     });
                                   },
-                                  autofocus: editingTopic[widget.subject.topics![i].id!] ?? false,
+                                  autofocus: editingTopic[subject.topics![i].id!] ?? false,
                                   maxLength: 50,
                                   controller: _editTopicController,
                                   style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
@@ -307,7 +319,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                   focusNode: _focusNode,
                                 ),
                                 child: Text(
-                                  widget.subject.topics![i].topicName,
+                                  subject.topics![i].topicName,
                                   style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.bodyMedium!.color),
                                   overflow: TextOverflow.ellipsis,
                                   maxLines: 1,
@@ -318,19 +330,19 @@ class _SubjectContainerState extends State<SubjectContainer> {
                             Visibility(
                               visible: i == longPressedTopicIndex,
                               child: Visibility(
-                                visible: editingTopic[widget.subject.topics![i].id!] ?? false,
+                                visible: editingTopic[subject.topics![i].id!] ?? false,
                                 replacement: Row(
                                   children: [
                                     IconButton(
                                       onPressed: () => setState(() {
-                                        editingTopic[widget.subject.topics![i].id!] = true;
-                                        _editTopicController.text = widget.subject.topics![i].topicName;
+                                        editingTopic[subject.topics![i].id!] = true;
+                                        _editTopicController.text = subject.topics![i].topicName;
                                       }),
                                       icon: const Icon(Icons.edit)
                                     ),
                                     IconButton(
                                       onPressed: () async {
-                                        await removeTopic(widget.subject.id!, widget.subject.topics![i].id!);
+                                        await removeTopic(subject.id!, subject.topics![i].id!);
                                         longPressedTopicIndex = null;
                                       },
                                       icon: Icon(Icons.close_rounded, color: Colors.red[900])
@@ -339,10 +351,10 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                 ),
                                 child: IconButton(
                                   onPressed: () async {
-                                    updateTopic(widget.subject.id!, widget.subject.topics![i].id!, _editTopicController.text).then((_) {
+                                    updateTopic(subject.id!, subject.topics![i].id!, _editTopicController.text).then((_) {
                                       setState(() {
                                         longPressedTopicIndex = null;
-                                        editingTopic[widget.subject.topics![i].id!] = false;
+                                        editingTopic[subject.topics![i].id!] = false;
                                       });
                                     });
                                   },
@@ -394,7 +406,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                     children: [
                                       TextButton(
                                         child: const Text('Save', style: TextStyle(fontSize: 16, color: Colors.green)),
-                                        onPressed: () => createTopic(widget.subject.id!, _topicController.text),
+                                        onPressed: () => createTopic(subject.id!, _topicController.text),
                                       ),
                                       const Padding(
                                         padding: EdgeInsets.symmetric(vertical: 5),

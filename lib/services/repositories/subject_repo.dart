@@ -59,13 +59,30 @@ class SubjectRepository implements SubjectRepositoryContract {
 
       return false;
     } catch (e) {
-      // exibe modal de erro
       return false;
     }
   }
 
   @override
-  Future<SubjectModel> updateSubject(SubjectModel subject) async {
-    return Future.value(subject);
+  Future<SubjectModel?> updateSubject(String id, String subjectName) async {
+    String? accessToken = await TokenManager.getAccessToken();
+
+    final response = await http.put(Uri.parse("$baseURL/$id"),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken'
+      },
+      body: json.encode({
+        'subject_name': subjectName,
+      })
+    );
+
+    if (response.statusCode == 200) {
+      final data  = jsonDecode(response.body);
+      SubjectModel subject_ = SubjectModel.fromJson(data);
+      return subject_;
+    }
+
+    return null;
   }
 }

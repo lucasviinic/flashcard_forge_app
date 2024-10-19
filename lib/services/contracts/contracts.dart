@@ -25,7 +25,7 @@ abstract class SubjectRepositoryContract {
   Future<List<SubjectModel>?> fetchSubjects(int offset, int limit);
   Future<SubjectModel> createSubject(SubjectModel subject);
   Future<bool> deleteSubject(String subjectId);
-  Future<SubjectModel> updateSubject(SubjectModel subject);
+  Future<SubjectModel?> updateSubject(String id, String name);
 }
 
 abstract class TopicRepositoryContract {
