@@ -63,11 +63,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> createSubject(SubjectModel subject) async {
     try {
       SubjectModel newSubject = await SubjectRepository().createSubject(subject);
-      subjects.add(newSubject);
+      setState(() {
+        subjects.insert(0, newSubject); // Insere o novo subject no início da lista
+      });
     } catch (e) {
       print(e);
       //exibe modal de erro
     }
+  }
+
+  bool isSubjectDuplicate(SubjectModel newSubject) {
+    return subjects.any((subject) => subject.id == newSubject.id);
   }
 
   Future<void> getSubjects({bool requestMore = false}) async {
@@ -86,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
       
       if (newSubjects != null && newSubjects.isNotEmpty) {
         setState(() {
-          subjects.addAll(newSubjects);
+          subjects.addAll(newSubjects.where((newSubject) => !isSubjectDuplicate(newSubject)).toList());
           offset += limit;
         });
 
@@ -205,8 +211,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
 @override
   Widget build(BuildContext context) {
-    final subjectList = subjects;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -227,15 +231,13 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         title: SvgPicture.asset('assets/images/logo-v1.svg', height: 35, width: 35),
         centerTitle: true,
-        actions: [
-          // Seu código do PopupMenuButton permanece o mesmo
-        ],
+        actions: const [],
       ),
       drawer: const DrawerMenu(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Visibility(
-          visible: !isLoading && (subjectList.isNotEmpty || creatingSubject),
+          visible: !isLoading && (subjects.isNotEmpty || creatingSubject),
           replacement: Center(
             child: Visibility(
               visible: isLoading,
@@ -278,9 +280,9 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             child: ListView.builder(
               controller: scrollController,
-              itemCount: subjectList.length + 1,
+              itemCount: subjects.length + 1,
               itemBuilder: (context, index) {
-                if (index == subjectList.length) {
+                if (index == subjects.length) {
                   return isLoadingMore 
                       ? const Center(
                           child: Padding(
@@ -339,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         );
                 }
                 
-                final subject = subjectList[index];
+                final subject = subjects[index];
                 return SubjectContainer(subject: subject);
               },
             ),
@@ -360,7 +362,7 @@ class _HomeScreenState extends State<HomeScreen> {
               setState(() {
                 creatingSubject = true;
               });
-              scrollToEndAndFocus();  // Scrolla até o final e foca no campo de texto
+              scrollToEndAndFocus();
             },
             tooltip: 'Create new subject',
             child: Icon(Icons.add, color: Theme.of(context).textTheme.bodyMedium!.color),
