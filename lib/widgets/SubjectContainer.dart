@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
 import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
+import 'package:flashcard_forge_app/services/repositories/subject_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
@@ -21,6 +22,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
   bool showDropdown = false;
   bool creatingTopic = false;
   bool editing = false;
+  bool isDeleted = false;
   
   int? longPressedTopicIndex;
 
@@ -105,10 +107,16 @@ class _SubjectContainerState extends State<SubjectContainer> {
     }
   }
 
-  Future<void> removeSubject(int id) async {
-    // await LocalStorage().removeSubject(id).then((_) {
-    //   Provider.of<StudyProvider>(context, listen: false).removeSubject(id);
-    // });
+  Future<void> removeSubject(String id) async {
+    try {
+      bool success = await SubjectRepository().deleteSubject(id);
+
+      if (success) {
+        setState(() => isDeleted = true);
+      }
+    } catch (e) {
+      // exibe modal de erro
+    }
   }
 
   Future<void> updateSubject(String id, String name) async {
@@ -137,7 +145,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return isDeleted ? const SizedBox.shrink() : GestureDetector(
       onTap: () {
         setState(() {
           showDropdown = !showDropdown;
@@ -221,7 +229,8 @@ class _SubjectContainerState extends State<SubjectContainer> {
                           value: 1,
                           child: TextButton(
                             onPressed: () async {
-                              //await context.read<StudyProvider>().removeSubject(widget.subject.id!).then((value) => Navigator.of(context).pop());
+                              await removeSubject(widget.subject.id!);
+                              Navigator.pop(context);
                             },
                             style: TextButton.styleFrom(
                               padding: const EdgeInsets.only(left: 0, top: 0, bottom: 0),

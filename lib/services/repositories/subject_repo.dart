@@ -43,8 +43,25 @@ class SubjectRepository implements SubjectRepositoryContract {
   }
 
   @override
-  Future<void> deleteSubject(int subjectId) async {
-    return Future.value();
+  Future<bool> deleteSubject(String subjectId) async {
+    String? accessToken = await TokenManager.getAccessToken();
+
+    try {
+      final response = await http.delete(Uri.parse("$baseURL/$subjectId"),
+        headers: {
+          'Authorization': 'Bearer $accessToken'
+        }
+      );
+
+      if (response.statusCode == 204) {
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      // exibe modal de erro
+      return false;
+    }
   }
 
   @override

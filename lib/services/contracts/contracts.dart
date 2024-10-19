@@ -24,7 +24,7 @@ abstract class PreferencesRepositoryContract {
 abstract class SubjectRepositoryContract {
   Future<List<SubjectModel>?> fetchSubjects(int offset, int limit);
   Future<SubjectModel> createSubject(SubjectModel subject);
-  Future<void> deleteSubject(int subjectId);
+  Future<bool> deleteSubject(String subjectId);
   Future<SubjectModel> updateSubject(SubjectModel subject);
 }
 
