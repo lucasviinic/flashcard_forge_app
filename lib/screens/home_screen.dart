@@ -61,8 +61,13 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> createSubject(SubjectModel subject) async {
-    setLoading(true);
-    setLoading(false);
+    try {
+      SubjectModel newSubject = await SubjectRepository().createSubject(subject);
+      subjects.add(newSubject);
+    } catch (e) {
+      print(e);
+      //exibe modal de erro
+    }
   }
 
   Future<void> getSubjects({bool requestMore = false}) async {
@@ -168,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _controller = TextEditingController();
     KeyboardVisibilityController().onChange.listen((bool visible) {
-      if (!visible && creatingSubject) {
+      if (creatingSubject && !visible) {
         showConfirmModal();
       }
     });
@@ -318,7 +323,51 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         )
-                      : const SizedBox(height: 40);
+                      : Visibility(
+                          visible: creatingSubject,
+                          replacement: const SizedBox(height: 40),
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Container(
+                              height: 65,
+                              margin: const EdgeInsets.only(top: 10),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                                  child: TextField(
+                                    cursorColor: Theme.of(context).hintColor,
+                                    onSubmitted: (value) async {
+                                      setState(() {
+                                        creatingSubject = false;
+                                        _controller.text = "";
+                                      });
+                                      await createSubject(SubjectModel(subjectName: value));
+                                    },
+                                    autofocus: creatingSubject,
+                                    maxLength: 50,
+                                    controller: _controller,
+                                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyMedium!.color),
+                                    decoration: InputDecoration(
+                                      hintText: "Add a subject",
+                                      hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                                      counterText: "",
+                                      contentPadding: EdgeInsets.zero,
+                                      isDense: true,
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: Theme.of(context).hintColor),
+                                      ),
+                                    ),
+                                    focusNode: _focusNode,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
                 }
                 
                 final subject = subjectList[index];

@@ -38,8 +38,22 @@ class SubjectRepository implements SubjectRepositoryContract {
 
   @override
   Future<SubjectModel> createSubject(SubjectModel subject) async {
-    //subject.id = Random().nextInt(1000);
-    return Future.value(subject);
+    String? accessToken = await TokenManager.getAccessToken();
+
+    final response = await http.post(Uri.parse(baseURL),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $accessToken'
+      },
+      body: json.encode({
+        'subject_name': subject.subjectName
+      })
+    );
+
+    final data = jsonDecode(response.body);
+    SubjectModel subjectCreated = SubjectModel.fromJson(data);
+
+    return subjectCreated;
   }
 
   @override

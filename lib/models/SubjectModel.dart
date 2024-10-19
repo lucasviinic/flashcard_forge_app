@@ -32,7 +32,7 @@ class SubjectModel {
     );
   }
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
     'id': id,
     'subject_name': subjectName,
     'image_url': imageUrl,
