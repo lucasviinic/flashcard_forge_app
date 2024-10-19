@@ -28,10 +28,13 @@ class _HomeScreenState extends State<HomeScreen> {
   late TextEditingController _controller;
   late StreamSubscription<bool> keyboardSubscription;
   bool isSearching = false;
+  int offset = 0;
+  int limit = 10;
+  bool hasMore = true;
 
   final FocusNode _focusNode = FocusNode();
 
-  bool loading = false;
+  bool isLoading = false;
   bool creatingSubject = false;
   List<SubjectModel> subjects = [];
 
@@ -43,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void setLoading(bool value) {
     setState(() {
-      loading = value;
+      isLoading = value;
     });
   }
 
@@ -62,17 +65,29 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getSubjects() async {
+    if (isLoading || !hasMore) return;
+
     setLoading(true);
     try {
-      List<SubjectModel>? subjects_ = await SubjectRepository().fetchSubjects();
-      setState(() {
-        subjects =  subjects_!;
-      });
+      List<SubjectModel>? newSubjects = await SubjectRepository().fetchSubjects(offset, limit);
+      
+      if (newSubjects != null && newSubjects.isNotEmpty) {
+        setState(() {
+          subjects.addAll(newSubjects);
+          offset += limit;
+        });
+
+        if (newSubjects.length < limit) {
+          setState(() => hasMore = false);
+        }
+      } else {
+        setState(() => hasMore = false);
+      }
     } catch (e) {
       //se acontecer um erro lanço um modal aqui
+    } finally {
+      setLoading(false);
     }
-    await Future.delayed(const Duration(seconds: 3));
-    setLoading(false);
   }
 
   Future<void> showConfirmModal() async {
@@ -238,10 +253,10 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
         child: Visibility(
-          visible: !loading && (subjectList.isNotEmpty || creatingSubject),
+          visible: !isLoading && (subjectList.isNotEmpty || creatingSubject),
           replacement: Center(
             child: Visibility(
-              visible: loading,
+              visible: isLoading,
               replacement: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

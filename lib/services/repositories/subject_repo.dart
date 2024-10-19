@@ -1,8 +1,4 @@
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
-import 'package:flashcard_forge_app/models/TopicModel.dart';
-import 'package:flashcard_forge_app/models/FlashcardModel.dart';
-import 'dart:math';
-
 import 'package:flashcard_forge_app/services/contracts/contracts.dart';
 import 'package:flashcard_forge_app/services/token_manager.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -14,11 +10,11 @@ class SubjectRepository implements SubjectRepositoryContract {
   final baseURL = "${dotenv.env['API_BASE_URL']}/subjects";
 
   @override
-  Future<List<SubjectModel>?> fetchSubjects() async {
+  Future<List<SubjectModel>?> fetchSubjects(int offset, int limit) async {
     String? accessToken = await TokenManager.getAccessToken();
 
     try {
-      final response = await http.get(Uri.parse(baseURL),
+      final response = await http.get(Uri.parse("$baseURL?limit=$limit&offset=$offset"),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $accessToken'
