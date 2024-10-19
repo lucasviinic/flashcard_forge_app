@@ -26,11 +26,14 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   late TextEditingController _controller;
+  final scrollController = ScrollController();
+
   late StreamSubscription<bool> keyboardSubscription;
   bool isSearching = false;
   int offset = 0;
-  int limit = 10;
+  int limit = 15;
   bool hasMore = true;
+  bool isLoadingMore = false;
 
   final FocusNode _focusNode = FocusNode();
 
@@ -64,12 +67,20 @@ class _HomeScreenState extends State<HomeScreen> {
     setLoading(false);
   }
 
-  Future<void> getSubjects() async {
-    if (isLoading || !hasMore) return;
+  Future<void> getSubjects({bool requestMore = false}) async {
+    if (isLoading || isLoadingMore || !hasMore) return;
 
-    setLoading(true);
+    if (requestMore) {
+      setState(() {
+        isLoadingMore = true;
+      });
+    } else {
+      setLoading(true);
+    }
+
     try {
       List<SubjectModel>? newSubjects = await SubjectRepository().fetchSubjects(offset, limit);
+      await Future.delayed(const Duration(seconds: 5));
       
       if (newSubjects != null && newSubjects.isNotEmpty) {
         setState(() {
@@ -87,6 +98,9 @@ class _HomeScreenState extends State<HomeScreen> {
       //se acontecer um erro lanço um modal aqui
     } finally {
       setLoading(false);
+      setState(() {
+        isLoadingMore = false;
+      });
     }
   }
 
@@ -285,78 +299,34 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 5),
-                  child: TextField(
-                    cursorColor: Theme.of(context).hintColor,
-                    style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
-                    decoration: InputDecoration(
-                      hintText: "Search term",
-                      hintStyle: TextStyle(color: Theme.of(context).hintColor),
-                      prefixIcon: Padding(
-                        padding: const EdgeInsets.only(left: 5),
-                        child: Icon(Icons.search, size: 25, color: Theme.of(context).hintColor),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(Radius.circular(50)),
-                        borderSide: BorderSide(color: Theme.of(context).hintColor),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(Radius.circular(50)),
-                        borderSide: BorderSide(color: Theme.of(context).hintColor),
-                      ),
-                    ),
-                  ),
-                ),
-                ...subjectList.map((subject) {
-                  return SubjectContainer(subject: subject);
-                }),
-                Visibility(
-                  visible: creatingSubject,
-                  child: Container(
-                    height: 65,
-                    margin: const EdgeInsets.only(top: 10),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        child: TextField(
-                          cursorColor: Theme.of(context).hintColor,
-                          onSubmitted: (value) {
-                            createSubject(SubjectModel(subjectName: value)).then((_) {
-                              setState(() {
-                                _controller.text = "";
-                                creatingSubject = false;
-                              });
-                            });
-                          },
-                          autofocus: creatingSubject,
-                          maxLength: 50,
-                          controller: _controller,
-                          style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyMedium!.color),
-                          decoration: InputDecoration(
-                            hintText: "Add a subject",
-                            hintStyle: TextStyle(color: Theme.of(context).hintColor),
-                            counterText: "",
-                            contentPadding: EdgeInsets.zero,
-                            isDense: true,
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(color: Theme.of(context).hintColor),
+          child: NotificationListener<ScrollEndNotification>(
+            onNotification: (notification) {
+              if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+                getSubjects(requestMore: true);
+              }
+              return false;
+            },
+            child: ListView.builder(
+              itemCount: subjectList.length + 1,
+              itemBuilder: (context, index) {
+                if (index == subjectList.length) {
+                  return isLoadingMore 
+                      ? const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(20),
+                            child: SizedBox(
+                              width: 30,
+                              height: 30,
+                              child: CircularProgressIndicator(color: Colors.blue),
                             ),
                           ),
-                          focusNode: _focusNode,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                        )
+                      : const SizedBox(height: 40);
+                }
+                
+                final subject = subjectList[index];
+                return SubjectContainer(subject: subject);
+              },
             ),
           ),
         ),
@@ -367,7 +337,7 @@ class _HomeScreenState extends State<HomeScreen> {
           decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(15),
-            gradient: Styles.linearGradient
+            gradient: Styles.linearGradient,
           ),
           child: FloatingActionButton(
             backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
