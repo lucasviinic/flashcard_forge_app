@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
-import 'package:flashcard_forge_app/providers.dart';
 import 'package:flashcard_forge_app/services/repositories/preferences_repo.dart';
 import 'package:flashcard_forge_app/services/repositories/subject_repo.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
@@ -11,7 +10,6 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -64,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
     try {
       SubjectModel newSubject = await SubjectRepository().createSubject(subject);
       setState(() {
-        subjects.insert(0, newSubject); // Insere o novo subject no início da lista
+        subjects.add(newSubject);
       });
     } catch (e) {
       print(e);
