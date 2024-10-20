@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
+import 'package:flashcard_forge_app/providers.dart';
 import 'package:flashcard_forge_app/services/repositories/preferences_repo.dart';
 import 'package:flashcard_forge_app/services/repositories/subject_repo.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.title});
@@ -237,7 +239,60 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         title: SvgPicture.asset('assets/images/logo-v1.svg', height: 35, width: 35),
         centerTitle: true,
-        actions: const [],
+        actions: [
+          Consumer<AuthProvider>(
+            builder: (context, authProvider, child) {
+              if (authProvider.currentUser != null) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 20),
+                  child: PopupMenuButton<int>(
+                    color: Theme.of(context).popupMenuTheme.color,
+                    icon: CircleAvatar(
+                      radius: 20,
+                      backgroundImage: NetworkImage(authProvider.currentUser!.photoUrl!),
+                    ),
+                    offset: const Offset(-20, 45),
+                    iconSize: 40,
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem<int>(
+                          value: 0,
+                          child: Row(
+                            children: [
+                              Icon(Icons.account_circle_outlined, color: Theme.of(context).textTheme.bodyMedium!.color),
+                              const SizedBox(width: 8),
+                              Text(
+                                "My account",
+                                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
+                              ),
+                            ],
+                          ),
+                        ),
+                        PopupMenuItem<int>(
+                          value: 1,
+                          onTap: () => authProvider.signOutFromGoogle(),
+                          child: Row(
+                            children: [
+                              Icon(Icons.logout, color: Theme.of(context).textTheme.bodyMedium!.color),
+                              const SizedBox(width: 8),
+                              Text(
+                                "Log out",
+                                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ];
+                    },
+                    onSelected: (value) {},
+                  ),
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+          )
+        ],
       ),
       drawer: const DrawerMenu(),
       body: Padding(
