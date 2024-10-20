@@ -451,6 +451,27 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
+      floatingActionButton: Visibility(
+        visible: !creatingSubject,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(15),
+            gradient: Styles.linearGradient,
+          ),
+          child: FloatingActionButton(
+            backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+            onPressed: () {
+              setState(() {
+                creatingSubject = true;
+              });
+              scrollToEndAndFocus();
+            },
+            tooltip: 'Create new subject',
+            child: Icon(Icons.add, color: Theme.of(context).textTheme.bodyMedium!.color),
+          )
+        )
+      )
     );
   }
 }
