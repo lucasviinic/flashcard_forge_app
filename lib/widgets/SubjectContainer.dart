@@ -4,6 +4,7 @@ import 'package:flashcard_forge_app/models/SubjectModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
 import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
 import 'package:flashcard_forge_app/services/repositories/subject_repo.dart';
+import 'package:flashcard_forge_app/services/repositories/topic_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
@@ -89,13 +90,15 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
   Future<void> createTopic(String subjectId, String topicName) async {
     try {
-      TopicModel topic = TopicModel(subjectId: subjectId, topicName: topicName);
-      //await context.read<StudyProvider>().createTopic(subjectId, topic);
+      TopicModel topicCreated = await TopicRepository().createTopic(subjectId, topicName);
+      subject.topics!.add(topicCreated);
+
       setState(() {
         _topicController.text = "";
         creatingTopic = false;
       });
     } catch (error) {
+      // exibir modal de erro aqui
       print("Erro ao criar o tópico: $error");
     }
   }

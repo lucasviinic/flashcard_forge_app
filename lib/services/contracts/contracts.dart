@@ -29,8 +29,9 @@ abstract class SubjectRepositoryContract {
 }
 
 abstract class TopicRepositoryContract {
+  Future<TopicModel> createTopic(String subjectId, String topicName);
   Future<TopicModel> updateTopic(TopicModel topic);
-  Future<void> deleteTopic(int topicId);
+  Future<bool> deleteTopic(int topicId);
 }
 
 abstract class FlashcardRepositoryContract {
