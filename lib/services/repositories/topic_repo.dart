@@ -33,7 +33,7 @@ class TopicRepository implements TopicRepositoryContract {
   }
 
   @override
-  Future<TopicModel> updateTopic(TopicModel topic) async {
+  Future<TopicModel> updateTopic(String subjectId, String topicId, String topicName) async {
     String? accessToken = await TokenManager.getAccessToken();
 
     final response = await http.put(Uri.parse(baseURL),
@@ -42,9 +42,9 @@ class TopicRepository implements TopicRepositoryContract {
         'Authorization': 'Bearer $accessToken'
       },
       body: json.encode({
-        'topic_id': topic.id,
-        'subject_id': topic.subjectId,
-        'topic_name': topic.topicName
+        'id': topicId,
+        'subject_id': subjectId,
+        'topic_name': topicName
       })
     );
 

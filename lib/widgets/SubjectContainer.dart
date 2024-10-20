@@ -90,8 +90,8 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
   Future<void> createTopic(String subjectId, String topicName) async {
     try {
-      TopicModel topicCreated = await TopicRepository().createTopic(subjectId, topicName);
-      subject.topics!.add(topicCreated);
+      TopicModel newTopic = await TopicRepository().createTopic(subjectId, topicName);
+      subject.topics!.add(newTopic);
 
       setState(() {
         _topicController.text = "";
@@ -111,9 +111,17 @@ class _SubjectContainerState extends State<SubjectContainer> {
     }
   }
 
-  Future<void> updateTopic(String subjectId, String topicId, String name) async {
+  Future<void> updateTopic(String subjectId, String topicId, String topicName) async {
     try {
-      //await context.read<StudyProvider>().updateTopic(subjectId, topicId, name);
+      TopicModel updatedTopic = await TopicRepository().updateTopic(subjectId, topicId, topicName);
+
+      subject.topics = subject.topics!.map((topic) {
+        if (topic.id == topicId) {
+          return updatedTopic;
+        } else {
+          return topic;
+        }
+      }).toList();
     } catch (error) {
       print("Erro ao atualizar o tópico: $error");
     }
