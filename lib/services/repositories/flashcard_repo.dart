@@ -19,7 +19,7 @@ class FlashcardRepository implements FlashcardRepositoryContract {
   }
 
   @override
-  Future<void> deleteFlashcard(int flashcardId) async {
+  Future<void> deleteFlashcard(String flashcardId) async {
     return Future.value();
   }
 

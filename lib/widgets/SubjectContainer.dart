@@ -103,9 +103,17 @@ class _SubjectContainerState extends State<SubjectContainer> {
     }
   }
 
-  Future<void> removeTopic(String subjectId, String topicId) async {
+  Future<void> removeTopic(String topicId) async {
     try {
-      //await context.read<StudyProvider>().removeTopic(subjectId, topicId);
+      bool success = await TopicRepository().deleteTopic(topicId);
+
+      if (success) {
+        setState(() {
+          subject.topics!.removeWhere((topic) => topic.id == topicId);
+        });
+      }
+
+      print(subject.topics);
     } catch (error) {
       print("Erro ao remover o tópico: $error");
     }
@@ -372,7 +380,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                     ),
                                     IconButton(
                                       onPressed: () async {
-                                        await removeTopic(subject.id!, subject.topics![i].id!);
+                                        await removeTopic(subject.topics![i].id!);
                                         longPressedTopicIndex = null;
                                       },
                                       icon: Icon(Icons.close_rounded, color: Colors.red[900])

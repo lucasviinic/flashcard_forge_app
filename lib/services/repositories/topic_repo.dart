@@ -55,7 +55,7 @@ class TopicRepository implements TopicRepositoryContract {
   }
 
   @override
-  Future<bool> deleteTopic(int topicId) async {
+  Future<bool> deleteTopic(String topicId) async {
     String? accessToken = await TokenManager.getAccessToken();
 
     final response = await http.delete(Uri.parse("$baseURL/$topicId"),

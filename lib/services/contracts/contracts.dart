@@ -31,12 +31,12 @@ abstract class SubjectRepositoryContract {
 abstract class TopicRepositoryContract {
   Future<TopicModel> createTopic(String subjectId, String topicName);
   Future<TopicModel> updateTopic(String subjectId, String topicId, String topicName);
-  Future<bool> deleteTopic(int topicId);
+  Future<bool> deleteTopic(String topicId);
 }
 
 abstract class FlashcardRepositoryContract {
   Future<FlashcardModel> updateFlashcard(FlashcardModel flashcard);
-  Future<void> deleteFlashcard(int flashcardId);
+  Future<void> deleteFlashcard(String flashcardId);
   Future<List<FlashcardModel>> uploadFile(File file);
   Future<FlashcardModel?> createFlashcard(FlashcardModel flashcard);
 }
