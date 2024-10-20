@@ -291,6 +291,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 await getSubjects(isRefresh: true);
               },
               child: ListView.builder(
+                physics: const ScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
                 controller: scrollController,
                 itemCount: subjects.length + 1,
                 itemBuilder: (context, index) {
