@@ -74,10 +74,18 @@ class _HomeScreenState extends State<HomeScreen> {
     return subjects.any((subject) => subject.id == newSubject.id);
   }
 
-  Future<void> getSubjects({bool requestMore = false}) async {
-    if (isLoading || isLoadingMore || !hasMore) return;
+  Future<void> getSubjects({bool requestMore = false, bool isRefresh = false}) async {
+    if (!isRefresh && (isLoading || isLoadingMore || !hasMore)) return;
 
-    if (requestMore) {
+    if (isRefresh) {
+      setState(() {
+        subjects.clear();
+        offset = 0;
+        limit = 15;
+        hasMore = true;
+      });
+      setLoading(true);
+    } else if (requestMore) {
       setState(() {
         isLoadingMore = true;
       });
@@ -276,72 +284,79 @@ class _HomeScreenState extends State<HomeScreen> {
               }
               return false;
             },
-            child: ListView.builder(
-              controller: scrollController,
-              itemCount: subjects.length + 1,
-              itemBuilder: (context, index) {
-                if (index == subjects.length) {
-                  return isLoadingMore 
-                      ? const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(20),
-                            child: SizedBox(
-                              width: 30,
-                              height: 30,
-                              child: CircularProgressIndicator(color: Colors.blue),
-                            ),
-                          ),
-                        )
-                      : Visibility(
-                          visible: creatingSubject,
-                          replacement: const SizedBox(height: 40),
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 10),
-                            child: Container(
-                              height: 65,
-                              margin: const EdgeInsets.only(top: 10),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-                                borderRadius: BorderRadius.circular(10),
+            child: RefreshIndicator(
+              color: Colors.black,
+              backgroundColor: Colors.white,
+              onRefresh: () async {
+                await getSubjects(isRefresh: true);
+              },
+              child: ListView.builder(
+                controller: scrollController,
+                itemCount: subjects.length + 1,
+                itemBuilder: (context, index) {
+                  if (index == subjects.length) {
+                    return isLoadingMore 
+                        ? const Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(20),
+                              child: SizedBox(
+                                width: 30,
+                                height: 30,
+                                child: CircularProgressIndicator(color: Colors.blue),
                               ),
-                              child: Center(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                                  child: TextField(
-                                    cursorColor: Theme.of(context).hintColor,
-                                    onSubmitted: (value) async {
-                                      setState(() {
-                                        creatingSubject = false;
-                                        _controller.text = "";
-                                      });
-                                      await createSubject(SubjectModel(subjectName: value));
-                                    },
-                                    autofocus: creatingSubject,
-                                    maxLength: 50,
-                                    controller: _controller,
-                                    style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyMedium!.color),
-                                    decoration: InputDecoration(
-                                      hintText: "Add a subject",
-                                      hintStyle: TextStyle(color: Theme.of(context).hintColor),
-                                      counterText: "",
-                                      contentPadding: EdgeInsets.zero,
-                                      isDense: true,
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(color: Theme.of(context).hintColor),
+                            ),
+                          )
+                        : Visibility(
+                            visible: creatingSubject,
+                            replacement: const SizedBox(height: 40),
+                            child: Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: Container(
+                                height: 65,
+                                margin: const EdgeInsets.only(top: 10),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                                    child: TextField(
+                                      cursorColor: Theme.of(context).hintColor,
+                                      onSubmitted: (value) async {
+                                        setState(() {
+                                          creatingSubject = false;
+                                          _controller.text = "";
+                                        });
+                                        await createSubject(SubjectModel(subjectName: value));
+                                      },
+                                      autofocus: creatingSubject,
+                                      maxLength: 50,
+                                      controller: _controller,
+                                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyMedium!.color),
+                                      decoration: InputDecoration(
+                                        hintText: "Add a subject",
+                                        hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                                        counterText: "",
+                                        contentPadding: EdgeInsets.zero,
+                                        isDense: true,
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(color: Theme.of(context).hintColor),
+                                        ),
                                       ),
+                                      focusNode: _focusNode,
                                     ),
-                                    focusNode: _focusNode,
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                }
-                
-                final subject = subjects[index];
-                return SubjectContainer(subject: subject);
-              },
+                          );
+                  }
+                  
+                  final subject = subjects[index];
+                  return SubjectContainer(subject: subject);
+                },
+              ),
             ),
           ),
         ),
