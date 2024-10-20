@@ -22,7 +22,7 @@ abstract class PreferencesRepositoryContract {
 }
 
 abstract class SubjectRepositoryContract {
-  Future<List<SubjectModel>?> fetchSubjects(int offset, int limit);
+  Future<List<SubjectModel>?> fetchSubjects(int offset, int limit, String searchTerm);
   Future<SubjectModel> createSubject(SubjectModel subject);
   Future<bool> deleteSubject(String subjectId);
   Future<SubjectModel?> updateSubject(String id, String name);

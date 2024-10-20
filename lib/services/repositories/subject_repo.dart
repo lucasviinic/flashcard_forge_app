@@ -10,11 +10,11 @@ class SubjectRepository implements SubjectRepositoryContract {
   final baseURL = "${dotenv.env['API_BASE_URL']}/subjects";
 
   @override
-  Future<List<SubjectModel>?> fetchSubjects(int offset, int limit) async {
+  Future<List<SubjectModel>?> fetchSubjects(int offset, int limit, String searchTerm) async {
     String? accessToken = await TokenManager.getAccessToken();
 
     try {
-      final response = await http.get(Uri.parse("$baseURL?limit=$limit&offset=$offset"),
+      final response = await http.get(Uri.parse("$baseURL?limit=$limit&offset=$offset&search=$searchTerm"),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $accessToken'

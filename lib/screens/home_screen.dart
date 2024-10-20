@@ -74,7 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return subjects.any((subject) => subject.id == newSubject.id);
   }
 
-  Future<void> getSubjects({bool requestMore = false, bool isRefresh = false}) async {
+  Future<void> getSubjects({bool requestMore = false, bool isRefresh = false, String searchTerm = ""}) async {
     if (!isRefresh && (isLoading || isLoadingMore || !hasMore)) return;
 
     if (isRefresh) {
@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     try {
-      List<SubjectModel>? newSubjects = await SubjectRepository().fetchSubjects(offset, limit);
+      List<SubjectModel>? newSubjects = await SubjectRepository().fetchSubjects(offset, limit, searchTerm);
       
       if (newSubjects != null && newSubjects.isNotEmpty) {
         setState(() {
@@ -215,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -242,147 +242,158 @@ class _HomeScreenState extends State<HomeScreen> {
       drawer: const DrawerMenu(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Visibility(
-          visible: !isLoading && (subjects.isNotEmpty || creatingSubject),
-          replacement: Center(
-            child: Visibility(
-              visible: isLoading,
-              replacement: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(
-                    child: SvgPicture.asset(
-                      "assets/images/no-content.svg", 
-                      width: MediaQuery.of(context).size.width * .4
-                    ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 5),
+              child: TextField(
+                onChanged: (value) {
+                  getSubjects(isRefresh: true, searchTerm: value);
+                },
+                cursorColor: Theme.of(context).hintColor,
+                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
+                decoration: InputDecoration(
+                  hintText: "Search term",
+                  hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                  prefixIcon: Padding(
+                    padding: const EdgeInsets.only(left: 5),
+                    child: Icon(Icons.search, size: 25, color: Theme.of(context).hintColor),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Text(
-                      "No subjects yet",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 22, color: Theme.of(context).textTheme.bodyMedium!.color),
-                    ),
-                  )
-                ],
-              ),
-              child: SizedBox(
-                width: 60,
-                height: 60,
-                child: CircularProgressIndicator(
-                  color: Theme.of(context).textTheme.bodyMedium!.color,
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    borderSide: BorderSide(color: Theme.of(context).hintColor),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: const BorderRadius.all(Radius.circular(50)),
+                    borderSide: BorderSide(color: Theme.of(context).hintColor),
+                  ),
                 ),
               ),
             ),
-          ),
-          child: NotificationListener<ScrollEndNotification>(
-            onNotification: (notification) {
-              if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
-                if (!creatingSubject) {
-                  getSubjects(requestMore: true);
-                }
-              }
-              return false;
-            },
-            child: RefreshIndicator(
-              color: Colors.black,
-              backgroundColor: Colors.white,
-              onRefresh: () async {
-                await getSubjects(isRefresh: true);
-              },
-              child: ListView.builder(
-                physics: const ScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-                controller: scrollController,
-                itemCount: subjects.length + 1,
-                itemBuilder: (context, index) {
-                  if (index == subjects.length) {
-                    return isLoadingMore 
-                        ? Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: SizedBox(
-                                width: 30,
-                                height: 30,
-                                child: CircularProgressIndicator(
-                                  color: Theme.of(context).textTheme.bodyMedium!.color
-                                ),
-                              ),
-                            ),
-                          )
-                        : Visibility(
-                            visible: creatingSubject,
-                            replacement: const SizedBox(height: 40),
-                            child: Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: Container(
-                                height: 65,
-                                margin: const EdgeInsets.only(top: 10),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Center(
+            Expanded(
+              child: Visibility(
+                visible: !isLoading && (subjects.isNotEmpty || creatingSubject),
+                replacement: Center(
+                  child: Visibility(
+                    visible: isLoading,
+                    replacement: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: SvgPicture.asset(
+                            "assets/images/no-content.svg",
+                            width: MediaQuery.of(context).size.width * .4,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 10),
+                          child: Text(
+                            "No subjects yet",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 22, color: Theme.of(context).textTheme.bodyMedium!.color),
+                          ),
+                        ),
+                      ],
+                    ),
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).textTheme.bodyMedium!.color,
+                      ),
+                    ),
+                  ),
+                ),
+                child: NotificationListener<ScrollEndNotification>(
+                  onNotification: (notification) {
+                    if (notification.metrics.pixels == notification.metrics.maxScrollExtent) {
+                      if (!creatingSubject) {
+                        getSubjects(requestMore: true);
+                      }
+                    }
+                    return false;
+                  },
+                  child: RefreshIndicator(
+                    color: Colors.black,
+                    backgroundColor: Colors.white,
+                    onRefresh: () async {
+                      await getSubjects(isRefresh: true);
+                    },
+                    child: ListView.builder(
+                      physics: const ScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                      controller: scrollController,
+                      itemCount: subjects.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == subjects.length) {
+                          return isLoadingMore
+                              ? Center(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                                    child: TextField(
-                                      cursorColor: Theme.of(context).hintColor,
-                                      onSubmitted: (value) async {
-                                        setState(() {
-                                          creatingSubject = false;
-                                          _controller.text = "";
-                                        });
-                                        await createSubject(SubjectModel(subjectName: value));
-                                      },
-                                      autofocus: creatingSubject,
-                                      maxLength: 50,
-                                      controller: _controller,
-                                      style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyMedium!.color),
-                                      decoration: InputDecoration(
-                                        hintText: "Add a subject",
-                                        hintStyle: TextStyle(color: Theme.of(context).hintColor),
-                                        counterText: "",
-                                        contentPadding: EdgeInsets.zero,
-                                        isDense: true,
-                                        focusedBorder: UnderlineInputBorder(
-                                          borderSide: BorderSide(color: Theme.of(context).hintColor),
-                                        ),
+                                    padding: const EdgeInsets.all(20),
+                                    child: SizedBox(
+                                      width: 30,
+                                      height: 30,
+                                      child: CircularProgressIndicator(
+                                        color: Theme.of(context).textTheme.bodyMedium!.color,
                                       ),
-                                      focusNode: _focusNode,
                                     ),
                                   ),
-                                ),
-                              ),
-                            ),
-                          );
-                  }
-                  
-                  final subject = subjects[index];
-                  return SubjectContainer(subject: subject);
-                },
+                                )
+                              : Visibility(
+                                  visible: creatingSubject,
+                                  replacement: const SizedBox(height: 40),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: Container(
+                                      height: 65,
+                                      margin: const EdgeInsets.only(top: 10),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Center(
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                                          child: TextField(
+                                            cursorColor: Theme.of(context).hintColor,
+                                            onSubmitted: (value) async {
+                                              setState(() {
+                                                creatingSubject = false;
+                                                _controller.text = "";
+                                              });
+                                              await createSubject(SubjectModel(subjectName: value));
+                                            },
+                                            autofocus: creatingSubject,
+                                            maxLength: 50,
+                                            controller: _controller,
+                                            style: TextStyle(fontSize: 20, color: Theme.of(context).textTheme.bodyMedium!.color),
+                                            decoration: InputDecoration(
+                                              hintText: "Add a subject",
+                                              hintStyle: TextStyle(color: Theme.of(context).hintColor),
+                                              counterText: "",
+                                              contentPadding: EdgeInsets.zero,
+                                              isDense: true,
+                                              focusedBorder: UnderlineInputBorder(
+                                                borderSide: BorderSide(color: Theme.of(context).hintColor),
+                                              ),
+                                            ),
+                                            focusNode: _focusNode,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                );
+                        }
+
+                        final subject = subjects[index];
+                        return SubjectContainer(subject: subject);
+                      },
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ),
-      ),
-      floatingActionButton: Visibility(
-        visible: !creatingSubject,
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(15),
-            gradient: Styles.linearGradient,
-          ),
-          child: FloatingActionButton(
-            backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
-            onPressed: () {
-              setState(() {
-                creatingSubject = true;
-              });
-              scrollToEndAndFocus();
-            },
-            tooltip: 'Create new subject',
-            child: Icon(Icons.add, color: Theme.of(context).textTheme.bodyMedium!.color),
-          ),
+          ],
         ),
       ),
     );
