@@ -10,9 +10,10 @@ import 'package:flashcard_forge_app/utils/constants.dart';
 
 
 class SubjectContainer extends StatefulWidget {
-  const SubjectContainer({super.key, required this.subject});
+  const SubjectContainer({super.key, required this.subject, required this.onDelete});
 
   final SubjectModel subject;
+  final Function(String) onDelete;
 
   @override
   State<SubjectContainer> createState() => _SubjectContainerState();
@@ -20,11 +21,11 @@ class SubjectContainer extends StatefulWidget {
 
 class _SubjectContainerState extends State<SubjectContainer> {
   late SubjectModel subject;
+
   bool showDropdown = false;
   bool creatingTopic = false;
   bool editing = false;
   bool isDeleted = false;
-  
   int? longPressedTopicIndex;
 
   final TextEditingController _topicController = TextEditingController();
@@ -121,6 +122,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
       if (success) {
         setState(() => isDeleted = true);
+        widget.onDelete(widget.subject.id!);
       }
     } catch (e) {
       // exibe modal de erro

@@ -32,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int limit = 15;
   bool hasMore = true;
   bool isLoadingMore = false;
+  int deleteCount = 0;
 
   final FocusNode _focusNode = FocusNode();
 
@@ -441,7 +442,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         }
 
                         final subject = subjects[index];
-                        return SubjectContainer(subject: subject);
+                        
+                        return SubjectContainer(
+                          subject: subject,
+                          onDelete: (id) {
+                            setState(() {
+                              subjects = List.from(subjects)..removeWhere((s) => s.id == id);
+                            });
+                          }
+                        );
                       },
                     ),
                   ),
