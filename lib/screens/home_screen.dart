@@ -296,13 +296,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemBuilder: (context, index) {
                   if (index == subjects.length) {
                     return isLoadingMore 
-                        ? const Center(
+                        ? Center(
                             child: Padding(
-                              padding: EdgeInsets.all(20),
+                              padding: const EdgeInsets.all(20),
                               child: SizedBox(
                                 width: 30,
                                 height: 30,
-                                child: CircularProgressIndicator(color: Colors.blue),
+                                child: CircularProgressIndicator(
+                                  color: Theme.of(context).textTheme.bodyMedium!.color
+                                ),
                               ),
                             ),
                           )

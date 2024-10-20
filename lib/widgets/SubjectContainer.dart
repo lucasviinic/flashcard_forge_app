@@ -50,13 +50,20 @@ class _SubjectContainerState extends State<SubjectContainer> {
                 TextButton(
                   child: const Text('Save', style: TextStyle(fontSize: 16, color: Colors.green)),
                   onPressed: () async {
-                    updateSubject(subject.id!, _subjectController.text).then((value) {
-                      setState(() {
+                    if (_subjectController.text.isNotEmpty) {
+                      updateSubject(subject.id!, _subjectController.text).then((value) {
+                        setState(() {
+                          _subjectController.text = subject.subjectName!;
+                          editing = false;
+                        });
+                      });
+                    } else {
+                      setState(() {                        
                         _subjectController.text = subject.subjectName!;
                         editing = false;
                       });
-                      Navigator.of(context).pop();
-                    });
+                    }
+                    Navigator.of(context).pop();
                   } ,
                 ),
                 const Padding(padding: EdgeInsets.symmetric(vertical: 5), child: VerticalDivider(width: 10),
@@ -182,13 +189,20 @@ class _SubjectContainerState extends State<SubjectContainer> {
                     child: Visibility(
                       visible: !editing,
                       replacement: TextField(
+                        cursorColor: Theme.of(context).hintColor,
                         onSubmitted: (value) {
-                          updateSubject(subject.id!, value).then((_) {
-                            setState(() {
-                              _subjectController.text = value;
-                              editing = false;
+                          setState(() => editing = false);
+                          if(value.isNotEmpty) {
+                            updateSubject(subject.id!, value).then((_) {
+                              setState(() {
+                                _subjectController.text = value;
+                              });
                             });
-                          });
+                          } else {
+                            setState(() {
+                              _subjectController.text = subject.subjectName!;
+                            });
+                          }
                         },
                         autofocus: editing,
                         maxLength: 50,
@@ -198,7 +212,10 @@ class _SubjectContainerState extends State<SubjectContainer> {
                           hintStyle: TextStyle(color: Theme.of(context).hintColor),
                           counterText: "",
                           contentPadding: EdgeInsets.zero,
-                          isDense: true
+                          isDense: true,
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: Theme.of(context).hintColor),
+                          ),
                         ),
                         focusNode: _focusNode,
                       ),
