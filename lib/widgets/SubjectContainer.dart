@@ -5,6 +5,7 @@ import 'package:flashcard_forge_app/models/TopicModel.dart';
 import 'package:flashcard_forge_app/screens/flashcards_screen.dart';
 import 'package:flashcard_forge_app/services/repositories/subject_repo.dart';
 import 'package:flashcard_forge_app/services/repositories/topic_repo.dart';
+import 'package:flashcard_forge_app/widgets/CustomModal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
@@ -98,8 +99,11 @@ class _SubjectContainerState extends State<SubjectContainer> {
         creatingTopic = false;
       });
     } catch (error) {
-      // exibir modal de erro aqui
-      print("Erro ao criar o tópico: $error");
+      showCustomDialog(
+        context: context,
+        message: "Error on create topic. Please, try again.",
+        dialogType: DialogType.error,
+      );
     }
   }
 
@@ -112,8 +116,6 @@ class _SubjectContainerState extends State<SubjectContainer> {
           subject.topics!.removeWhere((topic) => topic.id == topicId);
         });
       }
-
-      print(subject.topics);
     } catch (error) {
       print("Erro ao remover o tópico: $error");
     }
@@ -329,33 +331,11 @@ class _SubjectContainerState extends State<SubjectContainer> {
                               builder: (context) => FlashcardScreen(topic: subject.topics![i]),
                             ),
                           ),
-                          child: Row(children: [
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: Visibility(
-                                visible: !(editingTopic[subject.topics![i].id!] ?? false),
-                                replacement: TextField(
-                                  onSubmitted: (value) {
-                                    updateTopic(subject.id!, subject.topics![i].id!, value).then((_) {
-                                      setState(() {
-                                        _editTopicController.text = value;
-                                        editingTopic[subject.topics![i].id!] = false;
-                                      });
-                                    });
-                                  },
-                                  autofocus: editingTopic[subject.topics![i].id!] ?? false,
-                                  maxLength: 50,
-                                  controller: _editTopicController,
-                                  style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
-                                  decoration: InputDecoration(
-                                    hintStyle: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
-                                    counterText: "",
-                                    contentPadding: EdgeInsets.zero,
-                                    isDense: true,
-                                    border: InputBorder.none
-                                  ),
-                                  focusNode: _focusNode,
-                                ),
+                          child: Row(
+                            children: [
+                              const SizedBox(width: 8),
+                              Expanded(
+                                flex: 4,
                                 child: Text(
                                   subject.topics![i].topicName,
                                   style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.bodyMedium!.color),
@@ -363,44 +343,31 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                   maxLines: 1,
                                 ),
                               ),
-                            ),
-                            const Spacer(),
-                            Visibility(
-                              visible: i == longPressedTopicIndex,
-                              child: Visibility(
-                                visible: editingTopic[subject.topics![i].id!] ?? false,
-                                replacement: Row(
+                              Visibility(
+                                visible: i == longPressedTopicIndex,
+                                child: Row(
                                   children: [
                                     IconButton(
                                       onPressed: () => setState(() {
                                         editingTopic[subject.topics![i].id!] = true;
                                         _editTopicController.text = subject.topics![i].topicName;
                                       }),
-                                      icon: const Icon(Icons.edit)
+                                      icon: const Icon(Icons.edit),
                                     ),
                                     IconButton(
                                       onPressed: () async {
                                         await removeTopic(subject.topics![i].id!);
-                                        longPressedTopicIndex = null;
+                                        setState(() {
+                                          longPressedTopicIndex = null;
+                                        });
                                       },
-                                      icon: Icon(Icons.close_rounded, color: Colors.red[900])
-                                    )
+                                      icon: Icon(Icons.close_rounded, color: Colors.red[900]),
+                                    ),
                                   ],
                                 ),
-                                child: IconButton(
-                                  onPressed: () async {
-                                    updateTopic(subject.id!, subject.topics![i].id!, _editTopicController.text).then((_) {
-                                      setState(() {
-                                        longPressedTopicIndex = null;
-                                        editingTopic[subject.topics![i].id!] = false;
-                                      });
-                                    });
-                                  },
-                                  icon: Icon(Icons.check, color: Colors.green[900])
-                                ),
-                              )
-                            )
-                          ]),
+                              ),
+                            ],
+                          ),
                         ),
                       Visibility(
                         visible: !creatingTopic,
@@ -420,7 +387,7 @@ class _SubjectContainerState extends State<SubjectContainer> {
                                   child: TextField(
                                     cursorColor: Theme.of(context).hintColor,
                                     autofocus: creatingTopic,
-                                    maxLength: 50,
+                                    maxLength: 30,
                                     controller: _topicController,
                                     style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
                                     decoration: InputDecoration(
@@ -482,7 +449,8 @@ class _SubjectContainerState extends State<SubjectContainer> {
                       )
                     ],
                   ),
-                )),
+              )
+            ),
           ],
         ),
       ),
