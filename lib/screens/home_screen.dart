@@ -4,6 +4,7 @@ import 'package:flashcard_forge_app/models/SubjectModel.dart';
 import 'package:flashcard_forge_app/providers.dart';
 import 'package:flashcard_forge_app/services/repositories/preferences_repo.dart';
 import 'package:flashcard_forge_app/services/repositories/subject_repo.dart';
+import 'package:flashcard_forge_app/widgets/CustomSearchBar.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
 import 'package:flashcard_forge_app/widgets/SubjectContainer.dart';
 import 'package:flutter/material.dart';
@@ -302,28 +303,10 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 5),
-              child: TextField(
-                onChanged: (value) {
+              child: CustomSearchBar(
+                onSearchChanged: (value) {
                   getSubjects(isRefresh: true, searchTerm: value);
                 },
-                cursorColor: Theme.of(context).hintColor,
-                style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color),
-                decoration: InputDecoration(
-                  hintText: "Search term",
-                  hintStyle: TextStyle(color: Theme.of(context).hintColor),
-                  prefixIcon: Padding(
-                    padding: const EdgeInsets.only(left: 5),
-                    child: Icon(Icons.search, size: 25, color: Theme.of(context).hintColor),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(50)),
-                    borderSide: BorderSide(color: Theme.of(context).hintColor),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(50)),
-                    borderSide: BorderSide(color: Theme.of(context).hintColor),
-                  ),
-                ),
               ),
             ),
             Expanded(
