@@ -42,28 +42,28 @@ class CustomTheme {
 class AppThemes {
   static final ThemeData lightTheme = ThemeData(
     fontFamily: "Comfortaa",
-    appBarTheme: AppBarTheme(
-      backgroundColor: Colors.grey[100]
+    appBarTheme: const AppBarTheme(
+      backgroundColor: Color(0xFFFFF3E3),
     ),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: Colors.grey[200]
+      backgroundColor: Colors.grey[200],
     ),
-    scaffoldBackgroundColor: Colors.white,
+    scaffoldBackgroundColor: const Color(0xFFFFF3E3),
     textTheme: const TextTheme(
       bodyMedium: TextStyle(color: Colors.black),
     ),
     colorScheme: ColorScheme.fromSwatch().copyWith(
       brightness: Brightness.light,
-      primary: Colors.white,
-      secondary: Styles.accentColor
+      primary: const Color(0xFFFFF3E3),
+      secondary: Styles.accentColor,
     ),
     hintColor: const Color.fromARGB(135, 0, 0, 0),
     popupMenuTheme: PopupMenuThemeData(
-      color: Colors.grey[200]
+      color: Colors.grey[200],
     ),
     dialogTheme: DialogTheme(
-      backgroundColor: Colors.grey[200]
-    )
+      backgroundColor: Colors.grey[200],
+    ),
   );
 
   static final ThemeData darkTheme = ThemeData(
