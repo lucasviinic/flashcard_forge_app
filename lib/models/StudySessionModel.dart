@@ -2,6 +2,7 @@ import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 
 class StudySessionModel {
   int subjectId;
+  String topicName;
   int topicId;
   int correctAnswerCount;
   int incorrectAnswerCount;
@@ -17,6 +18,7 @@ class StudySessionModel {
 
   StudySessionModel({
     required this.subjectId,
+    required this.topicName,
     required this.topicId,
     required this.correctAnswerCount,
     required this.incorrectAnswerCount,
@@ -34,6 +36,7 @@ class StudySessionModel {
   factory StudySessionModel.fromJson(Map<String, dynamic> json) {
     return StudySessionModel(
       subjectId: json['subject_id'],
+      topicName: json['topic_name'],
       topicId: json['topic_id'],
       correctAnswerCount: json['correct_answer_count'],
       incorrectAnswerCount: json['incorrect_answer_count'],
@@ -58,6 +61,7 @@ class StudySessionModel {
   Map<String, dynamic> toJson() => {
     'subject_id': subjectId,
     'topic_id': topicId,
+    'topic_name': topicName,
     'correct_answer_count': correctAnswerCount,
     'incorrect_answer_count': incorrectAnswerCount,
     'total_questions': totalQuestions,

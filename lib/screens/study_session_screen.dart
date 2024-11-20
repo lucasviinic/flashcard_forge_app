@@ -10,9 +10,10 @@ import 'package:percent_indicator/percent_indicator.dart';
 class StudySession extends StatefulWidget {
   final int? subjectId;
   final int? topicId;
+  final String? topicName;
   final List<FlashcardModel>? flashcardList;
 
-  const StudySession({super.key, this.flashcardList, this.subjectId, this.topicId});
+  const StudySession({super.key, this.flashcardList, this.subjectId, this.topicId, this.topicName});
 
   @override
   State<StudySession> createState() => _StudySessionState();
@@ -52,7 +53,8 @@ class _StudySessionState extends State<StudySession> {
     }
 
     StudySessionModel studySession = StudySessionModel(
-      subjectId: widget.subjectId!, 
+      subjectId: widget.subjectId!,
+      topicName: widget.topicName!,
       topicId: widget.topicId!, 
       correctAnswerCount: correctAnswerCount, 
       incorrectAnswerCount: incorrectAnswerCount, 
