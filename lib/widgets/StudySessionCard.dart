@@ -14,9 +14,9 @@ class StudySessionCard extends StatelessWidget {
 
     double scorePercentage = (session.correctAnswerCount / session.totalQuestions) * 100;
 
-    Color percentageColor = scorePercentage < 6
+    Color percentageColor = scorePercentage < 60
         ? Colors.red
-        : scorePercentage < 7.5
+        : scorePercentage < 75
             ? Colors.orange
             : Colors.green;
 
