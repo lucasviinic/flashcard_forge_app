@@ -14,6 +14,12 @@ class StudySessionCard extends StatelessWidget {
 
     double scorePercentage = (session.correctAnswerCount / session.totalQuestions) * 100;
 
+    Color percentageColor = scorePercentage < 6
+        ? Colors.red
+        : scorePercentage < 7.5
+            ? Colors.orange
+            : Colors.green;
+
     return SizedBox(
       height: MediaQuery.of(context).size.height * .08,
       child: Column(
@@ -28,7 +34,7 @@ class StudySessionCard extends StatelessWidget {
                   child: Column(
                     children: [
                       Text(day, style: const TextStyle(fontSize: 19)),
-                      Text(month),
+                      Text(month, style: const TextStyle(color: Colors.green)),
                     ],
                   ),
                 ),
@@ -41,12 +47,24 @@ class StudySessionCard extends StatelessWidget {
                     Text(
                       session.topicName,
                       style: const TextStyle(fontSize: 19),
-                      overflow: TextOverflow.ellipsis, // Adiciona reticências
+                      overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                     ),
-                    Text(
-                      "${session.hardQuestionCount} ${session.mediumQuestionCount} ${session.easyQuestionCount}",
-                      style: const TextStyle(fontSize: 15),
+                    Row(
+                      children: [
+                        Text(
+                          "${session.hardQuestionCount}",
+                          style: const TextStyle(fontSize: 15, color: Colors.red),
+                        ),
+                        Text(
+                          " ${session.mediumQuestionCount}",
+                          style: const TextStyle(fontSize: 15, color: Colors.blue),
+                        ),
+                        Text(
+                          " ${session.easyQuestionCount}",
+                          style: const TextStyle(fontSize: 15, color: Colors.green),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -58,8 +76,8 @@ class StudySessionCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text("${scorePercentage.toStringAsFixed(2)}%", style: const TextStyle(fontSize: 19)),
-                      Text(session.totalTimeSpent, style: const TextStyle(fontSize: 15)),
+                      Text("${scorePercentage.toStringAsFixed(2)}%", style: TextStyle(fontSize: 19, color: percentageColor)),
+                      Text(session.totalTimeSpent, style: const TextStyle(fontSize: 15, color: Colors.grey)),
                     ],
                   ),
                 ),
