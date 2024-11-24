@@ -35,6 +35,7 @@ abstract class TopicRepositoryContract {
 }
 
 abstract class FlashcardRepositoryContract {
+  Future<List<FlashcardModel>?> fetchFlashcards(String topicId, int offset, int limit, String searchTerm);
   Future<FlashcardModel> updateFlashcard(FlashcardModel flashcard);
   Future<void> deleteFlashcard(String flashcardId);
   Future<List<FlashcardModel>> uploadFile(File file);

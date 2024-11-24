@@ -11,7 +11,35 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class FlashcardRepository implements FlashcardRepositoryContract {
-  final baseURL = "${dotenv.env['API_BASE_URL']}/flashcards/";
+  final baseURL = "${dotenv.env['API_BASE_URL']}/flashcards";
+
+  @override
+  Future<List<FlashcardModel>?> fetchFlashcards(String topicId, int offset, int limit, String searchTerm) async {
+    String? accessToken = await TokenManager.getAccessToken();
+
+    try {
+      final response = await http.get(
+        Uri.parse("$baseURL?topic_id=$topicId&limit=$limit&offset=$offset&search=$searchTerm"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data  = jsonDecode(response.body);
+        List<FlashcardModel> flashcards = data.map((json) => FlashcardModel.fromJson(json)).toList();
+
+        return flashcards;
+      } else {
+        print('Failed to fetch flashcards. Status code: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error on get all user flashcards: $e');
+      return null;
+    }
+  }
 
   @override
   Future<FlashcardModel> updateFlashcard(FlashcardModel flashcard) async {
