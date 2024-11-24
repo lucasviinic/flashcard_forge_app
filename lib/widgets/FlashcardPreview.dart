@@ -1,4 +1,5 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
+import 'package:flashcard_forge_app/services/repositories/flashcard_repo.dart';
 import 'package:flashcard_forge_app/widgets/Flashcard.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardForm.dart';
 import 'package:flutter/material.dart';
@@ -33,11 +34,10 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
 
   Future<void> deleteFlashcard(FlashcardModel flashcard) async {
     try {
-      //await context.read<StudyProvider>().removeFlashcard(flashcard);
-      widget.onDelete(flashcard);  // Call the callback to update the parent state
+      FlashcardRepository().deleteFlashcard(widget.flashcard.id!)
+        .then((_) => widget.onDelete(flashcard));
     } catch (error) {
       print("Erro ao editar flashcard");
-      //Exibir modal
     }
   }
 
@@ -55,14 +55,13 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Yes', style: TextStyle(fontSize: 16)),
+              child: Text('Yes', style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.bodyMedium!.color)),
               onPressed: () async {
-                await deleteFlashcard(flashcard!);
-                Navigator.of(context).pop();
+                deleteFlashcard(flashcard!).then((_) => Navigator.of(context).pop());
               },
             ),
             TextButton(
-              child: const Text('No', style: TextStyle(fontSize: 16)),
+              child: Text('No', style: TextStyle(fontSize: 16, color: Theme.of(context).textTheme.bodyMedium!.color)),
               onPressed: () {
                 Navigator.of(context).pop();
               },

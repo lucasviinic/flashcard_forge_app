@@ -47,8 +47,21 @@ class FlashcardRepository implements FlashcardRepositoryContract {
   }
 
   @override
-  Future<void> deleteFlashcard(String flashcardId) async {
-    return Future.value();
+  Future<bool> deleteFlashcard(String flashcardId) async {
+    String? accessToken = await TokenManager.getAccessToken();
+
+    try {
+      final response = await http.delete(Uri.parse("$baseURL/$flashcardId"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken'
+        }
+      );
+      return response.statusCode == 204;
+    } catch (e) {
+      print('Error on delete flashcard: $e');
+      return false;
+    }
   }
 
   @override

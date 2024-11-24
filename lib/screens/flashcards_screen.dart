@@ -252,20 +252,22 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                                     ),
                                   ),
                                 )
-                              : const SizedBox.shrink(); // Espaço vazio quando não estiver carregando mais
+                              : const SizedBox.shrink();
                         }
 
                         final flashcard = flashcards[index];
+
                         return FlashcardPreview(
+                          key: ValueKey(flashcard.id),
                           flashcard: flashcard,
-                          onDelete: (id) {
+                          onDelete: (flashcard) {
                             setState(() {
-                              flashcards.removeWhere((f) => f.id == id);
+                              flashcards.removeWhere((f) => f.id == flashcard.id);
                             });
                           },
                         );
                       },
-                    ),
+                    )
                   ),
                 ),
               ),
