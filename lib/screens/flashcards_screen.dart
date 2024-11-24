@@ -6,7 +6,6 @@ import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
 import 'package:flashcard_forge_app/screens/study_session_screen.dart';
 import 'package:flashcard_forge_app/services/repositories/flashcard_repo.dart';
-import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardForm.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardPreview.dart';
@@ -23,7 +22,6 @@ class FlashcardScreen extends StatefulWidget {
 }
 
 class _FlashcardScreenState extends State<FlashcardScreen> {
-  late TextEditingController _controller;
   final scrollController = ScrollController();
   late StreamSubscription<bool> keyboardSubscription;
 
@@ -36,12 +34,6 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
   bool isLoading = false;
   bool creatingSFlashcard = false;
   List<FlashcardModel> flashcards = [];
-
-  void _removeFlashcard(FlashcardModel flashcard) {
-    setState(() {
-      flashcards.remove(flashcard);
-    });
-  }
 
   bool isFlashcardDuplicate(FlashcardModel newFlashcard) {
     return flashcards.any((flashcard) => flashcard.id == newFlashcard.id);
