@@ -235,10 +235,9 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                         crossAxisSpacing: 8,
                         mainAxisSpacing: 8,
                       ),
-                      itemCount: flashcards.length + 1, // Adicionar espaço para o indicador de carregamento
+                      itemCount: isLoadingMore ? flashcards.length + 1 : flashcards.length,
                       itemBuilder: (context, index) {
                         if (index == flashcards.length) {
-                          // Exibir indicador de carregamento no final
                           return isLoadingMore
                               ? Center(
                                   child: Padding(
