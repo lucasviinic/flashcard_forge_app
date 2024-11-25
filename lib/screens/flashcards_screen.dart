@@ -140,7 +140,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
-                        return StudySession(flashcardList: flashcards);
+                        return StudySession(flashcardList: flashcards, topic: widget.topic!);
                       },
                     );
                   }
@@ -153,24 +153,24 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                   : Colors.grey[350],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: IconButton(
-                icon: Icon(Icons.upload_file_rounded,
-                    size: 30,
-                    color: Theme.of(context).textTheme.bodyMedium!.color),
-                onPressed: () async {
-                  FilePickerResult? result = await FilePicker.platform
-                      .pickFiles(
-                          type: FileType.custom, allowedExtensions: ['pdf']);
+          // Padding(
+          //   padding: const EdgeInsets.all(10),
+          //   child: IconButton(
+          //       icon: Icon(Icons.upload_file_rounded,
+          //           size: 30,
+          //           color: Theme.of(context).textTheme.bodyMedium!.color),
+          //       onPressed: () async {
+          //         FilePickerResult? result = await FilePicker.platform
+          //             .pickFiles(
+          //                 type: FileType.custom, allowedExtensions: ['pdf']);
 
-                  if (result != null) {
-                    File file = File(result.files.single.path!);
-                    print(file);
-                  }
-                },
-                highlightColor: Colors.transparent),
-          ),
+          //         if (result != null) {
+          //           File file = File(result.files.single.path!);
+          //           print(file);
+          //         }
+          //       },
+          //       highlightColor: Colors.transparent),
+          // ),
         ],
       ),
       drawer: const DrawerMenu(),

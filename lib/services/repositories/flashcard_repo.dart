@@ -42,8 +42,30 @@ class FlashcardRepository implements FlashcardRepositoryContract {
   }
 
   @override
-  Future<FlashcardModel> updateFlashcard(FlashcardModel flashcard) async {
-    return Future.value(flashcard);
+  Future<FlashcardModel?> updateFlashcard(FlashcardModel flashcard) async {
+    String? accessToken = await TokenManager.getAccessToken();
+    
+    try {
+      final response = await http.put(Uri.parse("$baseURL/${flashcard.id}"),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $accessToken'
+        },
+        body: json.encode(flashcard.toJson())
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        FlashcardModel flashcard_ = FlashcardModel.fromJson(data);
+        return flashcard_;
+      } else {
+        print('Error on create flashcard');
+        return null;
+      }
+    } catch (e) {
+      print('Error on create flashcard: $e');
+      return null;
+    }
   }
 
   @override
@@ -94,6 +116,5 @@ class FlashcardRepository implements FlashcardRepositoryContract {
       print('Error on create flashcard: $e');
       return null;
     }
-    
   }
 }

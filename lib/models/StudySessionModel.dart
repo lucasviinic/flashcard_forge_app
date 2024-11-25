@@ -1,9 +1,9 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 
 class StudySessionModel {
-  int subjectId;
+  String subjectId;
   String topicName;
-  int topicId;
+  String topicId;
   int correctAnswerCount;
   int incorrectAnswerCount;
   int totalQuestions;

@@ -34,12 +34,13 @@ class _FlashcardFormState extends State<FlashcardForm> {
     }
   }
 
-  Future<void> updateFlashcard(FlashcardModel flashcard) async {
+  Future<FlashcardModel?> updateFlashcard(FlashcardModel flashcard) async {
     try {
-     //await context.read<StudyProvider>().updateFlashcard(flashcard);
+      FlashcardModel? flashcard_ = await FlashcardRepository().updateFlashcard(flashcard);
+      return flashcard_;
     } catch (error) {
       print("Erro ao editar flashcard");
-      //Exibir modal
+      return null;
     }
   }
 
@@ -192,13 +193,12 @@ class _FlashcardFormState extends State<FlashcardForm> {
           ),
           child: Text(editing ? "Save" : "Create", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium!.color)),
           onPressed: () async {
-            //
             setState(() {
               flashcard!.question = questionController.text;
               flashcard!.answer = answerController.text;
               flashcard!.difficulty = isSelected.indexOf(true);
               if (editing) {
-                updateFlashcard(flashcard!);
+                updateFlashcard(flashcard!).then((flashcard) => Navigator.of(context).pop(flashcard));
               }
               else {
                 createFlashcard(flashcard!).then((flashcard) => Navigator.of(context).pop(flashcard));

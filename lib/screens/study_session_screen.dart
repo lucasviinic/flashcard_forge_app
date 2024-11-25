@@ -2,18 +2,17 @@ import 'dart:async';
 
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/models/StudySessionModel.dart';
+import 'package:flashcard_forge_app/models/TopicModel.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 class StudySession extends StatefulWidget {
-  final int? subjectId;
-  final int? topicId;
-  final String? topicName;
+  final TopicModel topic;
   final List<FlashcardModel>? flashcardList;
 
-  const StudySession({super.key, this.flashcardList, this.subjectId, this.topicId, this.topicName});
+  const StudySession({super.key, required this.flashcardList, required this.topic});
 
   @override
   State<StudySession> createState() => _StudySessionState();
@@ -53,9 +52,9 @@ class _StudySessionState extends State<StudySession> {
     }
 
     StudySessionModel studySession = StudySessionModel(
-      subjectId: widget.subjectId!,
-      topicName: widget.topicName!,
-      topicId: widget.topicId!, 
+      subjectId: widget.topic.subjectId,
+      topicName: widget.topic.topicName,
+      topicId: widget.topic.id!, 
       correctAnswerCount: correctAnswerCount, 
       incorrectAnswerCount: incorrectAnswerCount, 
       totalQuestions: widget.flashcardList!.length, 
