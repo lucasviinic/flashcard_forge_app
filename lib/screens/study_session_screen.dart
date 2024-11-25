@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/models/StudySessionModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
+import 'package:flashcard_forge_app/services/repositories/study_session.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
@@ -58,15 +59,16 @@ class _StudySessionState extends State<StudySession> {
       correctAnswerCount: correctAnswerCount, 
       incorrectAnswerCount: incorrectAnswerCount, 
       totalQuestions: widget.flashcardList!.length, 
-      totalTimeSpent: _timer.toString(), 
+      totalTimeSpent: timerText, 
       easyQuestionCount: easyQuestions.length, 
       mediumQuestionCount: mediumQuestions.length, 
       hardQuestionCount: hardQuestions.length, 
       easyQuestions: easyQuestions, 
       mediumQuestions: mediumQuestions, 
-      hardQuestions: hardQuestions, 
-      createdAt: DateTime.now()
+      hardQuestions: hardQuestions
     );
+
+    await StudySessionRepository().saveStudySession(studySession);
   }
 
   void updateProgress() {

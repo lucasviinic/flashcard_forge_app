@@ -9,8 +9,8 @@ class StudySessionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String day = DateFormat.d().format(session.createdAt);
-    String month = DateFormat.MMM().format(session.createdAt).toUpperCase();
+    String day = DateFormat.d().format(session.createdAt!);
+    String month = DateFormat.MMM().format(session.createdAt!).toUpperCase();
 
     double scorePercentage = (session.correctAnswerCount / session.totalQuestions) * 100;
 

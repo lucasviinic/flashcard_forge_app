@@ -14,7 +14,7 @@ class StudySessionModel {
   List<FlashcardModel> easyQuestions;
   List<FlashcardModel> mediumQuestions;
   List<FlashcardModel> hardQuestions;
-  DateTime createdAt;
+  DateTime? createdAt;
 
   StudySessionModel({
     required this.subjectId,
@@ -30,7 +30,7 @@ class StudySessionModel {
     required this.easyQuestions,
     required this.mediumQuestions,
     required this.hardQuestions,
-    required this.createdAt
+    this.createdAt
   });
 
   factory StudySessionModel.fromJson(Map<String, dynamic> json) {
