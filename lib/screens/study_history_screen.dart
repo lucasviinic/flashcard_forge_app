@@ -1,7 +1,8 @@
-import 'package:flashcard_forge_app/services/mocks.dart';
+import 'package:flashcard_forge_app/models/StudySessionModel.dart';
+import 'package:flashcard_forge_app/services/repositories/study_session.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
 import 'package:flashcard_forge_app/widgets/StudySessionCard.dart';
-import 'package:flashcard_forge_app/widgets/CustomSearchBar.dart'; // Importe o CustomSearchBar
+import 'package:flashcard_forge_app/widgets/CustomSearchBar.dart';
 import 'package:flutter/material.dart';
 
 class StudyHistoryScreen extends StatefulWidget {
@@ -12,12 +13,79 @@ class StudyHistoryScreen extends StatefulWidget {
 }
 
 class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
-  bool _isSearching = false;
+  bool isSearching = false;
+  int offset = 0;
+  int limit = 15;
+  bool hasMore = true;
+  bool isLoadingMore = false;
+  bool isLoading = false;
+
+  List<StudySessionModel> studyHistory = [];
 
   void _toggleSearch() {
     setState(() {
-      _isSearching = !_isSearching;
+      isSearching = !isSearching;
     });
+  }
+
+  void setLoading(bool value) {
+    setState(() {
+      isLoading = value;
+    });
+  }
+
+  bool isSessionDuplicate(StudySessionModel newSession) {
+    return studyHistory.any((session) => session.id == newSession.id);
+  }
+
+  Future<void> getStudyHistory({bool requestMore = false, bool isRefresh = false, String searchTerm = ""}) async {
+    if (!isRefresh && (isLoading || isLoadingMore || !hasMore)) return;
+
+    if (isRefresh) {
+      setState(() {
+        studyHistory.clear();
+        offset = 0;
+        limit = 15;
+        hasMore = true;
+      });
+      setLoading(true);
+    } else if (requestMore) {
+      setState(() {
+        isLoadingMore = true;
+      });
+    } else {
+      setLoading(true);
+    }
+
+    try {
+      List<StudySessionModel>? newSessions = await StudySessionRepository().fetchStudyHistory(limit, offset, searchTerm);
+      
+      if (newSessions != null && newSessions.isNotEmpty) {
+        setState(() {
+          studyHistory.addAll(newSessions.where((newSession) => !isSessionDuplicate(newSession)).toList());
+          offset += limit;
+        });
+
+        if (newSessions.length < limit) {
+          setState(() => hasMore = false);
+        }
+      } else {
+        setState(() => hasMore = false);
+      }
+    } catch (e) {
+      //se acontecer um erro lanço um modal aqui
+    } finally {
+      setLoading(false);
+      setState(() {
+        isLoadingMore = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getStudyHistory();
   }
 
   @override
@@ -55,7 +123,7 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
           AnimatedSize(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut,
-            child: _isSearching
+            child: isSearching
                 ? SizedBox(
                   width: MediaQuery.of(context).size.width * .9,
                   child: Padding(
@@ -73,11 +141,11 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
           Expanded(
             child: ListView.builder(
               padding: const EdgeInsets.all(16.0),
-              itemCount: mockStudySessions.length + 1,
+              itemCount: studyHistory.length + 1,
               itemBuilder: (context, index) {
                 if (index == 0) {
                   return Visibility(
-                    visible: !_isSearching,
+                    visible: !isSearching,
                     child: const Padding(
                       padding: EdgeInsets.only(bottom: 10),
                       child: Text(
@@ -88,15 +156,21 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
                     ),
                   );
                 } else {
-                  final studySession = mockStudySessions[index - 1];
+                  final studySession = studyHistory[index - 1];
 
                   BorderRadius borderRadius;
                   Border border;
 
-                  if (index == 1) {
+                  if (studyHistory.length == 1) {
+                    // Caso com apenas um registro
+                    borderRadius = BorderRadius.circular(10); // Bordas completamente arredondadas
+                    border = Border.all(color: Colors.blueGrey, width: 0.5);
+                  } else if (index == 1) {
+                    // Primeiro item
                     borderRadius = const BorderRadius.vertical(top: Radius.circular(10));
                     border = Border.all(color: Colors.blueGrey, width: 0.5);
-                  } else if (index == mockStudySessions.length) {
+                  } else if (index == studyHistory.length) {
+                    // Último item
                     borderRadius = const BorderRadius.vertical(bottom: Radius.circular(10));
                     border = const Border(
                       left: BorderSide(color: Colors.blueGrey, width: 0.5),
@@ -104,6 +178,7 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
                       bottom: BorderSide(color: Colors.blueGrey, width: 0.5),
                     );
                   } else {
+                    // Itens intermediários
                     borderRadius = BorderRadius.zero;
                     border = const Border(
                       left: BorderSide(color: Colors.blueGrey, width: 0.5),

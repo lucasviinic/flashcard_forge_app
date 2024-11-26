@@ -62,10 +62,7 @@ class _StudySessionState extends State<StudySession> {
       totalTimeSpent: timerText, 
       easyQuestionCount: easyQuestions.length, 
       mediumQuestionCount: mediumQuestions.length, 
-      hardQuestionCount: hardQuestions.length, 
-      easyQuestions: easyQuestions, 
-      mediumQuestions: mediumQuestions, 
-      hardQuestions: hardQuestions
+      hardQuestionCount: hardQuestions.length
     );
 
     await StudySessionRepository().saveStudySession(studySession);

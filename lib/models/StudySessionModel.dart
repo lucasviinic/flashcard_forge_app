@@ -1,6 +1,7 @@
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 
 class StudySessionModel {
+  String? id;
   String subjectId;
   String topicName;
   String topicId;
@@ -11,12 +12,10 @@ class StudySessionModel {
   int easyQuestionCount;
   int mediumQuestionCount;
   int hardQuestionCount;
-  List<FlashcardModel> easyQuestions;
-  List<FlashcardModel> mediumQuestions;
-  List<FlashcardModel> hardQuestions;
   DateTime? createdAt;
 
   StudySessionModel({
+    this.id,
     required this.subjectId,
     required this.topicName,
     required this.topicId,
@@ -27,14 +26,12 @@ class StudySessionModel {
     required this.easyQuestionCount,
     required this.mediumQuestionCount,
     required this.hardQuestionCount,
-    required this.easyQuestions,
-    required this.mediumQuestions,
-    required this.hardQuestions,
     this.createdAt
   });
 
   factory StudySessionModel.fromJson(Map<String, dynamic> json) {
     return StudySessionModel(
+      id: json['id'],
       subjectId: json['subject_id'],
       topicName: json['topic_name'],
       topicId: json['topic_id'],
@@ -45,16 +42,7 @@ class StudySessionModel {
       easyQuestionCount: json['easy_question_count'],
       mediumQuestionCount: json['medium_question_count'],
       hardQuestionCount: json['hard_question_count'],
-      easyQuestions: (json['easy_questions'] as List)
-          .map((e) => FlashcardModel.fromJson(e))
-          .toList(),
-      mediumQuestions: (json['medium_questions'] as List)
-          .map((e) => FlashcardModel.fromJson(e))
-          .toList(),
-      hardQuestions: (json['hard_questions'] as List)
-          .map((e) => FlashcardModel.fromJson(e))
-          .toList(),
-      createdAt: json["created_at"]
+      createdAt: json["created_at"] != null ? DateTime.parse(json["created_at"]) : null
     );
   }
 
@@ -69,9 +57,6 @@ class StudySessionModel {
     'easy_question_count': easyQuestionCount,
     'medium_question_count': mediumQuestionCount,
     'hard_question_count': hardQuestionCount,
-    'easy_questions': easyQuestions.map((e) => e.toJson()).toList(),
-    'medium_questions': mediumQuestions.map((e) => e.toJson()).toList(),
-    'hard_questions': hardQuestions.map((e) => e.toJson()).toList(),
     'created_at': createdAt
   };
 }
