@@ -7,6 +7,7 @@ class FlashcardModel {
   String? answer;
   int? difficulty; //0: easy, 1: medium, 2: hard
   bool? lastResponse;
+  bool? opened;
   String? imageUrl;
 
   FlashcardModel({
@@ -18,6 +19,7 @@ class FlashcardModel {
     this.answer,
     this.difficulty,
     this.lastResponse,
+    this.opened,
     this.imageUrl
   });
 
@@ -31,6 +33,7 @@ class FlashcardModel {
       answer: json['answer'],
       difficulty: json['difficulty'],
       lastResponse: json['last_response'],
+      opened: json['opened'],
       imageUrl: json['image_url']
     );
   }
@@ -44,6 +47,7 @@ class FlashcardModel {
     'answer': answer,
     'difficulty': difficulty,
     'last_response': lastResponse,
+    'opened': opened,
     'image_url': imageUrl
   };
 }

@@ -1,5 +1,3 @@
-import 'package:flashcard_forge_app/models/FlashcardModel.dart';
-
 class StudySessionModel {
   String? id;
   String subjectId;
