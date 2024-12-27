@@ -168,7 +168,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                   File file = File(result.files.single.path!);
                   
                   List<FlashcardModel>? newFlashcards = await FlashcardRepository()
-                    .uploadFile(file, 5, 1, widget.topic!.subjectId, widget.topic!.id!);
+                    .uploadFile(file, 15, 1, widget.topic!.subjectId, widget.topic!.id!);
 
                   if (newFlashcards.isNotEmpty) {
                     setState(() {

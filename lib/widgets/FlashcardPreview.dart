@@ -88,8 +88,16 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
           showEditOptions = !showEditOptions;
         });
       },
-      onTap: () {
+      onTap: () async {
         if (!showEditOptions) {
+          
+          if (flashcard?.opened == false) {
+          
+          setState(() {
+            flashcard?.opened = true;
+            FlashcardRepository().updateFlashcard(flashcard!);
+          });
+
           showDialog<void>(
             context: context,
             builder: (BuildContext context) {
@@ -97,7 +105,7 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
             },
           );
         }
-      },
+      }},
       child: Stack(
         children: [
           Container(
