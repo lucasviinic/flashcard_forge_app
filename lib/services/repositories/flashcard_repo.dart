@@ -87,8 +87,53 @@ class FlashcardRepository implements FlashcardRepositoryContract {
   }
 
   @override
-  Future<List<FlashcardModel>> uploadFile(File file) async {
-    return [];
+  Future<List<FlashcardModel>> uploadFile(
+      File file, int quantity, int difficulty, String subjectId, String topicId) async {
+    String? accessToken = await TokenManager.getAccessToken();
+    
+    try {
+      var request = http.MultipartRequest(
+        'POST',
+        Uri.parse("$baseURL/generate?quantity=$quantity&difficulty=$difficulty&subject_id=$subjectId&topic_id=$topicId")
+      );
+
+      var fileStream = http.ByteStream(file.openRead());
+      var length = await file.length();
+      
+      var multipartFile = http.MultipartFile(
+        'file',
+        fileStream,
+        length,
+        filename: file.path.split('/').last
+      );
+      
+      request.headers.addAll({
+        'Authorization': 'Bearer $accessToken'
+      });
+      
+      request.files.add(multipartFile);
+      
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+      
+      if (response.statusCode == 201) {
+        var jsonResponse = json.decode(response.body) as Map<String, dynamic>;
+        if (jsonResponse.containsKey('flashcards')) {
+          List<dynamic> flashcardsJson = jsonResponse['flashcards'];
+          return flashcardsJson
+              .map((json) => FlashcardModel.fromJson(json))
+              .toList();
+        } else {
+          throw Exception('Invalid response format');
+        }
+      } else {
+        throw Exception('Failed to upload file: ${response.reasonPhrase}');
+      }
+      
+    } catch (e) {
+      print('Error on create flashcard: $e');
+      return [];
+    }
   }
 
   @override
