@@ -104,7 +104,12 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
             decoration: BoxDecoration(
               color: Theme.of(context).floatingActionButtonTheme.backgroundColor,
               borderRadius: BorderRadius.circular(10),
-              //gradient: Styles.linearGradient,
+              border: flashcard?.opened == false 
+                ? Border.all(
+                    color: Colors.green,
+                    width: 2.5,
+                  )
+                : null,
             ),
             child: Center(
               child: Padding(
@@ -144,7 +149,7 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
                             if (flashcardObject != null) {
                               setState(() {
                                 flashcard = flashcardObject;
-                                showEditOptions = false; // Hide options after editing
+                                showEditOptions = false;
                               });
                             }
                           },
@@ -155,7 +160,7 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
                           onPressed: () async {
                             await showDeleteFlashcardDialog(context);
                             setState(() {
-                              showEditOptions = false; // Hide options after deletion
+                              showEditOptions = false;
                             });
                           },
                           icon: const Icon(Icons.delete, color: Colors.red, size: 40),
