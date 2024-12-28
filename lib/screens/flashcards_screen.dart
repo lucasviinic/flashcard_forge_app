@@ -153,35 +153,32 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                   : Colors.grey[350],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: IconButton(
-                icon: Icon(Icons.upload_file_rounded,
-                    size: 30,
-                    color: Theme.of(context).textTheme.bodyMedium!.color),
-                onPressed: () async {
-                  FilePickerResult? result = await FilePicker.platform
-                    .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
-
-                  if (result == null) return;
-
-                  File file = File(result.files.single.path!);
-                  
-                  List<FlashcardModel>? newFlashcards = await FlashcardRepository()
-                    .uploadFile(file, 15, 1, widget.topic!.subjectId, widget.topic!.id!);
-
-                  if (newFlashcards.isNotEmpty) {
-                    setState(() {
-                      flashcards.insertAll(0, newFlashcards);
-                    });
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Nenhum flashcard foi adicionado.')),
-                    );
-                  }
-                },
-                highlightColor: Colors.transparent),
-          ),
+          IconButton(
+              icon: Icon(Icons.upload_file_rounded,
+                  size: 30,
+                  color: Theme.of(context).textTheme.bodyMedium!.color),
+              onPressed: () async {
+                FilePickerResult? result = await FilePicker.platform
+                  .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+          
+                if (result == null) return;
+          
+                File file = File(result.files.single.path!);
+                
+                List<FlashcardModel>? newFlashcards = await FlashcardRepository()
+                  .uploadFile(file, 15, 1, widget.topic!.subjectId, widget.topic!.id!);
+          
+                if (newFlashcards.isNotEmpty) {
+                  setState(() {
+                    flashcards.insertAll(0, newFlashcards);
+                  });
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Nenhum flashcard foi adicionado.')),
+                  );
+                }
+              },
+              highlightColor: Colors.transparent),
         ],
       ),
       drawer: const DrawerMenu(),
