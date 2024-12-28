@@ -29,28 +29,45 @@ class _StudySessionState extends State<StudySession> {
   int correctAnswerCount = 0;
   int incorrectAnswerCount = 0;
 
+  int? easyQuestionCount;
+  int? correctEasyQuestionsCount;
+  int? mediumQuestionCount;
+  int? correctMediumQuestionsCount;
+  int? hardQuestionCount;
+  int? correctHardQuestionsCount;
+
+  Map<int, int> correctAnswersByDifficulty = {0: 0, 1: 0, 2: 0};
+
+  int? totalQuestions;
+  String? totalTimeSpent;
+
   void saveStudySession() async {
     List<FlashcardModel>? easyQuestions = [];
     List<FlashcardModel>? mediumQuestions = [];
     List<FlashcardModel>? hardQuestions = [];
 
     for (var flashcard in widget.flashcardList!) {
-      if (flashcard.lastResponse == true) {
-        switch (flashcard.difficulty) {
-          case 0: // Easy
-            easyQuestions.add(flashcard);
-            break;
-          case 1: // Medium
-            mediumQuestions.add(flashcard);
-            break;
-          case 2: // Hard
-            hardQuestions.add(flashcard);
-            break;
-          default:
-            break;
-        }
+      switch (flashcard.difficulty) {
+        case 0: // Easy
+          easyQuestions.add(flashcard);
+          break;
+        case 1: // Medium
+          mediumQuestions.add(flashcard);
+          break;
+        case 2: // Hard
+          hardQuestions.add(flashcard);
+          break;
+        default:
+          break;
       }
     }
+
+    setState(() {
+      totalQuestions = widget.flashcardList!.length;
+      easyQuestionCount = easyQuestions.length;
+      mediumQuestionCount = mediumQuestions.length; 
+      hardQuestionCount = hardQuestions.length;
+    });
 
     StudySessionModel studySession = StudySessionModel(
       subjectId: widget.topic.subjectId,
@@ -58,11 +75,11 @@ class _StudySessionState extends State<StudySession> {
       topicId: widget.topic.id!, 
       correctAnswerCount: correctAnswerCount, 
       incorrectAnswerCount: incorrectAnswerCount, 
-      totalQuestions: widget.flashcardList!.length, 
+      totalQuestions: totalQuestions!, 
       totalTimeSpent: timerText, 
-      easyQuestionCount: easyQuestions.length, 
-      mediumQuestionCount: mediumQuestions.length, 
-      hardQuestionCount: hardQuestions.length
+      easyQuestionCount: easyQuestionCount!, 
+      mediumQuestionCount: mediumQuestionCount!, 
+      hardQuestionCount: hardQuestionCount!
     );
 
     await StudySessionRepository().saveStudySession(studySession);
@@ -129,11 +146,21 @@ class _StudySessionState extends State<StudySession> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("🎯 Score: 7/20", style: TextStyle(fontSize: 20, color: Colors.white)),
-                        Text("⌛ Time: $timerText", style: const TextStyle(fontSize: 20, color: Colors.white)),
-                        const Text("🥱 Easy: 4/4", style: TextStyle(fontSize: 20, color: Styles.greenEasy)),
-                        const Text("😐 Medium: 3/10", style: TextStyle(fontSize: 20, color: Styles.blueNeutral)),
-                        const Text("😡 Hard: 0/6", style: TextStyle(fontSize: 20, color: Styles.redHard)),
+                        Text(
+                          "🎯 Score: $correctAnswerCount/$totalQuestions",
+                          style: const TextStyle(fontSize: 20, color: Colors.white)),
+                        Text(
+                          "⌛ Time: $timerText",
+                          style: const TextStyle(fontSize: 20, color: Colors.white)),
+                        Text(
+                          "🥱 Easy: ${correctAnswersByDifficulty[0]}/$easyQuestionCount",
+                          style: const TextStyle(fontSize: 20, color: Styles.greenEasy)),
+                        Text(
+                          "😐 Medium: ${correctAnswersByDifficulty[1]}/$mediumQuestionCount",
+                          style: const TextStyle(fontSize: 20, color: Styles.blueNeutral)),
+                        Text(
+                          "😡 Hard: ${correctAnswersByDifficulty[2]}/$hardQuestionCount",
+                          style: const TextStyle(fontSize: 20, color: Styles.redHard)),
                       ],
                     )
                   ],
@@ -223,6 +250,12 @@ class _StudySessionState extends State<StudySession> {
                                   onTap: () {
                                     setState(() {
                                       correctAnswerCount += 1;
+                                      int? difficulty = widget.flashcardList![currentIndex].difficulty;
+                                      
+                                      if (difficulty != null) {
+                                        correctAnswersByDifficulty[difficulty] = (correctAnswersByDifficulty[difficulty] ?? 0) + 1;
+                                      }
+
                                       if (currentIndex < widget.flashcardList!.length - 1) {
                                         flipCardKey.currentState?.toggleCardWithoutAnimation();
                                         currentIndex++;
