@@ -92,11 +92,9 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
         if (!showEditOptions) {
           
           if (flashcard?.opened == false) {
-          
-          setState(() {
-            flashcard?.opened = true;
+            setState(() => flashcard?.opened = true);
             FlashcardRepository().updateFlashcard(flashcard!);
-          });
+          }
 
           showDialog<void>(
             context: context,
@@ -104,7 +102,6 @@ class _FlashcardPreviewState extends State<FlashcardPreview> {
               return Flashcard(flashcard: flashcard);
             },
           );
-        }
       }},
       child: Stack(
         children: [
