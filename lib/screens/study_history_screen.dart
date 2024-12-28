@@ -131,7 +131,7 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
                     child: CustomSearchBar(
                         label: "Search a topic",
                         onSearchChanged: (value) {
-                          print(value);
+                          getStudyHistory(isRefresh: true, searchTerm: value);
                         },
                       ),
                   ),
