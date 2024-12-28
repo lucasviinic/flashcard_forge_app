@@ -61,13 +61,13 @@ class _FeedbackModalState extends State<FeedbackModal> {
         width: MediaQuery.of(context).size.width * .95,
         child: SingleChildScrollView(
           child: isLoading 
-            ? const Padding(
-              padding: EdgeInsets.only(top: 100, bottom: 50),
+            ? Padding(
+              padding: const EdgeInsets.only(top: 100, bottom: 50),
               child: Center(
                 child: SizedBox(
                   width: 65,
                   height: 65,
-                  child: CircularProgressIndicator()
+                  child: CircularProgressIndicator(color: Theme.of(context).textTheme.bodyMedium!.color)
                 )
               ),
             )
