@@ -47,3 +47,7 @@ abstract class StudySessionRepositoryContract{
   Future<List<StudySessionModel>?> fetchStudyHistory(int limit, int offset, String? search);
   Future<void> saveStudySession(StudySessionModel studySession);
 }
+
+abstract class FeedbackRepositoryContract {
+  Future<void> sendFeedback(String content);
+}

@@ -1,3 +1,4 @@
+import 'package:flashcard_forge_app/services/repositories/feedback_repo.dart';
 import 'package:flutter/material.dart';
 
 class FeedbackModal extends StatefulWidget {
@@ -30,7 +31,7 @@ class _FeedbackModalState extends State<FeedbackModal> {
   Future<void> sendFeedback(String text) async {
     setLoading(true);
     try {
-      await Future.delayed(const Duration(seconds: 3));
+      await FeedbackRepository().sendFeedback(text);
       setState(() => success = true);
     } catch (e) {
       setState(() => success = false);
