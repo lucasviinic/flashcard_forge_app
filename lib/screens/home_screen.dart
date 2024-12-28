@@ -426,14 +426,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         final subject = subjects[index];
                         
-                        return SubjectContainer(
-                          subject: subject,
-                          onDelete: (id) {
-                            setState(() {
-                              subjects = List.from(subjects)..removeWhere((s) => s.id == id);
-                            });
-                          }
-                        );
+                        return SubjectContainer(subject: subject);
                       },
                     ),
                   ),

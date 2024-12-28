@@ -12,10 +12,9 @@ import 'package:flashcard_forge_app/utils/constants.dart';
 
 
 class SubjectContainer extends StatefulWidget {
-  const SubjectContainer({super.key, required this.subject, required this.onDelete});
+  const SubjectContainer({super.key, required this.subject});
 
   final SubjectModel subject;
-  final Function(String) onDelete;
 
   @override
   State<SubjectContainer> createState() => _SubjectContainerState();
@@ -143,7 +142,6 @@ class _SubjectContainerState extends State<SubjectContainer> {
 
       if (success) {
         setState(() => isDeleted = true);
-        widget.onDelete(widget.subject.id!);
       }
     } catch (e) {
       // exibe modal de erro
