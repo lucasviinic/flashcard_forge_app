@@ -9,6 +9,7 @@ import 'package:flashcard_forge_app/services/repositories/flashcard_repo.dart';
 import 'package:flashcard_forge_app/widgets/DrawerMenu.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardForm.dart';
 import 'package:flashcard_forge_app/widgets/FlashcardPreview.dart';
+import 'package:flashcard_forge_app/widgets/UploadFileModal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -160,30 +161,47 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                   icon: Icon(Icons.upload_file_rounded,
                       size: 30,
                       color: Theme.of(context).textTheme.bodyMedium!.color),
-                  onPressed: () async {
-                    FilePickerResult? result = await FilePicker.platform
-                      .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
-              
-                    if (result == null) return;
-              
-                    File file = File(result.files.single.path!);
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return UploadFileModal(
+                          topic: widget.topic!,
+                          onGeneratingFlashcardsChanged: (isGenerating) {
+                            setState(() => isGeneratingFlashcards = isGenerating);
+                          },
+                          onFlashcardsGenerated: (newFlashcards) {
+                            setState(() {
+                              flashcards.insertAll(0, newFlashcards);
+                            });
+                          },
+                        );
+                      },
+                    );
 
-                    setState(() => isGeneratingFlashcards = true);
+                    // FilePickerResult? result = await FilePicker.platform
+                    //   .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+              
+                    // if (result == null) return;
+              
+                    // File file = File(result.files.single.path!);
+
+                    // setState(() => isGeneratingFlashcards = true);
                     
-                    List<FlashcardModel>? newFlashcards = await FlashcardRepository()
-                      .uploadFile(file, 5, 1, widget.topic!.subjectId, widget.topic!.id!);
+                    // List<FlashcardModel>? newFlashcards = await FlashcardRepository()
+                    //   .uploadFile(file, 5, 1, widget.topic!.subjectId, widget.topic!.id!);
               
-                    if (newFlashcards.isNotEmpty) {
-                      setState(() {
-                        flashcards.insertAll(0, newFlashcards);
-                      });
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Nenhum flashcard foi adicionado.')),
-                      );
-                    }
+                    // if (newFlashcards.isNotEmpty) {
+                    //   setState(() {
+                    //     flashcards.insertAll(0, newFlashcards);
+                    //   });
+                    // } else {
+                    //   ScaffoldMessenger.of(context).showSnackBar(
+                    //     const SnackBar(content: Text('Nenhum flashcard foi adicionado.')),
+                    //   );
+                    // }
 
-                    setState(() => isGeneratingFlashcards = false);
+                    // setState(() => isGeneratingFlashcards = false);
                   },
                   highlightColor: Colors.transparent),
             ],
