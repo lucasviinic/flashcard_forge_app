@@ -128,20 +128,20 @@ class _UploadFileModalState extends State<UploadFileModal> {
           ),
           Row(
             children: List.generate(quantities.length, (index) {
-              bool _isSelected = index == selectedQuantityIndex;
+              bool isSelected = index == selectedQuantityIndex;
               return Row(
                 children: [
                   GestureDetector(
                     onTap: () {
                       setState(() {
-                        selectedQuantityIndex = _isSelected ? -1 : index;
+                        selectedQuantityIndex = isSelected ? -1 : index;
                       });
                     },
                     child: Container(
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: _isSelected ? Colors.blue : null,
+                        color: isSelected ? Colors.blue : null,
                         border: Border.all(width: 1, color: Colors.grey),
                         borderRadius: BorderRadius.circular(20),
                       ),
@@ -149,7 +149,7 @@ class _UploadFileModalState extends State<UploadFileModal> {
                       child: Text(
                       "${quantities[index]}",
                         style: TextStyle(
-                          color: _isSelected ? Colors.white : Colors.grey,
+                          color: isSelected ? Colors.white : Colors.grey,
                         ),
                       ),
                     ),
