@@ -40,6 +40,14 @@ class AuthRepository implements AuthRepositoryContract {
     }
   }
 
+  Future<void> logoutUser() async {
+    try {
+      await TokenManager.clearAccessToken();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   @override
   Future<UserModel?> getStoredUser() async {
     final prefs = await SharedPreferences.getInstance();

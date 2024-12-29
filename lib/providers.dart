@@ -21,7 +21,16 @@ class ThemeProvider extends ChangeNotifier {
 
 class AuthProvider with ChangeNotifier {
   GoogleSignInAccount? _currentUser;
+  bool _isLoggedIn = false;
+  String? _accessToken;
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'openid', 'profile']);
+
+  String? get accessToken => _accessToken;
+
+  Future<void> setAccessToken(String token) async {
+    _accessToken = token;
+    notifyListeners();
+  }
 
   GoogleSignInAccount? get currentUser => _currentUser;
 
@@ -39,6 +48,7 @@ class AuthProvider with ChangeNotifier {
 
       if (googleUser != null) {
         _currentUser = googleUser;
+        _isLoggedIn = true;
         notifyListeners();
         return _currentUser;
       } else {
@@ -50,13 +60,23 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
-  Future<void> signOutFromGoogle() async {
+  bool get isLoggedIn => _isLoggedIn;
+
+  void clearLoginState() {
+    _isLoggedIn = false;
+    notifyListeners();
+  }
+
+  Future<GoogleSignInAccount?> signOutFromGoogle() async {
     try {
-      await _googleSignIn.signOut();
-      _currentUser = null;
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signOut();
+      _currentUser = googleUser;
+      _isLoggedIn = false;
       notifyListeners();
+      return _currentUser;
     } catch (e) {
       print('Error logging out from Google: $e');
+      return _currentUser;
     }
   }
 }

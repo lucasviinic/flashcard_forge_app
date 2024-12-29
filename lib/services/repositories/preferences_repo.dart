@@ -30,5 +30,6 @@ class PreferencesRepository implements PreferencesRepositoryContract{
     await prefs.remove('user_isActive');
     await prefs.remove('user_name');
     await prefs.remove('user_picture');
+    await prefs.remove('access_token');
   }
 }

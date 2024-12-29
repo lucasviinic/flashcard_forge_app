@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
 import 'package:flashcard_forge_app/providers.dart';
+import 'package:flashcard_forge_app/services/repositories/auth_repo.dart';
 import 'package:flashcard_forge_app/services/repositories/preferences_repo.dart';
 import 'package:flashcard_forge_app/services/repositories/subject_repo.dart';
 import 'package:flashcard_forge_app/widgets/CustomSearchBar.dart';
@@ -55,7 +56,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> signOutFromGoogle() async {
     try {
-      _googleSignIn.signOut().then((_) => PreferencesRepository().clearUserPrefs());
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final GoogleSignInAccount? googleUser = await authProvider.signOutFromGoogle();
+
+      if (googleUser != null) {
+        throw 'Error on logout user';
+      }
+
+      await AuthRepository().logoutUser();
+      await PreferencesRepository().clearUserPrefs();
+
+      setState(() {
+        subjects.clear();
+        hasMore = true;
+        offset = 0;
+        limit = 15;
+      });
       print('User logged out successfully');
     } catch (e) {
       print('Error logging out from Google: $e');
@@ -79,6 +95,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getSubjects({bool requestMore = false, bool isRefresh = false, String searchTerm = ""}) async {
+    print("FUUUII CHAMAAAADOOOOOOOOOOOOOOOOO!");
+
     if (!isRefresh && (isLoading || isLoadingMore || !hasMore)) return;
 
     if (isRefresh) {
@@ -195,6 +213,16 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    final authProvider = Provider.of<AuthProvider>(context);
+    if (authProvider.isLoggedIn && authProvider.accessToken != null) {
+      getSubjects();
+    }
+  }
+
+  @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
@@ -272,7 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         PopupMenuItem<int>(
                           value: 1,
-                          onTap: () => authProvider.signOutFromGoogle(),
+                          onTap: () => signOutFromGoogle(),
                           child: Row(
                             children: [
                               Icon(Icons.logout, color: Theme.of(context).textTheme.bodyMedium!.color),

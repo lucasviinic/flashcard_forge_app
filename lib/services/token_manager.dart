@@ -5,7 +5,7 @@ class TokenManager {
 
   static Future<void> saveAccessToken(String? token) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_accessTokenKey, token ?? '');
+    await prefs.setString(_accessTokenKey, token!);
   }
 
   static Future<String?> getAccessToken() async {

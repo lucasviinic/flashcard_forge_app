@@ -27,7 +27,9 @@ class _DrawerMenuState extends State<DrawerMenu> {
     ]
   );
 
-  Future<void> signInWithGoogle(AuthProvider authProvider) async {
+  Future<void> signInWithGoogle() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     try {
       final GoogleSignInAccount? googleUser = await authProvider.signInWithGoogle();
 
@@ -45,9 +47,7 @@ class _DrawerMenuState extends State<DrawerMenu> {
       AuthTokenModel? response = await AuthRepository().authenticate(accessToken);
     
       if (response != null) {
-        print("User authenticated:");
-        print('access_token: ${response.accessToken}');
-        print('refresh_token: ${response.refreshToken}');
+        await authProvider.setAccessToken(response.accessToken!);
       } else {
         throw 'Failed to authenticate.';
       }
@@ -211,22 +211,30 @@ class _DrawerMenuState extends State<DrawerMenu> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 25),
                     child: GestureDetector(
-                      onTap: authProvider.currentUser != null 
-                        ? authProvider.signOutFromGoogle 
-                        : () => signInWithGoogle(authProvider),
-                      child: Row(
-                        children: [
-                          Visibility(
-                            visible: Theme.of(context).brightness == Brightness.light,
-                            replacement: SvgPicture.asset("assets/images/google_icon_dark.svg"),
-                            child: SvgPicture.asset("assets/images/google_icon_light.svg"),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            _currentUser != null ? "Sign out from Google" : "Sign in with Google",
-                            style: const TextStyle(fontWeight: FontWeight.w800),
-                          ),
-                        ],
+                      onTap: () {
+                        if (authProvider.currentUser != null) {
+                          authProvider.signOutFromGoogle();
+                        } else {
+                          signInWithGoogle();
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Visibility(
+                        visible: _currentUser == null,
+                        child: Row(
+                          children: [
+                            Visibility(
+                              visible: Theme.of(context).brightness == Brightness.light,
+                              replacement: SvgPicture.asset("assets/images/google_icon_dark.svg"),
+                              child: SvgPicture.asset("assets/images/google_icon_light.svg"),
+                            ),
+                            const SizedBox(width: 12),
+                            const Text(
+                              "Sign in with Google",
+                              style: TextStyle(fontWeight: FontWeight.w800),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
