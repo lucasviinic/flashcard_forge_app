@@ -156,9 +156,11 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                 ),
               ),
               IconButton(
-                  icon: Icon(Icons.upload_file_rounded,
-                      size: 30,
-                      color: Theme.of(context).textTheme.bodyMedium!.color),
+                  icon: SvgPicture.asset(
+                    'assets/images/upload-to-ia-generate.svg',
+                    width: 30,
+                    height: 30,
+                  ),
                   onPressed: () {
                     showDialog(
                       context: context,
@@ -176,30 +178,6 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
                         );
                       },
                     );
-
-                    // FilePickerResult? result = await FilePicker.platform
-                    //   .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
-              
-                    // if (result == null) return;
-              
-                    // File file = File(result.files.single.path!);
-
-                    // setState(() => isGeneratingFlashcards = true);
-                    
-                    // List<FlashcardModel>? newFlashcards = await FlashcardRepository()
-                    //   .uploadFile(file, 5, 1, widget.topic!.subjectId, widget.topic!.id!);
-              
-                    // if (newFlashcards.isNotEmpty) {
-                    //   setState(() {
-                    //     flashcards.insertAll(0, newFlashcards);
-                    //   });
-                    // } else {
-                    //   ScaffoldMessenger.of(context).showSnackBar(
-                    //     const SnackBar(content: Text('Nenhum flashcard foi adicionado.')),
-                    //   );
-                    // }
-
-                    // setState(() => isGeneratingFlashcards = false);
                   },
                   highlightColor: Colors.transparent),
             ],
