@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
           theme: themeProvider.currentTheme,
           initialRoute: '/',
           routes: {
-            '/': (context) => const HomeScreen(title: "Flashcard Forge"),
+            '/': (context) => const HomeScreen(),
             '/flashcards': (context) => const FlashcardScreen(),
             '/history': (context) => const StudyHistoryScreen(),
             '/about': (context) => const AboutScreen()

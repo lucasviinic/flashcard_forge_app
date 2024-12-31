@@ -16,73 +16,39 @@ class DrawerMenu extends StatefulWidget {
 }
 
 class _DrawerMenuState extends State<DrawerMenu> {
-  GoogleSignInAccount? _currentUser;
   bool isAuthorized = false;
-
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: <String>[
-      'email',
-      'openid',
-      'profile',
-    ]
-  );
 
   Future<void> signInWithGoogle() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     try {
-      final GoogleSignInAccount? googleUser = await authProvider.signInWithGoogle();
+      await authProvider.signInWithGoogle();
 
-      if (googleUser == null) {
-        throw 'Login has been cancelled';
-      }
-
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-      final String? accessToken = googleAuth.accessToken;
-
-      if (accessToken == null) {
-        throw 'Invalid Token (idToken)';
-      }
-      
-      AuthTokenModel? response = await AuthRepository().authenticate(accessToken);
-    
-      if (response != null) {
-        await authProvider.setAccessToken(response.accessToken!);
+      if (authProvider.isAuthenticated) {
+        print('Usuário autenticado com sucesso');
       } else {
-        throw 'Failed to authenticate.';
+        throw 'Falha na autenticação';
       }
     } catch (e) {
-      await authProvider.signOutFromGoogle();
-      print('Error logging in with Google: $e');
+      print('Erro ao fazer login com o Google: $e');
+      await authProvider.logout();
     }
   }
 
-  Future<void> signOutFromGoogle(AuthProvider authProvider) async {
+  Future<void> signOut() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
     try {
-      await authProvider.signOutFromGoogle();
-      print('User logged out successfully');
+      await authProvider.logout();
+      print('Usuário deslogado com sucesso');
     } catch (e) {
-      print('Error logging out from Google: $e');
+      print('Erro ao fazer logout: $e');
     }
   }
 
   @override
   void initState() {
     super.initState();
-
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) async {
-      bool isAuthorized = account != null;
-
-      setState(() {
-        _currentUser = account;
-        isAuthorized = isAuthorized;
-      });
-
-      print("_currentUser: $_currentUser");
-      print("isAuthorized: $isAuthorized");
-    });
-
-    _googleSignIn.signInSilently();
   }
 
   @override
@@ -91,7 +57,6 @@ class _DrawerMenuState extends State<DrawerMenu> {
 
     return Drawer(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      //backgroundColor: Styles.primaryColor,
       child: Column(
         children: [
           ShaderMask(
@@ -212,15 +177,12 @@ class _DrawerMenuState extends State<DrawerMenu> {
                     padding: const EdgeInsets.only(bottom: 25),
                     child: GestureDetector(
                       onTap: () {
-                        if (authProvider.currentUser != null) {
-                          authProvider.signOutFromGoogle();
-                        } else {
-                          signInWithGoogle();
-                          Navigator.pop(context);
+                        if (!authProvider.isAuthenticated) {
+                          signInWithGoogle().then((_) => Navigator.of(context).pop());
                         }
                       },
                       child: Visibility(
-                        visible: _currentUser == null,
+                        visible: !authProvider.isAuthenticated,
                         child: Row(
                           children: [
                             Visibility(

@@ -1,36 +1,51 @@
+import 'package:flashcard_forge_app/services/repositories/auth_repo.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ThemeProvider extends ChangeNotifier {
-  ThemeData _currentTheme = AppThemes.lightTheme; // Tema inicial
+  ThemeData _currentTheme = AppThemes.lightTheme;
 
   ThemeData get currentTheme => _currentTheme;
 
-  void toggleTheme() {
+  ThemeProvider() {
+    _loadTheme();
+  }
+
+  void toggleTheme() async {
     if (_currentTheme == AppThemes.lightTheme) {
       _currentTheme = AppThemes.darkTheme;
     } else {
       _currentTheme = AppThemes.lightTheme;
     }
-    notifyListeners(); // Notifica os listeners sobre a mudança
+    notifyListeners();
+    await _saveTheme();
+  }
+
+  Future<void> _saveTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setBool('isLightTheme', _currentTheme == AppThemes.lightTheme);
+  }
+
+  Future<void> _loadTheme() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isLightTheme = prefs.getBool('isLightTheme') ?? true;
+    _currentTheme = isLightTheme ? AppThemes.lightTheme : AppThemes.darkTheme;
+    notifyListeners();
   }
 }
 
-
 class AuthProvider with ChangeNotifier {
   GoogleSignInAccount? _currentUser;
-  bool _isLoggedIn = false;
+  bool _isAuthenticated = false;
   String? _accessToken;
   final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: ['email', 'openid', 'profile']);
+  final AuthRepository _authRepository = AuthRepository();
 
   String? get accessToken => _accessToken;
-
-  Future<void> setAccessToken(String token) async {
-    _accessToken = token;
-    notifyListeners();
-  }
+  bool get isAuthenticated => _isAuthenticated;
 
   GoogleSignInAccount? get currentUser => _currentUser;
 
@@ -40,43 +55,79 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     });
     _googleSignIn.signInSilently();
+    _initialize();
   }
 
-  Future<GoogleSignInAccount?> signInWithGoogle() async {
-    try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-
-      if (googleUser != null) {
-        _currentUser = googleUser;
-        _isLoggedIn = true;
-        notifyListeners();
-        return _currentUser;
-      } else {
-        return null;
-      }
-    } catch (e) {
-      print('Error logging in with Google: $e');
-      return null;
+  Future<void> _initialize() async {
+    await loadAccessTokenFromPrefs();
+    if (_accessToken != null) {
+      _isAuthenticated = true;
+      notifyListeners();
     }
   }
 
-  bool get isLoggedIn => _isLoggedIn;
+  Future<void> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-  void clearLoginState() {
-    _isLoggedIn = false;
-    notifyListeners();
+      if (googleUser == null) {
+        throw 'Login foi cancelado pelo usuário';
+      }
+
+      _currentUser = googleUser;
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final String? googleAccessToken = googleAuth.accessToken;
+
+      if (googleAccessToken == null) {
+        throw 'Token do Google inválido';
+      }
+
+      await authenticate(googleAccessToken);
+    } catch (e) {
+      print('Erro ao fazer login com o Google: $e');
+      logout();
+    }
   }
 
-  Future<GoogleSignInAccount?> signOutFromGoogle() async {
+  Future<void> authenticate(String googleAccessToken) async {
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signOut();
-      _currentUser = googleUser;
-      _isLoggedIn = false;
-      notifyListeners();
-      return _currentUser;
+      final authToken = await _authRepository.authenticate(googleAccessToken);
+
+      if (authToken != null) {
+        _accessToken = authToken.accessToken;
+        _isAuthenticated = true;
+        notifyListeners();
+      } else {
+        throw 'Falha na autenticação com o backend';
+      }
     } catch (e) {
-      print('Error logging out from Google: $e');
-      return _currentUser;
+      print('Erro ao autenticar no backend: $e');
+      logout();
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      await _googleSignIn.signOut();
+      await _authRepository.logoutUser();
+
+      _currentUser = null;
+      _accessToken = null;
+      _isAuthenticated = false;
+
+      notifyListeners();
+    } catch (e) {
+      print('Erro ao fazer logout: $e');
+    }
+  }
+
+  Future<void> loadAccessTokenFromPrefs() async {
+    final token = await _authRepository.getStoredAccessToken();
+    if (token != null) {
+      _accessToken = token;
+      _isAuthenticated = true;
+      notifyListeners();
     }
   }
 }

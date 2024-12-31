@@ -16,9 +16,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.title});
-
-  final String title;
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -35,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool hasMore = true;
   bool isLoadingMore = false;
   int deleteCount = 0;
+  bool _subjectsLoaded = false;
 
   final FocusNode _focusNode = FocusNode();
 
@@ -57,11 +56,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> signOutFromGoogle() async {
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final GoogleSignInAccount? googleUser = await authProvider.signOutFromGoogle();
+      await authProvider.logout();
 
-      if (googleUser != null) {
-        throw 'Error on logout user';
-      }
+      // if (googleUser != null) {
+      //   throw 'Error on logout user';
+      // }
 
       await AuthRepository().logoutUser();
       await PreferencesRepository().clearUserPrefs();
@@ -95,8 +94,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> getSubjects({bool requestMore = false, bool isRefresh = false, String searchTerm = ""}) async {
-    print("FUUUII CHAMAAAADOOOOOOOOOOOOOOOOO!");
-
     if (!isRefresh && (isLoading || isLoadingMore || !hasMore)) return;
 
     if (isRefresh) {
@@ -217,7 +214,8 @@ class _HomeScreenState extends State<HomeScreen> {
     super.didChangeDependencies();
 
     final authProvider = Provider.of<AuthProvider>(context);
-    if (authProvider.isLoggedIn && authProvider.accessToken != null) {
+    if (mounted &&authProvider.accessToken != null && authProvider.accessToken!.isNotEmpty) {
+      _subjectsLoaded = true;
       getSubjects();
     }
   }
@@ -238,7 +236,18 @@ class _HomeScreenState extends State<HomeScreen> {
         }
       }
     });
-    getSubjects();
+    
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    authProvider.addListener(() {
+      if (mounted && authProvider.accessToken != null && authProvider.accessToken!.isNotEmpty) {
+        getSubjects();
+      }
+    });
+
+    if (mounted && authProvider.accessToken != null && authProvider.accessToken!.isNotEmpty) {
+      getSubjects();
+    }
   }
 
   @override
