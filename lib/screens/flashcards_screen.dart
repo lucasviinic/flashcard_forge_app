@@ -66,7 +66,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
 
     try {
       List<FlashcardModel>? newFlashcards = await FlashcardRepository()
-          .fetchFlashcards(widget.topic!.id!, offset, limit, searchTerm);
+          .fetchFlashcards(widget.topic!.id!, offset: offset, limit: limit, searchTerm: searchTerm);
 
       if (newFlashcards!.isNotEmpty) {
         setState(() {
@@ -138,11 +138,11 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
             actions: [
               IconButton(
                 onPressed: flashcards.isNotEmpty
-                    ? () {
+                    ? () async {
                         showDialog(
                           context: context,
                           builder: (BuildContext context) {
-                            return StudySession(flashcardList: flashcards, topic: widget.topic!);
+                            return StudySession(topic: widget.topic!);
                           },
                         );
                       }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
 import 'package:flashcard_forge_app/models/StudySessionModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
+import 'package:flashcard_forge_app/services/repositories/flashcard_repo.dart';
 import 'package:flashcard_forge_app/services/repositories/study_session.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
 import 'package:flip_card/flip_card.dart';
@@ -11,15 +12,15 @@ import 'package:percent_indicator/percent_indicator.dart';
 
 class StudySession extends StatefulWidget {
   final TopicModel topic;
-  final List<FlashcardModel>? flashcardList;
 
-  const StudySession({super.key, required this.flashcardList, required this.topic});
+  const StudySession({super.key, required this.topic});
 
   @override
   State<StudySession> createState() => _StudySessionState();
 }
 
 class _StudySessionState extends State<StudySession> {
+  List<FlashcardModel>? flashcardList;
   GlobalKey<FlipCardState> flipCardKey = GlobalKey<FlipCardState>();
 
   int currentIndex = 0;
@@ -46,7 +47,7 @@ class _StudySessionState extends State<StudySession> {
     List<FlashcardModel>? mediumQuestions = [];
     List<FlashcardModel>? hardQuestions = [];
 
-    for (var flashcard in widget.flashcardList!) {
+    for (var flashcard in flashcardList!) {
       switch (flashcard.difficulty) {
         case 0: // Easy
           easyQuestions.add(flashcard);
@@ -63,7 +64,7 @@ class _StudySessionState extends State<StudySession> {
     }
 
     setState(() {
-      totalQuestions = widget.flashcardList!.length;
+      totalQuestions = flashcardList!.length;
       easyQuestionCount = easyQuestions.length;
       mediumQuestionCount = mediumQuestions.length; 
       hardQuestionCount = hardQuestions.length;
@@ -85,8 +86,17 @@ class _StudySessionState extends State<StudySession> {
     await StudySessionRepository().saveStudySession(studySession);
   }
 
+  Future<void> getAllFlashcards() async {
+    FlashcardRepository().fetchFlashcards(widget.topic.id!).then((flashcards) {
+      setState(() {
+        flashcardList = flashcards;
+      });
+      _startTimer();
+    });
+  }
+
   void updateProgress() {
-    double percent = 1 / widget.flashcardList!.length;
+    double percent = 1 / flashcardList!.length;
     if (progress + percent < 1) {
       progress += percent;
     }
@@ -114,7 +124,7 @@ class _StudySessionState extends State<StudySession> {
   @override
   void initState() {
     super.initState();
-    _startTimer();
+    getAllFlashcards();
   }
 
   @override
@@ -207,11 +217,15 @@ class _StudySessionState extends State<StudySession> {
                           Center(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 18),
-                              child: Text(
-                                widget.flashcardList![currentIndex].question!,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: widget.flashcardList![currentIndex].question!.length >= 50 ? 17 : 20),
-                              ),
+                              child: flashcardList != null
+                                ? Text(
+                                    flashcardList![currentIndex].question!,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: flashcardList![currentIndex].question!.length >= 50 ? 17 : 20,
+                                    ),
+                                  )
+                                : const CircularProgressIndicator(),
                             ),
                           ),
                         ],
@@ -233,13 +247,18 @@ class _StudySessionState extends State<StudySession> {
                           Center(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 18),
-                              child: Text(
-                                widget.flashcardList![currentIndex].answer!,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: widget.flashcardList![currentIndex].answer!.length >= 50 ? 17 : 20),
-                              ),
+                              child: flashcardList != null
+                                  ? Text(
+                                      flashcardList![currentIndex].answer!,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: flashcardList![currentIndex].answer!.length >= 50 ? 17 : 20,
+                                      ),
+                                    )
+                                  : const CircularProgressIndicator(),
                             ),
                           ),
+
                           const SizedBox(height: 30),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * .5,
@@ -250,13 +269,13 @@ class _StudySessionState extends State<StudySession> {
                                   onTap: () {
                                     setState(() {
                                       correctAnswerCount += 1;
-                                      int? difficulty = widget.flashcardList![currentIndex].difficulty;
+                                      int? difficulty = flashcardList![currentIndex].difficulty;
                                       
                                       if (difficulty != null) {
                                         correctAnswersByDifficulty[difficulty] = (correctAnswersByDifficulty[difficulty] ?? 0) + 1;
                                       }
 
-                                      if (currentIndex < widget.flashcardList!.length - 1) {
+                                      if (currentIndex < flashcardList!.length - 1) {
                                         flipCardKey.currentState?.toggleCardWithoutAnimation();
                                         currentIndex++;
                                       } else {
@@ -284,7 +303,7 @@ class _StudySessionState extends State<StudySession> {
                                   onTap: () {
                                     setState(() {
                                       incorrectAnswerCount += 1;
-                                      if (currentIndex < widget.flashcardList!.length - 1) {
+                                      if (currentIndex < flashcardList!.length - 1) {
                                         flipCardKey.currentState?.toggleCardWithoutAnimation();
                                         currentIndex++;
                                       } else {

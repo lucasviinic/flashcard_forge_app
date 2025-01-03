@@ -14,12 +14,19 @@ class FlashcardRepository implements FlashcardRepositoryContract {
   final baseURL = "${dotenv.env['API_BASE_URL']}/flashcards";
 
   @override
-  Future<List<FlashcardModel>?> fetchFlashcards(String topicId, int offset, int limit, String searchTerm) async {
+  Future<List<FlashcardModel>?> fetchFlashcards(String topicId, {int? limit, int? offset = 0, String searchTerm = ""}) async {
     String? accessToken = await TokenManager.getAccessToken();
 
     try {
+      final queryParameters = {
+        'topic_id': topicId,
+        'limit': limit != null ? limit.toString() : '0',
+        'offset': offset.toString(),
+        'search': searchTerm,
+      };
+
       final response = await http.get(
-        Uri.parse("$baseURL?topic_id=$topicId&limit=$limit&offset=$offset&search=$searchTerm"),
+        Uri.parse(baseURL).replace(queryParameters: queryParameters),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $accessToken',
