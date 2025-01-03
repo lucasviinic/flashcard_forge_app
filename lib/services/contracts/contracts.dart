@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flashcard_forge_app/models/AuthTokenModel.dart';
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
+import 'package:flashcard_forge_app/models/ResponseModel.dart';
 import 'package:flashcard_forge_app/models/StudySessionModel.dart';
 import 'package:flashcard_forge_app/models/SubjectModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
@@ -36,7 +37,7 @@ abstract class TopicRepositoryContract {
 }
 
 abstract class FlashcardRepositoryContract {
-  Future<List<FlashcardModel>?> fetchFlashcards(String topicId, {int? limit, int offset = 0, String searchTerm = ""});
+  Future<FlashcardListResponseModel?> fetchFlashcards(String topicId, {int? limit, int? offset = 0, String searchTerm = ""});
   Future<FlashcardModel?> updateFlashcard(FlashcardModel flashcard);
   Future<void> deleteFlashcard(String flashcardId);
   Future<List<FlashcardModel>> uploadFile(File file, int quantity, int difficulty, String subjectId, String topicId);

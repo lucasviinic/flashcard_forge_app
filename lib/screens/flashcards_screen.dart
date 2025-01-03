@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
+import 'package:flashcard_forge_app/models/ResponseModel.dart';
 import 'package:flashcard_forge_app/models/TopicModel.dart';
 import 'package:flashcard_forge_app/screens/study_session_screen.dart';
 import 'package:flashcard_forge_app/services/repositories/flashcard_repo.dart';
@@ -34,6 +35,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
   bool isLoading = false;
   bool creatingSFlashcard = false;
   List<FlashcardModel> flashcards = [];
+  int? flashcardsCount = 0;
 
   bool isFlashcardDuplicate(FlashcardModel newFlashcard) {
     return flashcards.any((flashcard) => flashcard.id == newFlashcard.id);
@@ -65,8 +67,11 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
     }
 
     try {
-      List<FlashcardModel>? newFlashcards = await FlashcardRepository()
+      FlashcardListResponseModel? response = await FlashcardRepository()
           .fetchFlashcards(widget.topic!.id!, offset: offset, limit: limit, searchTerm: searchTerm);
+      List<FlashcardModel>? newFlashcards = response?.flashcards;
+
+      setState(() => flashcardsCount = response?.count);
 
       if (newFlashcards!.isNotEmpty) {
         setState(() {
@@ -121,17 +126,33 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
               },
             ),
             title: Row(
+              crossAxisAlignment: CrossAxisAlignment.start, // Alinha os elementos no início do eixo cruzado (vertical).
               children: [
                 Expanded(
-                  child: Text(
-                    widget.topic!.topicName,
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Theme.of(context).textTheme.bodyMedium!.color),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start, // Alinha os elementos no início do eixo cruzado (horizontal dentro da coluna).
+                    mainAxisAlignment: MainAxisAlignment.start, // Alinha os elementos no início do eixo principal (vertical dentro da coluna).
+                    children: [
+                      Text(
+                        widget.topic!.topicName,
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Theme.of(context).textTheme.bodyMedium!.color,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                      ),
+                      const SizedBox(height: 1),
+                      Text(
+                        "$flashcardsCount flashcards",
+                        style: TextStyle(
+                          fontSize: 12.5,
+                          color: Theme.of(context).textTheme.bodyMedium!.color,
+                        ),
+                      ),
+                    ],
                   ),
-                )
+                ),
               ],
             ),
             centerTitle: true,

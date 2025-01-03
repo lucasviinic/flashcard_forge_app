@@ -87,9 +87,9 @@ class _StudySessionState extends State<StudySession> {
   }
 
   Future<void> getAllFlashcards() async {
-    FlashcardRepository().fetchFlashcards(widget.topic.id!).then((flashcards) {
+    FlashcardRepository().fetchFlashcards(widget.topic.id!).then((response) {
       setState(() {
-        flashcardList = flashcards;
+        flashcardList = response?.flashcards;
       });
       _startTimer();
     });

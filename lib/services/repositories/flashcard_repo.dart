@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flashcard_forge_app/models/FlashcardModel.dart';
+import 'package:flashcard_forge_app/models/ResponseModel.dart';
 import 'dart:async';
 
 import 'package:flashcard_forge_app/services/contracts/contracts.dart';
@@ -14,7 +15,7 @@ class FlashcardRepository implements FlashcardRepositoryContract {
   final baseURL = "${dotenv.env['API_BASE_URL']}/flashcards";
 
   @override
-  Future<List<FlashcardModel>?> fetchFlashcards(String topicId, {int? limit, int? offset = 0, String searchTerm = ""}) async {
+  Future<FlashcardListResponseModel?> fetchFlashcards(String topicId, {int? limit, int? offset = 0, String searchTerm = ""}) async {
     String? accessToken = await TokenManager.getAccessToken();
 
     try {
@@ -34,10 +35,9 @@ class FlashcardRepository implements FlashcardRepositoryContract {
       );
 
       if (response.statusCode == 200) {
-        final List<dynamic> data  = jsonDecode(response.body);
-        List<FlashcardModel> flashcards = data.map((json) => FlashcardModel.fromJson(json)).toList();
+        final Map<String, dynamic> data = jsonDecode(response.body);
 
-        return flashcards;
+        return FlashcardListResponseModel.fromJson(data);
       } else {
         print('Failed to fetch flashcards. Status code: ${response.statusCode}');
         return null;
