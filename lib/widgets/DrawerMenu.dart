@@ -1,11 +1,8 @@
-import 'package:flashcard_forge_app/models/AuthTokenModel.dart';
 import 'package:flashcard_forge_app/providers.dart';
-import 'package:flashcard_forge_app/services/repositories/auth_repo.dart';
 import 'package:flashcard_forge_app/widgets/FeedbackModal.dart';
 import 'package:flashcard_forge_app/widgets/ThemeSwitch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 class DrawerMenu extends StatefulWidget {

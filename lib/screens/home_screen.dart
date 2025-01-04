@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flashcard_forge_app/utils/constants.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -33,19 +32,12 @@ class _HomeScreenState extends State<HomeScreen> {
   bool hasMore = true;
   bool isLoadingMore = false;
   int deleteCount = 0;
-  bool _subjectsLoaded = false;
 
   final FocusNode _focusNode = FocusNode();
 
   bool isLoading = false;
   bool creatingSubject = false;
   List<SubjectModel> subjects = [];
-
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: <String>[
-      'email'
-    ]
-  );
 
   void setLoading(bool value) {
     setState(() {
@@ -215,7 +207,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final authProvider = Provider.of<AuthProvider>(context);
     if (mounted &&authProvider.accessToken != null && authProvider.accessToken!.isNotEmpty) {
-      _subjectsLoaded = true;
       getSubjects();
     }
   }

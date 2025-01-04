@@ -88,7 +88,7 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
         setState(() => hasMore = false);
       }
     } catch (e) {
-      //se acontecer um erro lanço um modal aqui
+      //TODO: se acontecer um erro lanço um modal aqui
     } finally {
       setLoading(false);
       setState(() {
@@ -126,12 +126,12 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
               },
             ),
             title: Row(
-              crossAxisAlignment: CrossAxisAlignment.start, // Alinha os elementos no início do eixo cruzado (vertical).
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start, // Alinha os elementos no início do eixo cruzado (horizontal dentro da coluna).
-                    mainAxisAlignment: MainAxisAlignment.start, // Alinha os elementos no início do eixo principal (vertical dentro da coluna).
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(
                         widget.topic!.topicName,
@@ -307,7 +307,6 @@ class _FlashcardScreenState extends State<FlashcardScreen> {
           floatingActionButton: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              //gradient: Styles.linearGradient,
             ),
             child: FloatingActionButton(
               backgroundColor: Theme.of(context).floatingActionButtonTheme.backgroundColor,
